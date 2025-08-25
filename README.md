@@ -1,2 +1,2 @@
 # REX-students
-Repository for the REX course at DIKU containing source code
+This is the public repository for the REX course at DIKU containing hand-out source code. 
