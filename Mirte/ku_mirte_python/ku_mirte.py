@@ -14,6 +14,7 @@ import numpy as np
 import time
 from robot_pos_sub import PositionSubscriber
 from camera_sub import CameraSubscriber
+from camera_compressed_sub import CameraCompressedSubscriber
 from lidar_sub import LidarSubscriber
 from sonar_sub import SonarSubscriber
 from vector_vis import OdometryPublisher
@@ -37,6 +38,7 @@ class KU_Mirte:
         rclpy.init()
         self.robot_pos_sub = PositionSubscriber()
         self.camera_sub = CameraSubscriber()
+        self.camera_compressed_sub = CameraCompressedSubscriber()
         self.lidar_sub = LidarSubscriber()
         self.sonar_sub = SonarSubscriber()
         self.odometry_pub_mirte = OdometryPublisher('odometry_mirte', 'base_link')
@@ -81,6 +83,8 @@ class KU_Mirte:
             self.robot_pos_sub.destroy_node()
         if hasattr(self, 'camera_sub') and self.camera_sub:
             self.camera_sub.destroy_node()
+        if hasattr(self, 'camera_compressed_sub') and self.camera_compressed_sub:
+            self.camera_compressed_sub.destroy_node()
         if hasattr(self, 'lidar_sub') and self.lidar_sub:
             self.lidar_sub.destroy_node()
         if hasattr(self, 'sonar_sub') and self.sonar_sub:
@@ -231,6 +235,16 @@ class KU_Mirte:
         """
         #rclpy.spin_once(self.camera_sub)
         return self.camera_sub.image()
+    
+    def get_image_compressed(self) -> np.ndarray:
+        """
+        Returns the most recent image from the robot's camera (compressed version).
+        This is preferred when reading from a remote machine whose connection is low quality, e.g. through WIFI
+        Returns:
+            Image data (numpy array)
+        """
+        #rclpy.spin_once(self.camera_sub)
+        return self.camera_compressed_sub.image()         
     
     @property
     def image(self) -> np.ndarray:
