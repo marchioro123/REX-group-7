@@ -22,7 +22,7 @@ while (1):
     print(arlo.go_diff(round(115*leftPercentageSpeed), 40, 1, 1))
     sleep(4.5)
 
-
+ 
 
 # while (1):
 #     print(arlo.go_diff(leftSpeed, rightSpeed, 1, 1))
