@@ -13,13 +13,13 @@ sleep(1)
 
 # send a go_diff command to drive forward
 leftSpeed = 69
-rightSpeed = 65
+rightSpeed = 64
 
 while (1):
     print(arlo.go_diff(leftSpeed, rightSpeed, 1, 1))
-    sleep(10)
-    # print(arlo.go_diff(leftSpeed, rightSpeed, 0, 1))
-    # sleep(0.6)
+    sleep(1.8)
+    print(arlo.go_diff(leftSpeed, rightSpeed, 0, 1))
+    sleep(0.6)
 
 
 
