@@ -9,6 +9,8 @@ arlo = robot.Robot()
 
 print("Running ...")
 
+sleep(1)
+
 # send a go_diff command to drive forward
 leftSpeed = 64
 rightSpeed = 64
