@@ -14,7 +14,7 @@ sleep(1)
 leftPercentageSpeed = 1.078
 speed = 64
 
-print(arlo.go_diff(round(40*leftPercentageSpeed), 40, 1, 1))
+print(arlo.go_diff(round(100*leftPercentageSpeed), 100, 1, 1))
 sleep(10)
 
 
