@@ -1,7 +1,7 @@
 from time import sleep
 
-# import sys
-# sys.path.append("/home/pi/Desktop/REX-group-7/Arlo/python")
+import sys
+sys.path.append("/home/pi/Desktop/REX-group-7/Arlo/python")
 import robot
 
 # Create a robot object and initialize
