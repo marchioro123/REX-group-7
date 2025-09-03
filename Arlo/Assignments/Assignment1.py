@@ -12,13 +12,16 @@ print("Running ...")
 sleep(1)
 
 # send a go_diff command to drive forward
-leftSpeed = 69
-rightSpeed = 64
+forwardLeftSpeed = 69
+forwardRightSpeed = 64
+
+turnLeftSpeed = 64
+turnRightSpeed = 64
 
 while (1):
-    print(arlo.go_diff(leftSpeed, rightSpeed, 1, 1))
+    print(arlo.go_diff(forwardLeftSpeed, forwardRightSpeed, 1, 1))
     sleep(1.8)
-    print(arlo.go_diff(leftSpeed, rightSpeed, 0, 1))
+    print(arlo.go_diff(turnLeftSpeed, turnRightSpeed, 0, 1))
     sleep(0.6)
 
 
