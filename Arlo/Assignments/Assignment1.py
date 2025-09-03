@@ -17,11 +17,11 @@ speed = 64
 
 while (1):
     print(arlo.go_diff(round(40*leftPercentageSpeed), 115, 1, 1))
-    sleep(4.3)
+    sleep(4.1)
     print(arlo.stop())
     sleep(2)
     print(arlo.go_diff(127, 40, 1, 1))
-    sleep(4.6)
+    sleep(4.4)
     print(arlo.stop())
     sleep(2)
 
