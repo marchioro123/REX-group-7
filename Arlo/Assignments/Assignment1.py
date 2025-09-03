@@ -11,6 +11,7 @@ print("Running ...")
 
 sleep(1)
 
+
 leftSpeed = 69
 rightSpeed = 64
 
@@ -18,9 +19,9 @@ rightSpeed = 64
 
 while (1):
     print(arlo.go_diff(40, 127, 1, 1))
-    sleep(6)
+    sleep(4)
     print(arlo.go_diff(127, 40, 1, 1))
-    sleep(6)
+    sleep(4)
 
 
 
