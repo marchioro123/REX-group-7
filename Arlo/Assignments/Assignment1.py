@@ -11,21 +11,22 @@ print("Running ...")
 
 sleep(1)
 
-# send a go_diff command to drive forward
 leftSpeed = 69
 rightSpeed = 64
 
+
+
+while (1):
+    print(arlo.go_diff(int(0.5*leftSpeed), rightSpeed, 1, 1))
+    sleep(3)
+    print(arlo.go_diff(leftSpeed, int(0.5*rightSpeed), 1, 1))
+    sleep(3)
+
+
+
 # while (1):
-    # print(arlo.go_diff(leftSpeed, rightSpeed, 1, 1))
-    # sleep(1.8)
-print(arlo.go_diff(leftSpeed, rightSpeed, 0, 1))
-sleep(2.7)
+#     print(arlo.go_diff(leftSpeed, rightSpeed, 1, 1))
+#     sleep(1.8)
+#     print(arlo.go_diff(leftSpeed, rightSpeed, 0, 1))
+#     sleep(0.71)
 
-
-
-
-
-
-# x = arlo.read_right_wheel_encoder()
-
-# y = arlo.read_left_wheel_encoder()
