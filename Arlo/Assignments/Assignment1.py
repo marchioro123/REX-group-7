@@ -11,11 +11,11 @@ print("Running ...")
 
 sleep(1)
 
-leftPercentageSpeed = 1.081
+leftPercentageSpeed = 1.078
 speed = 64
 
 print(arlo.go_diff(round(64*leftPercentageSpeed), 64, 1, 1))
-sleep(4)
+sleep(10)
 
 
 
