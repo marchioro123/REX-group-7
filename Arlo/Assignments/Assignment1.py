@@ -19,7 +19,7 @@ while (1):
     print(arlo.go_diff(leftSpeed, rightSpeed, 1, 1))
     sleep(3)
     print(arlo.go_diff(leftSpeed, rightSpeed, 0, 1))
-    sleep(2)
+    sleep(0.6)
 
 
 
