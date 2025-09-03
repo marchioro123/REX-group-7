@@ -12,7 +12,7 @@ print("Running ...")
 sleep(1)
 
 # send a go_diff command to drive forward
-leftSpeed = 70
+leftSpeed = 68
 rightSpeed = 64
 
 while (1):
