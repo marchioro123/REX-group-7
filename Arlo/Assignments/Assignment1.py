@@ -11,7 +11,7 @@ print("Running ...")
 
 sleep(1)
 
-leftPercentageSpeed = 1.078
+leftPercentageSpeed = 1.083
 speed = 64
 
 
