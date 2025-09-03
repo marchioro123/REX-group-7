@@ -14,16 +14,12 @@ sleep(1)
 leftPercentageSpeed = 1.078
 speed = 64
 
-print(arlo.go_diff(round(100*leftPercentageSpeed), 100, 1, 1))
-sleep(10)
 
-
-
-# while (1):
-#     print(arlo.go_diff(round(40*leftPercentageSpeed), 115, 1, 1))
-#     sleep(4.4)
-#     print(arlo.go_diff(round(115*leftPercentageSpeed), 40, 1, 1))
-#     sleep(4.4)
+while (1):
+    print(arlo.go_diff(round(40*leftPercentageSpeed), 115, 1, 1))
+    sleep(4.4)
+    print(arlo.go_diff(round(115*leftPercentageSpeed), 40, 1, 1))
+    sleep(4.4)
 
  
 
@@ -32,4 +28,8 @@ sleep(10)
 #     sleep(1.8)
 #     print(arlo.go_diff(leftSpeed, rightSpeed, 0, 1))
 #     sleep(0.71)
+
+
+# print(arlo.go_diff(round(100*leftPercentageSpeed), 100, 1, 1))
+# sleep(10)
 
