@@ -17,10 +17,10 @@ rightSpeed = 64
 
 
 while (1):
-    print(arlo.go_diff(40, rightSpeed, 1, 1))
-    sleep(3)
-    print(arlo.go_diff(leftSpeed, 40, 1, 1))
-    sleep(3)
+    print(arlo.go_diff(40, 127, 1, 1))
+    sleep(6)
+    print(arlo.go_diff(127, 40, 1, 1))
+    sleep(6)
 
 
 
