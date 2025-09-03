@@ -1,6 +1,8 @@
 from time import sleep
 
-from Arlo.python import robot
+import sys
+sys.path.append("/home/pi/Desktop/REX-group-7/Arlo/python")
+import robot
 
 # Create a robot object and initialize
 arlo = robot.Robot()
