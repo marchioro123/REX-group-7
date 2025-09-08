@@ -16,8 +16,8 @@ class MotorThread(threading.Thread):
                 if self.wait_until <= time.monotonic():
                     name, *args = self.cmd_queue.get(block=False)
 
-                    if name == "turn_n_degrees_left":
-                        self._turn_n_degrees_left(float(args[0]))
+                    if name == "turn_90_degrees_left":
+                        self._turn_90_degrees_left()
                     elif name == "turn_n_degrees_right":
                         self._turn_n_degrees_right(float(args[0]))
                     elif name == "drive_n_cm_forward":
@@ -40,11 +40,11 @@ class MotorThread(threading.Thread):
         self.wait_until = 0
 
 
-    def _turn_n_degrees_left(self, degree: float):
+    def _turn_90_degrees_left(self):
         LEFTSPEED, RIGHTSPEED = 105, 100
         self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 0, 1)
 
-        duration = 1.82 * (degree * 0.9) / 360.0
+        duration = 1.82 * 90 / 360.0
         self.wait_until = time.monotonic() + duration
 
 
