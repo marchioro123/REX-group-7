@@ -94,7 +94,8 @@ class Robot(object):
            Will return -1, if error occurs."""
         cmd=str(sensorid) + '\n'
         str_val=self.send_command(cmd)
-        print("TEST:" + str_val)
+        print("TEST")
+        print(str_val)
         if len(str_val) > 0:
             return int(str_val)
         else:
