@@ -12,9 +12,8 @@ motor = MotorThread(arlo, cmd_queue)
 motor.start()
 
 for _ in range(4):
-    cmd_queue.put(("drive_n_cm_forward", 100))
+    cmd_queue.put(("drive_n_cm_forward", 0, 100))
     cmd_queue.put(("turn_n_degrees_left", 90))
 
 
-time.sleep(5)
-motor.hard_stop()
+time.sleep(9999)
