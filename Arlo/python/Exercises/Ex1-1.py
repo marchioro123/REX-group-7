@@ -18,4 +18,4 @@ for _ in range(4):
     cmd_queue.put(("turn_n_degrees_left", 90))
 
 
-time.sleep(999)
+time.sleep(5)
