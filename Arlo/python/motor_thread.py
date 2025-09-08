@@ -41,7 +41,7 @@ class MotorThread(threading.Thread):
 
 
     def _turn_n_degrees_left(self, n: float):
-        LEFTSPEED, RIGHTSPEED = 100, 100
+        LEFTSPEED, RIGHTSPEED = 105, 100
         self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 0, 1)
 
         duration = 1.74 * n / 360.0
