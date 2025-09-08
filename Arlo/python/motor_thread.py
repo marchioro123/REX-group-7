@@ -63,16 +63,16 @@ class MotorThread(threading.Thread):
             duration = 0.039 * cm
             self.wait_until = time.monotonic() + duration
         elif speed == 1:
-            LEFTSPEED, RIGHTSPEED = 68, 64
+            LEFTSPEED, RIGHTSPEED = 86, 83
             self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
 
-            duration = 0.03 * cm
+            duration = 0.02 * cm
             self.wait_until = time.monotonic() + duration
         else:
-            LEFTSPEED, RIGHTSPEED = 68, 64
+            LEFTSPEED, RIGHTSPEED = 127, 120
             self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
 
-            duration = 0.03 * cm
+            duration = 0.013 * cm
             self.wait_until = time.monotonic() + duration
     
     def _drive_circle_right(self):

@@ -11,6 +11,6 @@ cmd_queue = queue.Queue()
 motor = MotorThread(arlo, cmd_queue)
 motor.start()
 
-cmd_queue.put(("drive_n_cm_forward", 0, 100))
+cmd_queue.put(("drive_n_cm_forward", 1, 100))
 
 time.sleep(9999)
