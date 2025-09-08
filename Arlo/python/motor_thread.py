@@ -52,7 +52,7 @@ class MotorThread(threading.Thread):
         LEFTSPEED, RIGHTSPEED = 105, 100
         self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 0)
 
-        duration = 1.71 * n / 360.0
+        duration = 1.65 * n / 360.0
         self.wait_until = time.monotonic() + duration
 
     def _drive_n_cm_forward(self, speed: int, cm: float):
