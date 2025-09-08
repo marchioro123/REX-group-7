@@ -19,3 +19,4 @@ for _ in range(4):
 
 
 time.sleep(5)
+motor.hard_stop()
