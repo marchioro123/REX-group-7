@@ -41,11 +41,12 @@ class MotorThread(threading.Thread):
 
 
     def _turn_n_degrees_left(self, n: float):
-        LEFTSPEED, RIGHTSPEED = 50, 50
+        LEFTSPEED, RIGHTSPEED = 100, 100
         self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 0, 1)
 
         duration = 2.71 * n / 360.0
         self.wait_until = time.monotonic() + duration
+
 
     def _turn_n_degrees_right(self, n: float):
         LEFTSPEED, RIGHTSPEED = 60, 50
@@ -54,11 +55,11 @@ class MotorThread(threading.Thread):
         duration = 3 * n / 360.0
         self.wait_until = time.monotonic() + duration
 
-    def _drive_n_cm_forward(self, n: float):
+    def _drive_n_cm_forward(self, speed: int, cm: float):
         LEFTSPEED, RIGHTSPEED = 68, 64
         self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
 
-        duration = 0.03 * n
+        duration = 0.03 * cm
         self.wait_until = time.monotonic() + duration
 
     def _drive_circle_right(self):
