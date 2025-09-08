@@ -21,7 +21,7 @@ class MotorThread(threading.Thread):
                     elif name == "turn_n_degrees_right":
                         self._turn_n_degrees_right(float(args[0]))
                     elif name == "drive_n_cm_forward":
-                        self._drive_n_cm_forward(float(args[0]))
+                        self._drive_n_cm_forward(*args)
 
             except queue.Empty:
                 if self.wait_until != 0:
@@ -56,12 +56,25 @@ class MotorThread(threading.Thread):
         self.wait_until = time.monotonic() + duration
 
     def _drive_n_cm_forward(self, speed: int, cm: float):
-        LEFTSPEED, RIGHTSPEED = 68, 64
-        self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
+        if speed == 0:
+            LEFTSPEED, RIGHTSPEED = 44, 40
+            self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
 
-        duration = 0.03 * cm
-        self.wait_until = time.monotonic() + duration
+            duration = 0.03 * cm
+            self.wait_until = time.monotonic() + duration
+        elif speed == 1:
+            LEFTSPEED, RIGHTSPEED = 68, 64
+            self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
 
+            duration = 0.03 * cm
+            self.wait_until = time.monotonic() + duration
+        else:
+            LEFTSPEED, RIGHTSPEED = 68, 64
+            self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
+
+            duration = 0.03 * cm
+            self.wait_until = time.monotonic() + duration
+    
     def _drive_circle_right(self):
         LEFTSPEED, RIGHTSPEED = 127, 40
         self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
