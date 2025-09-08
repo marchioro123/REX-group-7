@@ -40,11 +40,11 @@ class MotorThread(threading.Thread):
         self.wait_until = 0
 
 
-    def _turn_n_degrees_left(self, n: float):
+    def _turn_n_degrees_left(self, degree: float):
         LEFTSPEED, RIGHTSPEED = 105, 100
         self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 0, 1)
 
-        duration = 1.71 * n / 360.0
+        duration = 1.71 * (degree - 5) / 360.0
         self.wait_until = time.monotonic() + duration
 
 
