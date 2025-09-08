@@ -25,3 +25,5 @@ while True:
             cmd_queue.put(("turn_n_degrees_right", 90))
         else:
             cmd_queue.put(("turn_n_degrees_right", 180))
+
+    time.sleep(0.01)
