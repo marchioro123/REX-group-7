@@ -20,7 +20,6 @@ def move_straight(l, speed = "slow"):
         duration = l*0.0105
 
     wait_till = time() + duration
-    check_sensors = True
     return wait_till
 
 def rotate_left(alpha):
@@ -29,7 +28,6 @@ def rotate_left(alpha):
 
     print(arlo.go_diff(105, 100, 0, 1))
     wait_till = time() + duration
-    check_sensors = False
     return wait_till
 
 def rotate_right(alpha):
@@ -50,6 +48,10 @@ wait_till = time()
 check_sensors = True
 while que:
     next_command, parameter = que.popleft()
+    if next_command == move_straight:
+        check_sensors = True
+    else:
+        check_sensors = False
     wait_till = next_command(parameter)
     while check_sensors == True and time() < wait_till:
         front_dist = arlo.read_front_ping_sensor()
