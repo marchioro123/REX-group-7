@@ -20,7 +20,7 @@ cmd_queue.put(("drive_n_cm_forward", 0, 10000))
 while True:
     if motor.is_busy():
         print("IS BUSY")
-        time.sleep(0.01)
+        time.sleep(0.1)
         continue
 
     with SERIAL_LOCK:
@@ -42,4 +42,4 @@ while True:
             cmd_queue.put(("turn_90_degrees", 1, True))
         cmd_queue.put(("drive_n_cm_forward", 0, 10000))
 
-    time.sleep(0.01)
+    time.sleep(0.1)
