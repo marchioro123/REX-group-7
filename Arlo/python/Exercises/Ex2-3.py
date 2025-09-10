@@ -51,7 +51,7 @@ def sir_norm(k, rng=np.random.default_rng()):
     samples = rng.normal(loc=5, scale=2, size=k)  # N(5, 4)
 
     # 2. Compute unnormalized weights
-    weights = p(samples)
+    weights = p(samples) / norm.pdf(samples, loc=5, scale=2)
 
     # 3. Normalize
     weightsN = weights / np.sum(weights)
