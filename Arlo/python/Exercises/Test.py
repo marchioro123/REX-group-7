@@ -11,6 +11,7 @@ cmd_queue = queue.Queue()
 motor = MotorThread(arlo, cmd_queue)
 motor.start()
 
-cmd_queue.put(("drive_n_cm_forward", 2, 100))
 
-time.sleep(9999)
+front_dist = arlo.read_front_ping_sensor()
+
+time.sleep(0.01)

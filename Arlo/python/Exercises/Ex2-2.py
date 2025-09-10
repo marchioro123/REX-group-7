@@ -20,5 +20,10 @@ std_dev = statistics.stdev(measurements)
 print(f"Measurements: {measurements} | stddev: {std_dev:.2f}")
 
 
-
+# Wall
+# 20cm
+# 50cm
+# 100cm
+# 180cm
+# 250cm
 
