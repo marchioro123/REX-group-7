@@ -11,7 +11,7 @@ arlo = robot.Robot()
 cmd_queue = queue.Queue()
 result_queue = queue.Queue()
 
-motor = MotorThread(arlo, cmd_queue)
+motor = MotorThread(arlo, cmd_queue, result_queue)
 motor.start()
 
 cmd_queue.put(("drive_n_cm_forward", 0, 10000))
