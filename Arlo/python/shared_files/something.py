@@ -53,12 +53,15 @@ while que:
     else:
         check_sensors = False
     wait_till = next_command(parameter)
-    while check_sensors == True and time() < wait_till:
-        front_dist = arlo.read_front_ping_sensor()
-        if front_dist != -1 and front_dist < 500:
-            print(front_dist)
-            que.extend([(rotate_left, 90)])
-            break
+    while time() < wait_till:
+        if check_sensors == True:
+            front_dist = arlo.read_front_ping_sensor()
+            if front_dist != -1 and front_dist < 500:
+                print(front_dist)
+                que.extend([(rotate_left, 90)])
+                break
+            else:
+                sleep(0.01)
         else:
             sleep(0.01)
     if not que:
