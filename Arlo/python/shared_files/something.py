@@ -1,5 +1,7 @@
 from time import sleep, time
 from collections import deque
+import sys
+sys.path.append("..")
 import robot
 
 
