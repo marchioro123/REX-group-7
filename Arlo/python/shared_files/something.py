@@ -11,31 +11,31 @@ arlo = robot.Robot()
 def move_straight(l, speed = "medium"):
     if speed == "slow":
         print(arlo.go_diff(41, 40, 1, 1))
-        time = l*0.039
+        duration = l*0.039
     if speed == "medium":
         print(arlo.go_diff(86, 83, 1, 1))
-        time = l*0.0162
+        duration = l*0.0162
     if speed == "fast":
         print(arlo.go_diff(127, 115, 1, 1))
-        time = l*0.0105
+        duration = l*0.0105
 
-    wait_till = time() + time
+    wait_till = time() + duration
     return wait_till
 
 def rotate_left(alpha):
     # computes time to rotate, assuming 90 degrees = 0.71 second
-    time = 0.37/90*alpha
+    duration = 0.37/90*alpha
 
     print(arlo.go_diff(105, 100, 0, 1))
-    wait_till = time() + time
+    wait_till = time() + duration
     return wait_till
 
 def rotate_right(alpha):
     # computes time to rotate, assuming 90 degrees = 0.71 second
-    time = alpha/90*0.73
+    duration = alpha/90*0.73
 
     print(arlo.go_diff(68, 64, 0, 1))
-    wait_till = time() + time
+    wait_till = time() + duration
     return wait_till
 
 que = deque()
