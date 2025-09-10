@@ -43,9 +43,6 @@ class MotorThread(threading.Thread):
         self.arlo.stop()
 
     def _turn_90_degrees(self, direction: int, uninterruptible = False):
-        if self.uninterruptible:
-            return
-
         if direction == 0:
             LEFTSPEED, RIGHTSPEED = 105, 100
             self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 0, 1)
@@ -58,10 +55,7 @@ class MotorThread(threading.Thread):
         self.uninterruptible = uninterruptible
         self.wait_until = time.monotonic() + duration
 
-    def _drive_n_cm_forward(self, speed: int, cm: float):
-        if self.uninterruptible:
-            return
-
+    def _drive_n_cm_forward(self, speed: int, cm: float, uninterruptible = False):
         if speed == 0:
             LEFTSPEED, RIGHTSPEED = 41, 40
             self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
@@ -75,4 +69,5 @@ class MotorThread(threading.Thread):
             self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
             duration = 0.0105 * cm
 
+        self.uninterruptible = uninterruptible
         self.wait_until = time.monotonic() + duration

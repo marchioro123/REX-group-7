@@ -13,19 +13,20 @@ motor.start()
 
 cmd_queue.put(("drive_n_cm_forward", 0, 10000))
 while True:
-    front_dist = arlo.read_front_ping_sensor()
-    if front_dist != -1 and front_dist < 500:
-        motor.hard_stop()
+    if cmd_queue.empty():
+        front_dist = arlo.read_front_ping_sensor()
+        if front_dist != -1 and front_dist < 500:
+            motor.hard_stop()
 
-        left_dist = arlo.read_left_ping_sensor()
-        right_dist = arlo.read_right_ping_sensor()
+            left_dist = arlo.read_left_ping_sensor()
+            right_dist = arlo.read_right_ping_sensor()
 
-        if left_dist != -1 and left_dist < 500:
-            cmd_queue.put(("turn_90_degrees", 0, True))
-        elif right_dist != -1 and right_dist < 500:
-            cmd_queue.put(("turn_90_degrees", 1, True))
-        else:
-            cmd_queue.put(("turn_90_degrees", 1, True))
-        cmd_queue.put(("drive_n_cm_forward", 0, 10000))
+            if left_dist != -1 and left_dist < 500:
+                cmd_queue.put(("turn_90_degrees", 0))
+            elif right_dist != -1 and right_dist < 500:
+                cmd_queue.put(("turn_90_degrees", 1))
+            else:
+                cmd_queue.put(("turn_90_degrees", 1))
+            cmd_queue.put(("drive_n_cm_forward", 0, 10000))
 
     time.sleep(0.01)
