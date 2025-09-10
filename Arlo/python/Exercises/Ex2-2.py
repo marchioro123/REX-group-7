@@ -1,6 +1,5 @@
 import time
 import statistics
-#import matplotlib.pyplot as plt
 import sys
 sys.path.append("..")
 import robot
@@ -21,10 +20,21 @@ std_dev = statistics.stdev(measurements)
 print(f"Measurements: {measurements} | stddev: {std_dev:.2f}")
 
 
-# Wall
-# 20cm
-# 50cm
-# 100cm
-# 180cm
-# 250cm
 
+#Plots
+# import matplotlib.pyplot as plt
+# distances = [300, 250, 180, 100, 50, 20, 10, 5]
+# stddevs_table = [1.64, 0.45, 1.64, 0.55, 0.00, 0.45, 0.55, 0.45]
+# stddevs_cardboard = [0.45, 3.13, 0.45, 0.55, 0.84, 0.55, 0.55, 1.10]
+
+# distances_sponge = [50, 20, 10, 5]
+# stddevs_sponge = [1.34, 0.55, 0.45, 0.55]
+
+# plt.plot(distances, stddevs_table, label="Table")
+# plt.plot(distances, stddevs_cardboard, label="Cardboard")
+# plt.plot(distances_sponge, stddevs_sponge, label="Sponge")
+# plt.xlabel("Distance (cm)")
+# plt.ylabel("Standard Deviation")
+# plt.grid(True)
+# plt.legend()
+# plt.show()
