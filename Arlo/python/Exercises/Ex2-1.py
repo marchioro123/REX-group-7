@@ -17,8 +17,6 @@ motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
 motor.start()
 
 cmd_queue.put(("drive_n_cm_forward", 0, 10000))
-
-
 while True:
     if motor.is_busy():
         time.sleep(0.05)
@@ -31,9 +29,9 @@ while True:
     if should_stop(front_dist, left_dist, right_dist):
         motor.hard_stop()
         if left_dist != -1 and left_dist < 500:
-            cmd_queue.put(("turn_90_degrees", 0, True))
-        else:
             cmd_queue.put(("turn_90_degrees", 1, True))
+        else:
+            cmd_queue.put(("turn_90_degrees", 0, True))
         cmd_queue.put(("drive_n_cm_forward", 0, 10000))
 
     time.sleep(0.05)
