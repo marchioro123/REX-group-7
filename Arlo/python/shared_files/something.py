@@ -51,6 +51,7 @@ while que:
     while time() < wait_till:
         front_dist = arlo.read_front_ping_sensor()
         if front_dist != -1 and front_dist < 500:
+            print(front_dist)
             arlo.stop()
             input()
         sleep(0.01)
