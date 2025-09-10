@@ -39,7 +39,9 @@ def rotate_right(alpha):
     return wait_till
 
 que = deque()
-que.extend([(move_straight, 50), (rotate_left, 90)]*4)
+#que.extend([(move_straight, 50), (rotate_left, 90)]*4)
+
+que.extend((move_straight, 1000))
 
 
 wait_till = time()
@@ -47,6 +49,9 @@ while que:
     next_command, parameter = que.popleft()
     wait_till = next_command(parameter)
     while time() < wait_till:
-        #just checking sensors
+        front_dist = arlo.read_front_ping_sensor()
+        if front_dist != -1 and front_dist < 500:
+            arlo.stop()
+            input()
         sleep(0.01)
 
