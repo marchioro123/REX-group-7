@@ -5,7 +5,7 @@ import math
 
 
 def density_function(x,u,s):
-    return (1/((2*math.pi)**(1/2)*s) * math.e**((-1/2)*(x-u)**2)/(s^2))
+    return (1/((2*math.pi)**(1/2)*s) * math.e**((-1/2)*(x-u)**2)/(s**2))
 
 # Define target density p(x) (mixture of Gaussian model)
 def p(x):
