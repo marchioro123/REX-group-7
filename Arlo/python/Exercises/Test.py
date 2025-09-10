@@ -13,5 +13,6 @@ motor.start()
 
 
 front_dist = arlo.read_front_ping_sensor()
+cmd_queue.put(("turn_90_degrees", 0))
 
-time.sleep(0.01)
+time.sleep(9999)
