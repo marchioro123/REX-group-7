@@ -57,11 +57,8 @@ wait_till = time()
 check_sensors = True
 while que:
     next_command, parameter = que.popleft()
-    if next_command == move_straight:
-        check_sensors = True
-    else:
-        check_sensors = False
     wait_till = next_command(parameter)
+    print("wait_till =", wait_till)
     while time() < wait_till:
         front_dist = arlo.read_front_ping_sensor()
         front_is_close = is_too_close(front_dist, 500)
