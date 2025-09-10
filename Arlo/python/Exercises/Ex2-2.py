@@ -1,6 +1,6 @@
 import time
 import statistics
-import matplotlib.pyplot as plt
+#import matplotlib.pyplot as plt
 import sys
 sys.path.append("..")
 import robot
@@ -24,6 +24,6 @@ print(f"Measurements: {measurements} | stddev: {std_dev:.2f}")
 # 20cm
 # 50cm
 # 100cm
-# 150cm
-# 200cm
+# 180cm
+# 250cm
 
