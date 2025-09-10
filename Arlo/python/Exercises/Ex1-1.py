@@ -13,7 +13,7 @@ motor.start()
 
 for _ in range(4):
     cmd_queue.put(("drive_n_cm_forward", 0, 100))
-    cmd_queue.put(("turn_90_degrees_left", 0))
+    cmd_queue.put(("turn_90_degrees", 0))
 
 
 time.sleep(9999)

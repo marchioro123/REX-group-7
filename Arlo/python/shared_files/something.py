@@ -23,7 +23,7 @@ def move_straight(l, speed = "slow"):
     return wait_till
 
 def rotate_left(alpha):
-    # computes time to rotate, assuming 90 degrees = 0.71 second
+    # computes time to rotate, assuming 90 degrees = 0.37 second
     duration = 0.37/90*alpha
 
     print(arlo.go_diff(105, 100, 0, 1))
@@ -31,7 +31,7 @@ def rotate_left(alpha):
     return wait_till
 
 def rotate_right(alpha):
-    # computes time to rotate, assuming 90 degrees = 0.71 second
+    # computes time to rotate, assuming 90 degrees = 0.73 second
     duration = alpha/90*0.73
 
     print(arlo.go_diff(68, 64, 0, 1))
@@ -39,7 +39,7 @@ def rotate_right(alpha):
     return wait_till
 
 que = deque()
-que.extend([(move_straight, 10), (rotate_left, 90)]*4)
+que.extend([(move_straight, 50), (rotate_left, 90)]*4)
 
 
 wait_till = time()
