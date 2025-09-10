@@ -2,9 +2,9 @@ import time
 import queue
 import sys
 import threading
-from utils import should_stop
 sys.path.append("..")
 import robot
+from utils import should_stop
 from motor_thread import MotorThread
 
 SERIAL_LOCK = threading.Lock()
