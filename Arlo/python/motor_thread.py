@@ -3,10 +3,11 @@ import queue
 import time
 
 class MotorThread(threading.Thread):
-    def __init__(self, arlo, cmd_queue: queue.Queue):
+    def __init__(self, arlo, cmd_queue: queue.Queue, result_queue: queue.Queue):
         super().__init__(daemon=True)
         self.arlo = arlo
         self.cmd_queue = cmd_queue
+        self.result_queue = result_queue
         self.wait_until = 0
         self.uninterruptible = False
 
@@ -18,8 +19,24 @@ class MotorThread(threading.Thread):
 
                     if name == "turn_90_degrees":
                         self._turn_90_degrees(*args)
+
                     elif name == "drive_n_cm_forward":
                         self._drive_n_cm_forward(*args)
+
+                    elif name == "read_front_ping_sensor":
+                        dist = self.arlo.read_front_ping_sensor()
+                        self.result_queue.put(("front_ping", dist))
+
+                    elif name == "read_left_ping_sensor":
+                        dist = self.arlo.read_left_ping_sensor()
+                        self.result_queue.put(("left_ping", dist))
+
+                    elif name == "read_right_ping_sensor":
+                        dist = self.arlo.read_right_ping_sensor()
+                        self.result_queue.put(("right_ping", dist))
+                        
+                    elif name == "hard_stop":
+                        self.hard_stop()
 
             except queue.Empty:
                 if self.wait_until != 0:
