@@ -24,7 +24,7 @@ def move_straight(l, speed = "slow"):
 
 def rotate_left(alpha):
     # computes time to rotate, assuming 90 degrees = 0.37 second
-    duration = 0.37/90*alpha
+    duration = 0.37
 
     print(arlo.go_diff(105, 100, 0, 1))
     wait_till = time() + duration
