@@ -12,6 +12,7 @@ motor = MotorThread(arlo, cmd_queue)
 motor.start()
 
 cmd_queue.put(("drive_n_cm_forward", 0, 10000))
+time.sleep(0.01)
 while True:
     if cmd_queue.empty():
         front_dist = arlo.read_front_ping_sensor()
@@ -30,6 +31,8 @@ while True:
                 cmd_queue.put(("turn_90_degrees", 1))
             else:
                 cmd_queue.put(("turn_90_degrees", 1))
+            time.sleep(0.01)
             cmd_queue.put(("drive_n_cm_forward", 0, 10000))
+            time.sleep(0.01)
 
     time.sleep(0.01)
