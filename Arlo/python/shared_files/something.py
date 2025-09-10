@@ -22,21 +22,30 @@ def move_straight(l, speed = "slow"):
     wait_till = time() + duration
     return wait_till
 
-def rotate_left(alpha):
+def rotate_left(alpha, sleep = False):
     # computes time to rotate, assuming 90 degrees = 0.37 second
-    duration = 0.37
+    duration = 0.37/90*alpha
 
     print(arlo.go_diff(105, 100, 0, 1))
-    wait_till = time() + duration
+    if sleep == True:
+        sleep(duration)
+    else:
+        wait_till = time() + duration
     return wait_till
 
-def rotate_right(alpha):
-    # computes time to rotate, assuming 90 degrees = 0.73 second
-    duration = alpha/90*0.73
+def rotate_right(alpha, sleep = False):
+    # !TODO check constant
+    duration = 0.37/90*alpha
 
-    print(arlo.go_diff(68, 64, 0, 1))
-    wait_till = time() + duration
+    print(arlo.go_diff(105, 100, 0, 1))
+    if sleep == True:
+        sleep(duration)
+    else:
+        wait_till = time() + duration
     return wait_till
+
+def is_too_close(distance, sensitivity):
+    return (distance != -1 and distance < sensitivity)
 
 que = deque()
 #que.extend([(move_straight, 50), (rotate_left, 90)]*4)
@@ -54,16 +63,38 @@ while que:
         check_sensors = False
     wait_till = next_command(parameter)
     while time() < wait_till:
-        if check_sensors == True:
+        front_dist = arlo.read_front_ping_sensor()
+        front_is_close = is_too_close(front_dist, 500)
+        left_dist = arlo.read_left_ping_sensor()
+        left_is_close = is_too_close(left_dist, 500)
+        left_is_very_close = is_too_close(left_dist, 50)
+        right_dist = arlo.read_right_ping_sensor()
+        right_is_close = is_too_close(right_dist, 500)
+        right_is_very_close = is_too_close(right_dist, 50)
+        while (front_is_close and left_is_very_close and right_is_very_close):
+            if front_is_close:
+                if left_is_close and not right_is_close:
+                    rotate_right(60, True)
+                elif not left_is_close and right_is_close:
+                    rotate_left(60, True)
+                else:
+                    rotate_left(120, True)
+            elif left_is_very_close and right_is_very_close:
+                rotate_left(120, True)
+            elif left_is_very_close:
+                rotate_right(60, True)
+            elif right_is_very_close:
+                rotate_left(60, True)
             front_dist = arlo.read_front_ping_sensor()
-            if front_dist != -1 and front_dist < 500:
-                print(front_dist)
-                que.extend([(rotate_left, 90)])
-                break
-            else:
-                sleep(0.01)
+            front_is_close = is_too_close(front_dist, 500)
+            left_dist = arlo.read_left_ping_sensor()
+            left_is_close = is_too_close(left_dist, 500)
+            left_is_very_close = is_too_close(left_dist, 50)
+            right_dist = arlo.read_right_ping_sensor()
+            right_is_close = is_too_close(right_dist, 500)
+            right_is_very_close = is_too_close(right_dist, 50)
         else:
-            sleep(0.01)
+            sleep(0.05)
     if not que:
         que.extend([(move_straight, 100)])
 
