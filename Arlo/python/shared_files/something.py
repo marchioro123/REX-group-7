@@ -41,7 +41,7 @@ def rotate_right(alpha):
 que = deque()
 #que.extend([(move_straight, 50), (rotate_left, 90)]*4)
 
-que.extend([(move_straight, 50)])
+que.extend([(move_straight, 500000)])
 
 
 wait_till = time()
