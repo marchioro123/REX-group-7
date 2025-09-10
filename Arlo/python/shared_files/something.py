@@ -71,7 +71,7 @@ while que:
         right_dist = arlo.read_right_ping_sensor()
         right_is_close = is_too_close(right_dist, 500)
         right_is_very_close = is_too_close(right_dist, 50)
-        while (front_is_close and left_is_very_close and right_is_very_close):
+        while (front_is_close or left_is_very_close or right_is_very_close):
             print("turning!")
             print(front_dist, left_dist, right_dist)
             if front_is_close:
