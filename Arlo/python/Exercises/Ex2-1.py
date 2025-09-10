@@ -19,15 +19,12 @@ cmd_queue.put(("drive_n_cm_forward", 0, 10000))
 
 while True:
     if motor.is_busy():
-        print("IS BUSY")
         time.sleep(0.01)
         continue
 
     with SERIAL_LOCK:
         front_dist = arlo.read_front_ping_sensor()
-        print("HERE")
     if front_dist != -1 and front_dist < 500:
-        print("STOP")
         motor.hard_stop()
         with SERIAL_LOCK:
             left_dist = arlo.read_left_ping_sensor()
