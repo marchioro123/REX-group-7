@@ -8,7 +8,7 @@ import robot
 arlo = robot.Robot()
 
 
-def move_straight(l, speed = "medium"):
+def move_straight(l, speed = "slow"):
     if speed == "slow":
         print(arlo.go_diff(41, 40, 1, 1))
         duration = l*0.039
@@ -39,7 +39,7 @@ def rotate_right(alpha):
     return wait_till
 
 que = deque()
-que.extend([(move_straight, 100), (rotate_left, 90)]*4)
+que.extend([(move_straight, 10), (rotate_left, 90)]*4)
 
 
 wait_till = time()
