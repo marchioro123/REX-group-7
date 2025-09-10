@@ -7,6 +7,7 @@ import math
 def density_function(x,u,s):
     return (1/((2*math.pi)**(1/2)*s) * math.e**((-1/2)*(x-u)**2)/(s**2))
 
+
 # Define target density p(x) (mixture of Gaussian model)
 def p(x):
     return (0.3 * norm.pdf(x, loc=2.0, scale=1.0) +
@@ -39,11 +40,20 @@ def sir_norm(k, rng=np.random.default_rng()):
 
     # 2. Compute unnormalized weights
     what_this = norm.pdf(samples, loc=5, scale=2)
-    print(type(what_this))
+    
+    #print(np.array([density_function(x,5,2) for x in samples]))
+    normalizing_weights = np.array([density_function(x,5,2) for x in samples])
+    normalizing_weights = normalizing_weights / np.sum(normalizing_weights)
+    print("array start", p(samples), "array_end")
+    print("normalizing_weights")
+    print(normalizing_weights)
+    print(np.sum(normalizing_weights))
+    print("what this")
     print(what_this)
     print("")
-    print(np.array([density_function(x,5,2) for x in samples]))
-    weights = p(samples) / np.array([density_function(x,5,2) for x in samples])
+    weights = p(samples) / normalizing_weights
+    print(weights)
+
 
     # 3. Normalize
     weightsN = weights / np.sum(weights)
