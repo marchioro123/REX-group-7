@@ -22,23 +22,23 @@ def move_straight(l, speed = "slow"):
     wait_till = time() + duration
     return wait_till
 
-def rotate_left(alpha, sleep = False):
+def rotate_left(alpha, should_sleep = False):
     # computes time to rotate, assuming 90 degrees = 0.37 second
     duration = 0.37/90*alpha
 
     print(arlo.go_diff(105, 100, 0, 1))
-    if sleep == True:
+    if should_sleep == True:
         sleep(duration)
     else:
         wait_till = time() + duration
     return wait_till
 
-def rotate_right(alpha, sleep = False):
+def rotate_right(alpha, should_sleep = False):
     # !TODO check constant
     duration = 0.37/90*alpha
 
     print(arlo.go_diff(105, 100, 0, 1))
-    if sleep == True:
+    if should_sleep == True:
         sleep(duration)
     else:
         wait_till = time() + duration
