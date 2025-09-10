@@ -2,6 +2,7 @@ import time
 import queue
 import sys
 import threading
+from utils import should_stop
 sys.path.append("..")
 import robot
 from motor_thread import MotorThread
@@ -17,26 +18,22 @@ motor.start()
 
 cmd_queue.put(("drive_n_cm_forward", 0, 10000))
 
+
 while True:
     if motor.is_busy():
-        time.sleep(0.01)
+        time.sleep(0.05)
         continue
 
     with SERIAL_LOCK:
         front_dist = arlo.read_front_ping_sensor()
-    if front_dist != -1 and front_dist < 500:
+        left_dist = arlo.read_left_ping_sensor()
+        right_dist = arlo.read_right_ping_sensor()
+    if should_stop(front_dist, left_dist, right_dist):
         motor.hard_stop()
-        with SERIAL_LOCK:
-            left_dist = arlo.read_left_ping_sensor()
-        with SERIAL_LOCK:
-            right_dist = arlo.read_right_ping_sensor()
-
         if left_dist != -1 and left_dist < 500:
             cmd_queue.put(("turn_90_degrees", 0, True))
-        elif right_dist != -1 and right_dist < 500:
-            cmd_queue.put(("turn_90_degrees", 1, True))
         else:
             cmd_queue.put(("turn_90_degrees", 1, True))
         cmd_queue.put(("drive_n_cm_forward", 0, 10000))
 
-    time.sleep(0.01)
+    time.sleep(0.05)
