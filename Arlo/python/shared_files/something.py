@@ -52,8 +52,10 @@ while que:
         front_dist = arlo.read_front_ping_sensor()
         if front_dist != -1 and front_dist < 500:
             print(front_dist)
-            rotate_left(90)
-            input()
-        sleep(0.01)
+            que.extend([(rotate_left, 90)])
+            continue
+        else:
+            sleep(0.01)
+    
     que.extend([(move_straight, 100)])
 
