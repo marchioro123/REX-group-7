@@ -24,6 +24,6 @@ print(f"Measurements: {measurements} | stddev: {std_dev:.2f}")
 # 20cm
 # 50cm
 # 100cm
-# 180cm
-# 250cm
+# 150cm
+# 200cm
 
