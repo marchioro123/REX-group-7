@@ -34,7 +34,7 @@ class MotorThread(threading.Thread):
             time.sleep(0.01)
 
     def is_busy(self) -> bool:
-        return not self.uninterruptible
+        return self.uninterruptible
     
     def hard_stop(self):
         if self.uninterruptible:
