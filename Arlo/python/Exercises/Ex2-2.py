@@ -11,6 +11,7 @@ def get_measurements(count=5, delay=3):
     measurements = []
     for _ in range(count):
         front_dist = arlo.read_front_ping_sensor()
+        print(f"Measurement: {front_dist}")
         measurements.append(front_dist)
         time.sleep(delay)
     return measurements
