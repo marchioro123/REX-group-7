@@ -32,4 +32,4 @@ while True:
         motor.hard_stop()
         cmd_queue.put(("drive_n_cm_forward", 0, 10000))
 
-    time.sleep(0.05)
+    time.sleep(0.01)
