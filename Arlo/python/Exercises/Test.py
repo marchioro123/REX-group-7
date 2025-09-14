@@ -1,35 +1,57 @@
-import time
-import queue
-import sys
-import threading
-sys.path.append("..")
-import robot
-from utils import should_stop
-from motor_thread import MotorThread
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm
 
-SERIAL_LOCK = threading.Lock()
+def p(x):
+    return (0.3 * norm.pdf(x, loc=2.0, scale=1.0) +
+            0.4 * norm.pdf(x, loc=5.0, scale=2.0) +
+            0.3 * norm.pdf(x, loc=9.0, scale=1.0))
 
-arlo = robot.Robot()
-queue_empty = True
+# SIR uniform distribution
+def sir_uniform(k, rng=np.random.default_rng()):
+    samples = rng.uniform(0, 15, size=k)
+    weights = p(samples)
+    weightsN = weights / np.sum(weights)
+    return rng.choice(samples, size=k, replace=True, p=weightsN)
 
-cmd_queue = queue.Queue()
-motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
-motor.start()
 
-while True:
-    with SERIAL_LOCK:
-        front_dist = arlo.read_front_ping_sensor()
-        left_dist = arlo.read_left_ping_sensor()
-        right_dist = arlo.read_right_ping_sensor()
-    if should_stop(front_dist, left_dist, right_dist):
-        if not motor.is_turning():
-            motor.hard_stop()
-            if left_dist != -1 and left_dist < 500:
-                cmd_queue.put(("turn", 1, 999))
-            else:
-                cmd_queue.put(("turn", 0, 999))
-    elif not motor.is_driving_forward():
-        motor.hard_stop()
-        cmd_queue.put(("drive_n_cm_forward", 0, 10000))
+# SIR normal distribution - N(5,4)
+def sir_normal(k, rng=np.random.default_rng()):
+    samples = rng.normal(loc=5, scale=2, size=k)
+    weights = p(samples) / norm.pdf(samples, loc=5, scale=2)
+    weightsN = weights / np.sum(weights)
+    return rng.choice(samples, size=k, replace=True, p=weightsN)
 
-    time.sleep(0.05)
+
+# Plot results for k = 20, 100, 1000, 10000
+ks = [20, 100, 1000, 10000]
+x = np.linspace(-2, 15, 1000)
+px = p(x)
+
+for k in ks:
+    # Generate resampled data
+    resampled_uniform = sir_uniform(k)
+    resampled_normal = sir_normal(k)
+    
+    # ---- Plot for uniform proposal ----
+    plt.figure(figsize=(7, 4))
+    plt.hist(resampled_uniform, bins=50, density=True, alpha=0.6, label=f"SIR resampled uniform (k={k})")
+    plt.plot(x, px, "r-", lw=2, label="True distribution p(x)")
+    plt.xlabel("x")
+    plt.ylabel("Probability Density")
+    plt.title(f"SIR with uniform proposal, k={k}")
+    plt.legend()
+    plt.show()
+    
+    # ---- Plot for normal proposal ----
+    plt.figure(figsize=(7, 4))
+    plt.hist(resampled_normal, color="orange", bins=50, density=True, alpha=0.6, label=f"SIR resampled normal (k={k})")
+    plt.plot(x, px, "r-", lw=2, label="True distribution p(x)")
+    plt.xlabel("x")
+    plt.ylabel("Probability Density")
+    plt.title(f"SIR with normal proposal, k={k}")
+    plt.legend()
+    plt.show()
+
+
+
