@@ -50,47 +50,6 @@ def sir_norm(k, rng=np.random.default_rng()):
     resampled = rng.choice(samples, size=k, replace=True, p=weightsN)
     return resampled
 
-"""
-# SIR normal distribution with N(5,4)
-def sir_norm(k, rng=np.random.default_rng()):
-
-    # 1. Proposal: normal instead of uniform 
-    samples = rng.normal(loc=5, scale=2, size=k)  # N(5, 4)
-    print("samples:", samples)
-    print("")
-   
-    # 2. Compute unnormalized weights
-    build_in_function = norm.pdf(samples, loc=5, scale=2)
-    build_in_weights = p(samples) / build_in_function
-    print("")
-    print("build in function:", build_in_function)
-    print ("")
-    print("build in weights:", build_in_weights)
-    print("")
-
-    #print(np.array([density_function(x,5,2) for x in samples]))
-    normalizing_weights = np.array([density_function(x,5,2) for x in samples])
-    normalizing_weights = normalizing_weights #/ np.sum(normalizing_weights)
-    #print("array start", p(samples), "array_end")
-    #print("normalizing_weights")
-    #print(normalizing_weights)
-    #print(np.sum(normalizing_weights))
-    #print("build in function")
-    print(build_in_function)
-    print("")
-    weights = p(samples) / normalizing_weights
-    print(weights)
-    print("")
-
-
-    # 3. Normalize
-    weightsN = weights / np.sum(weights)
-
-    # 4. Resample with replacement
-    resampled = rng.choice(samples, size=k, replace=True, p=weightsN)
-    return resampled
-
-"""
 
 # Plot results for k = 20, 100, 1000
 ks = [20, 100, 1000, 10000]
@@ -103,46 +62,10 @@ for k in ks:
     resampled2 = sir_norm(k)
     plt.figure(figsize=(7,4))
     plt.hist(resampled1, bins=30, density=True, alpha=0.6, label=f"SIR resampled uniform (k={k})")
-    plt.hist(resampled2, bins=30, density=True, alpha=0.6, label=f"SIR resampled normalized (k={k})")
+    plt.hist(resampled2, bins=30, density=True, alpha=0.6, label=f"SIR resampled normalized (k={k})", color="orange")
     plt.plot(x, px, "r-", lw=2, label="True distribution p(x)")
     plt.xlabel("x")
     plt.ylabel("Density")
     plt.title(f"SIR with uniform and normalized proposal, k={k}")
     plt.legend()
     plt.show()
-
-
-""""
-# SIR normal distribution with N(5,4)
-def sir_norm(k, rng=np.random.default_rng()):
-
-    # 1. Proposal: normal instead of uniform 
-    samples = rng.normal(loc=5, scale=2, size=k)  # N(5, 4)
-
-    # 2. Compute unnormalized weights
-    weights = p(samples) / norm.pdf(samples, loc=5, scale=2)
-
-    # 3. Normalize
-    weightsN = weights / np.sum(weights)
-
-    # 4. Resample with replacement
-    resampled = rng.choice(samples, size=k, replace=True, p=weightsN)
-    return resampled
-
-# Plot results for k = 20, 100, 1000
-ks = [20, 100, 1000]
-x = np.linspace(-2, 15, 1000)
-px = p(x)
-
-for k in ks:
-    # Histogram as probability density normal distrubution
-    resampled = sir_norm(k)
-    plt.figure(figsize=(7,4))
-    plt.hist(resampled, bins=30, density=True, alpha=0.6, label=f"SIR resampled (k={k})")
-    plt.plot(x, px, "r-", lw=2, label="True distribution p(x)")
-    plt.xlabel("x")
-    plt.ylabel("Density")
-    plt.title(f"SIR with normal proposal, k={k}")
-    plt.legend()
-    plt.show()
-"""
