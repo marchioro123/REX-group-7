@@ -10,7 +10,7 @@ from motor_thread import MotorThread
 SERIAL_LOCK = threading.Lock()
 
 arlo = robot.Robot()
-queue_empty = True
+# queue_empty = True
 
 cmd_queue = queue.Queue()
 motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
