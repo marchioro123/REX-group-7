@@ -1,7 +1,7 @@
 import sys
 from time import sleep
 
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 sys.path.append("..")
 import robot
