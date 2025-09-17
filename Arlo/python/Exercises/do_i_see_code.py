@@ -15,24 +15,12 @@ rvecs, tvecs, _ = find_corner_coordinates(corners)
 print(tvecs)
 
 
-arlo.go_diff(40,40,1,0)
-for i in range(4):
-    sleep(0.2)
-    image = cam.capture_array("main")
-    corners, ids, rejected = detector.detectMarkers(image)
-    rvecs, tvecs, _ = find_corner_coordinates(corners)
-    if i >=1:
-        cv2.imwrite(f"image_{i}.jpg", image)
-
-
-print(tvecs)
-arlo.stop()
 
 
 
 
 
-""" found_end = False
+found_end = False
 while found_end is False:
     image = cam.capture_array("main")
 
@@ -74,6 +62,5 @@ while found_end is False:
 
 arlo.stop()
 print("i am at the end!")
- """
-        
+       
     
