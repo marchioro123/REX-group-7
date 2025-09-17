@@ -13,10 +13,13 @@ corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
 print(tvecs)
 
-
+last_image = None
 found_end = False
 while found_end is False:
     image = cam.capture_array("main")
+    if image == last_image:
+        print("TO STEJNÉÉÉÉÉÉÉ")
+    last_image = image
 
     corners, ids, rejected = detector.detectMarkers(image)
     if ids is None:
