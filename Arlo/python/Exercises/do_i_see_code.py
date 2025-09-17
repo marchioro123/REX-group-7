@@ -35,9 +35,9 @@ while found_end is False:
             arlo.stop()
             input()
         else:
-            if z > 0.2:
+            if z > 0.3:
                 arlo.go_diff(40,40,1,1)
-                sleep(0.1)
+                sleep(0.25)
                 arlo.stop()
                 input()
             else:
