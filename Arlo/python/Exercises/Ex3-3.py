@@ -34,6 +34,6 @@ edge_x = np.linspace(-maximum_absolute_value-0.5, maximum_absolute_value+0.5, 10
 edge_y = abs(edge_x*1.75)
 graph.plot(edge_x, edge_y,color="red")
 
-graph.xlim(-maximum_absolute_value-0.5,maximum_absolute_value+0.5)
-graph.ylim(-0.3,max(z_es)+1)
-graph.savefig("plot.png")
+graph.set_xlim(-maximum_absolute_value-0.5,maximum_absolute_value+0.5)
+graph.set_ylim(-0.3,max(z_es)+1)
+plt.savefig("plot.png")
