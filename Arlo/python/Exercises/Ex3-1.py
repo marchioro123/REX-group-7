@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 Z = np.array([20, 50, 100, 180, 250, 300])   # distances in cm
-x = np.array([979, 391, 140, 104, 76, 62])   # measured image size in pixels
+x = np.array([979, 391, 190, 104, 76, 62])   # measured image size in pixels
 X = 14.5                                     # physical object size in cm
 
 # Focal length estimates
