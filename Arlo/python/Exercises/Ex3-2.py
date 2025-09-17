@@ -1,11 +1,9 @@
 import sys
 from time import sleep
-import cv2
 
 sys.path.append("..")
 import robot
 from camera import cam, find_corner_coordinates, detector
-from motor_thread import MotorThread
 
 arlo = robot.Robot()
 
@@ -13,11 +11,6 @@ image = cam.capture_array("main")
 corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
 print(tvecs)
-
-
-
-
-
 
 
 found_end = False
