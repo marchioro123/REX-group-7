@@ -23,7 +23,7 @@ for code in tvecs:
 maximum_absolute_value = max(abs(x) for x in x_es)
 
 plt.scatter(x_es,z_es, color = "blue")
-plt.scatter([0],[0], s=1,color="black")
+plt.scatter([0.01],[0], s=10,color="black")
 plt.xlim(-maximum_absolute_value-1,maximum_absolute_value+1)
 plt.ylim(bottom=0)
 plt.savefig("plot.png")
