@@ -35,9 +35,11 @@ while found_end is False:
             arlo.stop()
             input()
         else:
+            print("i am not rotating now")
             if z > 0.5:
+                print("i am too far away")
                 arlo.go_diff(40,40,1,1)
-                sleep(0.25)
+                sleep(0.3)
                 arlo.stop()
                 input()
             else:
