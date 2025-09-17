@@ -25,11 +25,13 @@ while found_end is False:
         print(tvecs)
         x,_,z = [tvecs[0,0,i] for i in range(3)]
         if x > z/4:
+            print("rotated to the right")
             arlo.go_diff(40,40,1,0)
             sleep(0.1)
             arlo.stop()
             input()
         elif x < -z/4:
+            print("rotated to the left")
             arlo.go_diff(40,40,0,1)
             sleep(0.1)
             arlo.stop()
