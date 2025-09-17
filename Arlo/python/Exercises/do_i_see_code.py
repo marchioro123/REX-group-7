@@ -19,7 +19,29 @@ while found_end is False:
         print("rotato")
         sleep(0.1)
     else:
+        arlo.stop()
         print("found!")
         rvecs, tvecs, _ = find_corner_coordinates(corners)
         print(tvecs)
+        x,_,z = [tvecs[0,0,i] for i in range(3)]
+        if x > z/4:
+            arlo.go_diff(40,40,1,0)
+            sleep(0.1)
+            arlo.stop()
+            input()
+        elif x < -z/4:
+            arlo.go_diff(40,40,0,1)
+            sleep(0.1)
+            arlo.stop()
+            input()
+        else:
+            if z > 0.2:
+                arlo.go_diff(40,40,1,1)
+                sleep(0.1)
+                arlo.stop()
+                input()
+            else:
+                found_end = True
+
+        
     
