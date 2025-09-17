@@ -43,5 +43,8 @@ while found_end is False:
             else:
                 found_end = True
 
+arlo.stop()
+print("i am at the end!")
+
         
     
