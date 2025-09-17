@@ -84,6 +84,6 @@ while not found_end:
             arlo.stop()
             found_end = True
     arlo.go_diff(52, 50, 0, 1)
-    sleep(0.1)
+    sleep(0.2)
 
 print("END FOUND!")
