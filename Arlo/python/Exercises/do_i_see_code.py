@@ -20,6 +20,7 @@ while ids in None:
     corners, ids, rejected = detector.detectMarkers(image)
     rvecs, tvecs, _ = find_corner_coordinates(corners)
 
+print(tvecs)
 arlo.stop()
 
 
