@@ -21,4 +21,4 @@ for code in tvecs:
     z_es.append(z)
 
 plt.scatter(x_es,z_es)
-plt.show()
+plt.savefig("plot.png")
