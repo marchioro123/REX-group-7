@@ -57,6 +57,8 @@ while not found_end:
 
     corners, ids, rejected = detector.detectMarkers(image)
     if ids is not None:
+        arlo.stop()
+        print("stopped")
         rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(
             corners, marker_length, camera_matrix, dist_coeffs)
 
@@ -74,19 +76,13 @@ while not found_end:
         elif tvecs[0,0,1] < -1:
             arlo.go_diff(105, 100, 0, 1)
             sleep(0.1)
+            
         if tvecs[0,0,0] > 0.05:
             arlo.go_diff(86, 83, 1, 1)
             sleep(0.2)
         else:
             arlo.stop()
             found_end = True
-    else:
-        if times_rotated >= 6:
-            arlo.go_diff(86, 83, 1, 1)
-            times_rotated = 0
-            sleep(0.1)
-        arlo.go_diff(105, 100, 0, 1)
-        times_rotated += 1
-        sleep(0.25)
+    arlo.go_diff(105, 100, 0, 1)
 
 print("END FOUND!")
