@@ -5,11 +5,13 @@ from pprint import *
 
 import sys
 import numpy as np
+from time import sleep
 
 sys.path.append("..")
 import robot
 from motor_thread import MotorThread
 
+arlo = robot.Robot()
 
 try:
     import picamera2
@@ -47,19 +49,45 @@ marker_length = 0.145
 
 time.sleep(1)  # wait for camera to setup
 
+found_end = False
+times_rotated = 0
 
-image = cam.capture_array("main")
+while not found_end:
+    image = cam.capture_array("main")
 
-corners, ids, rejected = detector.detectMarkers(image)
-if ids is not None:
-    rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(
-        corners, marker_length, camera_matrix, dist_coeffs)
+    corners, ids, rejected = detector.detectMarkers(image)
+    if ids is not None:
+        rvecs, tvecs, _ = aruco.estimatePoseSingleMarkers(
+            corners, marker_length, camera_matrix, dist_coeffs)
 
-    for rvec, tvec in zip(rvecs, tvecs):
-        # Draw axis (x=red, y=green, z=blue)
-        cv2.drawFrameAxes(image, camera_matrix, dist_coeffs, rvec, tvec, 0.03)
+        for rvec, tvec in zip(rvecs, tvecs):
+            # Draw axis (x=red, y=green, z=blue)
+            cv2.drawFrameAxes(image, camera_matrix, dist_coeffs, rvec, tvec, 0.03)
 
-        print("Marker translation (tvec):", tvec)
-        print("Marker rotation (rvec):", rvec)
-
+            print("Marker translation (tvec):", tvec)
+            print("Marker rotation (rvec):", rvec)
+        if tvec[1] > 1:
+            arlo.go_diff(105, 100, 1, 0)
+            sleep(0.1)
+            arlo.stop()
+        elif tvec[1] < -1:
+            arlo.go_diff(105, 100, 0, 1)
+            sleep(0.1)
+            arlo.stop()
+        if tvec[0] > 0.05:
+            arlo.go_diff(86, 83, 1, 1)
+            sleep(0.2)
+            arlo.stop()
+        else:
+            found_end = True
+    else:
+        if times_rotated >= 6:
+            arlo.go_diff(86, 83, 1, 1)
+            times_rotated = 0
+            sleep(0.1)
+            arlo.stop()
+        arlo.go_diff(105, 100, 0, 1)
+        times_rotated += 1
+        sleep(0.25)
+        arlo.stop()
 
