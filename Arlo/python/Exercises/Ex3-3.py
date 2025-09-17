@@ -1,5 +1,6 @@
 import sys
 from time import sleep
+import numpy as np
 
 import matplotlib.pyplot as plt
 
@@ -23,7 +24,12 @@ for code in tvecs:
 maximum_absolute_value = max(abs(x) for x in x_es)
 
 plt.scatter(x_es,z_es, color = "blue")
-plt.scatter([0],[0], s=1000,color="black")
-plt.xlim(-maximum_absolute_value-1,maximum_absolute_value+1)
-plt.ylim(bottom=0)
+plt.scatter([0],[0], s=200,color="black")
+
+edge_x = np.linspace(1, 10, 100)
+edge_y = abs(edge_x*1.75)
+plt.plot(edge_x, edge_y)
+
+plt.xlim(-maximum_absolute_value-0.5,maximum_absolute_value+0.5)
+plt.ylim(0,max(z_es)+1)
 plt.savefig("plot.png")
