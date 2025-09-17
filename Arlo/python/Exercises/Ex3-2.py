@@ -70,19 +70,19 @@ while not found_end:
             print("Marker rotation (rvec):", rvec)
 
         print(tvecs[0,0,0])
-        if tvecs[0,0,1] > 1:
-            arlo.go_diff(105, 100, 1, 0)
-            sleep(0.1)
-        elif tvecs[0,0,1] < -1:
-            arlo.go_diff(105, 100, 0, 1)
-            sleep(0.1)
-            
-        if tvecs[0,0,0] > 0.05:
+        if tvecs[0,0,0] > 1:
+            arlo.go_diff(52, 50, 1, 0)
+            sleep(0.2)
+        elif tvecs[0,0,0] < -1:
+            arlo.go_diff(52, 50, 0, 1)
+            sleep(0.2)
+
+        if tvecs[0,0,2] > 0.05:
             arlo.go_diff(86, 83, 1, 1)
             sleep(0.2)
         else:
             arlo.stop()
             found_end = True
-    arlo.go_diff(105, 100, 0, 1)
+    arlo.go_diff(52, 50, 0, 1)
 
 print("END FOUND!")
