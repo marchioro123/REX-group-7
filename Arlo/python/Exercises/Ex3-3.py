@@ -13,4 +13,4 @@ rvecs, tvecs, _ = find_corner_coordinates(corners)
 
 for code in tvecs:
     x, _, z = code[0]
-    print(code)
+    print(x,z)
