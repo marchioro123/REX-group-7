@@ -22,7 +22,8 @@ while found_end is False:
     if ids is None:
         arlo.go_diff(40,40,1,0)
         print("rotato")
-        sleep(0.2)
+        sleep(0.05)
+        arlo.stop()
     else:
         arlo.stop()
         print("found!")
