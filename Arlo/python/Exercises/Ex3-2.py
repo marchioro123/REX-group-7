@@ -40,7 +40,7 @@ aruco_dict = aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_250)
 parameters = aruco.DetectorParameters()
 detector = aruco.ArucoDetector(aruco_dict, parameters)
 
-focus_length = 1.315
+focus_length = 1315
 camera_matrix = np.array([[focus_length, 0, 1640/2],
                           [0, focus_length, 1232/2],
                           [0,   0,   1]], dtype=np.float32)
@@ -66,11 +66,11 @@ while not found_end:
 
             print("Marker translation (tvec):", tvec)
             print("Marker rotation (rvec):", rvec)
-        if tvecs[1,0] > 1:
+        if tvecs[0,1] > 1:
             arlo.go_diff(105, 100, 1, 0)
             sleep(0.1)
             arlo.stop()
-        elif tvecs[1,0] < -1:
+        elif tvecs[0,1] < -1:
             arlo.go_diff(105, 100, 0, 1)
             sleep(0.1)
             arlo.stop()
