@@ -13,13 +13,22 @@ corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
 print(tvecs)
 
-last_image = None
-found_end = False
+arlo.go_diff(40,40,1,0)
+while ids in None:
+    sleep(0.1)
+    image = cam.capture_array("main")
+    corners, ids, rejected = detector.detectMarkers(image)
+    rvecs, tvecs, _ = find_corner_coordinates(corners)
+
+arlo.stop()
+
+
+
+
+
+""" found_end = False
 while found_end is False:
     image = cam.capture_array("main")
-    if (image == last_image).all():
-        print("TO STEJNÉÉÉÉÉÉÉ")
-    last_image = image
 
     corners, ids, rejected = detector.detectMarkers(image)
     if ids is None:
@@ -59,6 +68,6 @@ while found_end is False:
 
 arlo.stop()
 print("i am at the end!")
-
+ """
         
     
