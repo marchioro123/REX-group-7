@@ -16,6 +16,8 @@ while found_end is False:
     corners, ids, rejected = detector.detectMarkers(image)
     if ids is None:
         arlo.go_diff(40,40,1,0)
+        print("rotato")
+        sleep(0.1)
     else:
         print("found!")
         rvecs, tvecs, _ = find_corner_coordinates(corners)
