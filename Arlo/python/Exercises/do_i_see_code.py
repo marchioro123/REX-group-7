@@ -15,7 +15,7 @@ print(tvecs)
 
 arlo.go_diff(40,40,1,0)
 while ids is None:
-    sleep(0.1)
+    sleep(0.2)
     image = cam.capture_array("main")
     corners, ids, rejected = detector.detectMarkers(image)
     rvecs, tvecs, _ = find_corner_coordinates(corners)
