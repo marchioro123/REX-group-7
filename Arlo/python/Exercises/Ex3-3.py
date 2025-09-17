@@ -26,7 +26,7 @@ maximum_absolute_value = max(abs(x) for x in x_es)
 plt.scatter(x_es,z_es, color = "blue")
 plt.scatter([0],[0], s=200,color="black")
 
-edge_x = np.linspace(1, 10, 100)
+edge_x = np.linspace(-maximum_absolute_value-0.5, maximum_absolute_value+0.5, 100)
 edge_y = abs(edge_x*1.75)
 plt.plot(edge_x, edge_y)
 
