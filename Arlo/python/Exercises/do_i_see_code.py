@@ -17,7 +17,7 @@ last_image = None
 found_end = False
 while found_end is False:
     image = cam.capture_array("main")
-    if image == last_image:
+    if image.all() == last_image.all():
         print("TO STEJNÉÉÉÉÉÉÉ")
     last_image = image
 
