@@ -27,7 +27,7 @@ while found_end is False:
         print("rotato")
         sleep(0.2)
         arlo.stop()
-        sleep(0.1)
+        sleep(0.2)
     else:
         arlo.stop()
         print("found!")
