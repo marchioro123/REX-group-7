@@ -1,5 +1,6 @@
 import sys
 from time import sleep
+import cv2
 
 sys.path.append("..")
 import robot
@@ -13,12 +14,16 @@ corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
 print(tvecs)
 
+
 arlo.go_diff(40,40,1,0)
-while ids is None:
+for i in range(4):
     sleep(0.2)
     image = cam.capture_array("main")
     corners, ids, rejected = detector.detectMarkers(image)
     rvecs, tvecs, _ = find_corner_coordinates(corners)
+    if i >=1:
+        cv2.imwrite(f"image_{i}", image)
+
 
 print(tvecs)
 arlo.stop()
