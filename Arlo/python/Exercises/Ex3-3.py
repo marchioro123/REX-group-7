@@ -3,6 +3,7 @@ from time import sleep
 import numpy as np
 
 import matplotlib.pyplot as plt
+import matplotlib.patches as patches
 
 sys.path.append("..")
 import robot
@@ -24,12 +25,13 @@ for code in tvecs:
 maximum_absolute_value = max(abs(x) for x in x_es)
 
 plt.scatter(x_es,z_es, color = "blue")
-plt.scatter([0],[0], s=200,color="black")
+circle = patches.Circle((0, -0.225), radius=0.225, color='black', fill=True)
+plt.add_patch(circle)
 
 edge_x = np.linspace(-maximum_absolute_value-0.5, maximum_absolute_value+0.5, 100)
 edge_y = abs(edge_x*1.75)
-plt.plot(edge_x, edge_y)
+plt.plot(edge_x, edge_y,color="red")
 
 plt.xlim(-maximum_absolute_value-0.5,maximum_absolute_value+0.5)
-plt.ylim(0,max(z_es)+1)
+plt.ylim(-0.3,max(z_es)+1)
 plt.savefig("plot.png")
