@@ -22,7 +22,7 @@ for i in range(4):
     corners, ids, rejected = detector.detectMarkers(image)
     rvecs, tvecs, _ = find_corner_coordinates(corners)
     if i >=1:
-        cv2.imwrite(f"image_{i}", image)
+        cv2.imwrite(f"image_{i}.jpg", image)
 
 
 print(tvecs)
