@@ -34,7 +34,7 @@ picam2_config = cam.create_video_configuration({"size": imageSize, "format": 'RG
                                                             controls={"FrameDurationLimits": (frame_duration_limit, frame_duration_limit),
                                                             "ScalerCrop": (0,0,3280,2464)},
                                                             queue=False)
-#cam.configure(picam2_config) # Not really necessary
+cam.configure(picam2_config) # Not really necessary
 cam.start(show_preview=False)
 
 aruco_dict = aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_250)
