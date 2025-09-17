@@ -66,15 +66,18 @@ while not found_end:
 
             print("Marker translation (tvec):", tvec)
             print("Marker rotation (rvec):", rvec)
-        if tvecs[0,1] > 1:
+
+        print(tvecs.shape)
+
+        if tvecs[0,0,1] > 1:
             arlo.go_diff(105, 100, 1, 0)
             sleep(0.1)
             arlo.stop()
-        elif tvecs[0,1] < -1:
+        elif tvecs[0,0,1] < -1:
             arlo.go_diff(105, 100, 0, 1)
             sleep(0.1)
             arlo.stop()
-        if tvecs[0,0] > 0.05:
+        if tvecs[0,0,0] > 0.05:
             arlo.go_diff(86, 83, 1, 1)
             sleep(0.2)
             arlo.stop()
