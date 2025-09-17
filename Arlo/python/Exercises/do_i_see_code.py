@@ -13,15 +13,16 @@ from motor_thread import MotorThread
 
 arlo = robot.Robot()
 
-try:
+import picamera2
+""" try:
     import picamera2
     print("Camera.py: Using picamera2 module")
 except ImportError:
     print("Camera.py: picamera2 module not available")
-    exit(-1)
+    exit(-1) """
 
 
-#print("OpenCV version = " + cv2.__version__)
+print("OpenCV version = " + cv2.__version__)
 
 # Open a camera device for capturing
 imageSize = (1640, 1232)
@@ -33,7 +34,7 @@ picam2_config = cam.create_video_configuration({"size": imageSize, "format": 'RG
                                                             controls={"FrameDurationLimits": (frame_duration_limit, frame_duration_limit),
                                                             "ScalerCrop": (0,0,3280,2464)},
                                                             queue=False)
-cam.configure(picam2_config) # Not really necessary
+#cam.configure(picam2_config) # Not really necessary
 cam.start(show_preview=False)
 
 aruco_dict = aruco.getPredefinedDictionary(cv2.aruco.DICT_6X6_250)
