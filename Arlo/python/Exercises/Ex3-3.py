@@ -20,5 +20,9 @@ for code in tvecs:
     x_es.append(x)
     z_es.append(z)
 
+maximum_absolute_value = max(abs(x_es))
+
 plt.scatter(x_es,z_es)
+plt.xlim(-maximum_absolute_value-1,maximum_absolute_value+1)
+plt.ylim(bottom=0)
 plt.savefig("plot.png")
