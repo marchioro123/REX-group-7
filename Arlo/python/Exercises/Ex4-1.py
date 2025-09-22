@@ -5,6 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
+from math import sin, cos
+
 sys.path.append("..")
 import robot
 from camera import cam, find_corner_coordinates, detector
@@ -30,7 +32,7 @@ for i in range(len(ids)):
     x_es.append(x)
     z_es.append(z)
     graph.scatter(x, z, color = "blue")
-    graph.quiver(x,z,x_dir,z_dir)
+    graph.quiver(x,z, -cos(z_dir), -sin(z_dir))
 
 maximum_absolute_value = max(abs(x) for x in x_es)
 
