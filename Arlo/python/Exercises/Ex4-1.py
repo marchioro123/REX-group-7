@@ -32,7 +32,7 @@ for i in range(len(ids)):
     x_es.append(x)
     z_es.append(z)
     graph.scatter(x, z, color = "blue")
-    graph.quiver(x,z, -sin(z_dir/2), -cos(z_dir/2))
+    graph.quiver(x,z, sin(z_dir/2), -cos(z_dir/2))
 
 maximum_absolute_value = max(abs(x) for x in x_es)
 
