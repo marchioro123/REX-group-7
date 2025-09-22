@@ -33,7 +33,7 @@ for i in range(len(ids)):
     z_es.append(z)
     graph.scatter(x, z, color = "blue")
     graph.quiver(x,z, sin(z_dir/2), -cos(z_dir/2))
-    obstacle_circle = patches.Circle((x-sin(z_dir/2)*0.01, z+cos(z_dir/2))*0.01, radius=0.018, color='red', fill=True)
+    obstacle_circle = patches.Circle((x-sin(z_dir/2)*0.01, z+cos(z_dir/2)*0.01), radius=0.018, color='red', fill=True)
     graph.add_patch(obstacle_circle)
 
 maximum_absolute_value = max(abs(x) for x in x_es)
