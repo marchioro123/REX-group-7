@@ -16,6 +16,9 @@ image = cam.capture_array("main")
 corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
 
+DISTANCE_TO_CENTER = 0.1
+BOX_RADIUS = 0.18
+
 
 _, graph = plt.subplots(figsize=(5, 5))
 
@@ -33,7 +36,7 @@ for i in range(len(ids)):
     z_es.append(z)
     graph.scatter(x, z, color = "blue")
     graph.quiver(x,z, sin(z_dir/2), -cos(z_dir/2))
-    obstacle_circle = patches.Circle((x-sin(z_dir/2)*0.01, z+cos(z_dir/2)*0.01), radius=0.18, color='red', fill=True)
+    obstacle_circle = patches.Circle((x-sin(z_dir/2)*DISTANCE_TO_CENTER, z+cos(z_dir/2)*DISTANCE_TO_CENTER), radius=BOX_RADIUS, color='red', fill=True)
     graph.add_patch(obstacle_circle)
 
 maximum_absolute_value = max(abs(x) for x in x_es)
@@ -43,7 +46,7 @@ graph.add_patch(circle)
 
 edge_x = np.linspace(-maximum_absolute_value-0.5, maximum_absolute_value+0.5, 100)
 edge_y = abs(edge_x*1.75)
-graph.plot(edge_x, edge_y,color="red")
+graph.plot(edge_x, edge_y,color="blue")
 
 graph.set_xlim(-maximum_absolute_value-0.5,maximum_absolute_value+0.5)
 graph.set_ylim(-0.3,max(z_es)+1)
