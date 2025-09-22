@@ -25,6 +25,7 @@ for i in range(len(ids)):
     print(corners[i])
     print(ids[i])
     print(x,y,z)
+    print(rvecs[i])
     print("--------------")
     x_es.append(x)
     z_es.append(z)
