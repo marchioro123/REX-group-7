@@ -19,10 +19,12 @@ _, graph = plt.subplots(figsize=(5, 5))
 
 x_es = []
 z_es = []
-for i in range(tvecs):
+for i in range(ids):
     x, _, z = tvecs[i][0]
     x_dir, _, z_dir = rvecs[i][0]
+    print(ids[i])
     print(x,z)
+    print("--------------")
     x_es.append(x)
     z_es.append(z)
     graph.scatter(x, z, color = "blue")
