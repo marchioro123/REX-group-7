@@ -22,6 +22,7 @@ z_es = []
 for i in range(len(ids)):
     x, y, z = tvecs[i][0]
     x_dir, _, z_dir = rvecs[i][0]
+    print(corners[i])
     print(ids[i])
     print(x,y,z)
     print("--------------")
