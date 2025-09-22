@@ -41,4 +41,4 @@ graph.set_xlim(-maximum_absolute_value-0.5,maximum_absolute_value+0.5)
 graph.set_ylim(-0.3,max(z_es)+1)
 
 graph.set_aspect('equal', adjustable='box')
-plt.savefig("plot.png")
+plt.savefig("map.png")
