@@ -19,7 +19,7 @@ _, graph = plt.subplots(figsize=(5, 5))
 
 x_es = []
 z_es = []
-for i in range(ids):
+for i in range(len(ids)):
     x, _, z = tvecs[i][0]
     x_dir, _, z_dir = rvecs[i][0]
     print(ids[i])
