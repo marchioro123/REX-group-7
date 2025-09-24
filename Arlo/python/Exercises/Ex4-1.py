@@ -75,4 +75,5 @@ graph.set_ylim(-0.3,max(z_es)+1)
 
 graph.set_aspect('equal', adjustable='box')
 plt.savefig("map.png")
+
 print(Collided)
