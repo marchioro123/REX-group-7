@@ -77,4 +77,4 @@ for i in range(map.n_grids[0]):
                 map.grid[i, j] = 1
                 break
 
-print(map.grid)
+map.draw_map()
