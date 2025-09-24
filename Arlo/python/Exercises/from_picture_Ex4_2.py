@@ -24,7 +24,7 @@ DISTANCE_TO_CENTER = 0.115
 BOX_RADIUS = 0.17
 """
 
-image = cv2.imread("../../../Images/5_codes")
+image = cv2.imread("../../../Images/5_codes.png")
 corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
 
