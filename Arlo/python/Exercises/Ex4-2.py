@@ -11,7 +11,7 @@ sys.path.append("..")
 from camera import cam, find_corner_coordinates, detector
 
 from RRT.grid_occ import GridOccupancyMap
-numpy.set_printoptions(threshold=sys.maxsize)
+np.set_printoptions(threshold=sys.maxsize)
 
 DISTANCE_TO_CENTER = 0.115
 BOX_RADIUS = 0.17
