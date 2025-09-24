@@ -67,7 +67,7 @@ class MotorThread(threading.Thread):
 
         else:
             LEFTSPEED, RIGHTSPEED = 57, 55
-            duration = 0.01 * degrees
+            duration = 0.012 * degrees
             with self.serial_lock:
                 self._is_turning = True
                 self._is_drivingForward = False
