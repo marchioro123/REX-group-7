@@ -58,7 +58,7 @@ class MotorThread(threading.Thread):
     def _turn_n_degrees(self, degrees: float):
         if (degrees < 0):
             LEFTSPEED, RIGHTSPEED = 57, 55
-            duration = 0.01 * abs(degrees)
+            duration = 0.012 * abs(degrees)
             with self.serial_lock:
                 self._is_turning = True
                 self._is_drivingForward = False
