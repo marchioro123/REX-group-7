@@ -184,9 +184,9 @@ class RRT:
         return True
 
 
-import grid_occ, robot_models
 
 def main():
+    import grid_occ, robot_models
 
     path_res = 0.05
     map = grid_occ.GridOccupancyMap(low=(-1, 0), high=(1, 2), res=path_res)
