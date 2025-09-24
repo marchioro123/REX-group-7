@@ -12,22 +12,11 @@ def calculate_distance(x1, y1, x2, y2):
     dy = y2 - y1
     return math.sqrt(dx**2 + dy**2) * 100
 
-def calculate_turn_angle(x1, y1, angle, x2, y2):
-    dx = x2 - x1
-    dy = y2 - y1
-    
-    # atan2 gives radians from X-axis CCW, convert to degrees and normalize to [0, 360)
-    target_angle = math.degrees(math.atan2(dy, dx)) % 360
-    
-    # Compute smallest turn (could be left or right)
-    turn_angle = (target_angle - angle) % 360
-    
-    # Choose shortest direction: convert >180° turns to negative (left turn)
-    if turn_angle > 180:
-        turn_angle -= 360
-    
-    return turn_angle  # can be negative (left) or positive (right)
-
+def calculate_turn_angle(x1, y1, angle_deg, x2, y2):
+    dx, dy = x2 - x1, y2 - y1
+    target_bearing = (90 - math.degrees(math.atan2(dy, dx))) % 360
+    current_bearing = angle_deg % 360
+    return (target_bearing - current_bearing + 180) % 360 - 180
 
 import cv2 # Import the OpenCV library
 import cv2.aruco as aruco

@@ -15,12 +15,13 @@ from utils import find_corner_coordinates, detector
 from path_planning.grid_occ import GridOccupancyMap
 from path_planning.robot_models import PointMassModel
 from path_planning.rrt import RRT
+from camera import cam
 
 DISTANCE_TO_CENTER = 0.1
 BOX_RADIUS = 0.18
 ROBOT_RADIUS = 0.2250
 
-image = cv2.imread("../../../Images/3_boxes.png")
+image = cam.capture_array("main") #cv2.imread("../../../Images/3_boxes.png")
 
 corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
@@ -97,13 +98,15 @@ motor.start()
 from utils import calculate_distance, calculate_turn_angle
 pos_x, pos_y, angle = 0, 0, 0
 
-for point in path:
+for point in reversed(path[:-1]):
     target_x, target_y = point
 
     distance = calculate_distance(pos_x, pos_y, target_x, target_y)
     turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
     cmd_queue.put(("drive_n_cm_forward", 0, distance))
     cmd_queue.put(("turn_n_degrees", 0, angle))
+
+    print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
 
     pos_x, pos_y = target_x, target_y
     angle = (angle + turn_angle) % 360
