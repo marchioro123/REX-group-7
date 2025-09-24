@@ -101,12 +101,12 @@ pos_x, pos_y, angle = 0, 0, 0
 for point in reversed(path[:-1]):
     target_x, target_y = point
 
-    distance = calculate_distance(pos_x, pos_y, target_x, target_y)
     turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
-    cmd_queue.put(("drive_n_cm_forward", 0, distance))
-    cmd_queue.put(("turn_n_degrees", 0, angle))
-
+    distance = calculate_distance(pos_x, pos_y, target_x, target_y)
     print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
+
+    cmd_queue.put(("turn_n_degrees", 0, angle))
+    cmd_queue.put(("drive_n_cm_forward", 0, distance))
 
     pos_x, pos_y = target_x, target_y
     angle = (angle + turn_angle) % 360
