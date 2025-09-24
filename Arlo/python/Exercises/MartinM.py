@@ -23,6 +23,7 @@ ROBOT_RADIUS = 0.2250
 
 image = cam.capture_array("main") #cv2.imread("../../../Images/3_boxes.png")
 
+print("HERE")
 corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
 
