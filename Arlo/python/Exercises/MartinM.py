@@ -44,7 +44,7 @@ edge_y = abs(edge_x*1.75)
 
 print("HEREHERE")
 path_res = 0.01
-map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, max(z_es)+1), res=path_res)
+map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, max(z_es)+10), res=path_res)
 for i in range(map.n_grids[0]):
     for j in range(map.n_grids[1]):
         centroid = np.array([map.map_area[0][0] + map.resolution * (i+0.5), map.map_area[0][1] + map.resolution * (j+0.5)])
