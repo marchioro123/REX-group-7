@@ -78,4 +78,4 @@ for i in range(map.n_grids[0]):
                 break
 
 map.draw_map()
-plt.show()
+plt.savefig("Occupancy_grid.png")
