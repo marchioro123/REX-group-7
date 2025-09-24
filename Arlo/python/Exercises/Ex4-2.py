@@ -5,10 +5,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-from math import sin, cos, sqrt
+from math import sin, cos
 
 sys.path.append("..")
 from camera import cam, find_corner_coordinates, detector
+
+from RRT.grid_occ import GridOccupancyMap
 
 DISTANCE_TO_CENTER = 0.115
 BOX_RADIUS = 0.17
@@ -60,3 +62,18 @@ graph.set_ylim(-0.3,max(z_es)+1)
 
 graph.set_aspect('equal', adjustable='box')
 plt.savefig("map.png")
+
+
+
+# --------------------------
+
+map = GridOccupancyMap()
+for i in range(map.n_grids[0]):
+    for j in range(map.n_grids[1]):
+        centroid = np.array([map.map_area[0][0] + map.resolution * (i+0.5), map.map_area[0][1] + map.resolution * (j+0.5)])
+        for o in obstacle_centers:
+            if np.linalg.norm(centroid - o) <= BOX_RADIUS + ROBOT_RADIUS:
+                map.grid[i, j] = 1
+                break
+
+print(map.grid)
