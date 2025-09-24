@@ -49,14 +49,14 @@ for i in range(map.n_grids[0]):
                 map.grid[i, j] = 1
                 break
 
-robot = PointMassModel(ctrl_range=[-path_res, path_res])   #
+robot = PointMassModel(ctrl_range=[-path_res, path_res])
 
 rrt = RRT(
     start=[0, 0],
-    goal=[0, 1.9],
+    goal=[0, 3],
     robot_model=robot,
     map=map,
-    expand_dis=0.2,
+    expand_dis=1,
     path_resolution=path_res,
     ) 
 show_animation = True
@@ -71,7 +71,7 @@ with writer.saving(fig, "rrt_test.mp4", 100):
         print("Cannot find path")
     else:
         print("found path!!")
-
+        print(path)
         # Draw final path
         if show_animation:
             rrt.draw_graph()
