@@ -23,7 +23,6 @@ ROBOT_RADIUS = 0.2250
 
 image = cam.capture_array("main") #cv2.imread("../../../Images/3_boxes.png")
 
-print("HERE")
 corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
 
@@ -42,7 +41,7 @@ maximum_absolute_value = max(abs(x) for x in x_es)
 edge_x = np.linspace(-maximum_absolute_value-0.5, maximum_absolute_value+0.5, 100)
 edge_y = abs(edge_x*1.75)
 
-
+print("HEREHERE")
 path_res = 0.01
 map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, max(z_es)+1), res=path_res)
 for i in range(map.n_grids[0]):
