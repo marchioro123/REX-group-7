@@ -39,3 +39,26 @@ marker_length = 0.145
 
 def find_corner_coordinates(corners):
     return aruco.estimatePoseSingleMarkers(corners, marker_length, camera_matrix, dist_coeffs)
+
+def simplify_path(path, occupancy_map):
+    """Greedy path pruning to reduce unnecessary points."""
+    simplified = [path[0]]
+    i = 0
+    while i < len(path) - 1:
+        # Try to jump as far as possible along the path
+        for j in range(len(path)-1, i, -1):
+            if is_collision_free(simplified[-1], path[j], occupancy_map):
+                simplified.append(path[j])
+                i = j
+                break
+    return simplified
+
+def is_collision_free(p1, p2, occupancy_map):
+    """Check if the straight line between p1 and p2 is free of obstacles."""
+    distance = np.linalg.norm(np.array(p2) - np.array(p1))
+    steps = int(np.ceil(distance / (occupancy_map.resolution)))  # More conservative
+    for t in np.linspace(0, 1, steps):
+        point = (1 - t) * np.array(p1) + t * np.array(p2)
+        if occupancy_map.in_collision(point):
+            return False
+    return True
