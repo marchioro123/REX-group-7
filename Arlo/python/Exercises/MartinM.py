@@ -58,7 +58,7 @@ robot = PointMassModel(ctrl_range=[-path_res, path_res])
 
 rrt = RRT(
     start=[0, 0],
-    goal=[0, 5],
+    goal=[0, 3],
     robot_model=robot,
     map=map,
     expand_dis=1,
