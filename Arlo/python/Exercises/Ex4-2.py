@@ -8,7 +8,6 @@ import matplotlib.patches as patches
 from math import sin, cos, sqrt
 
 sys.path.append("..")
-import robot
 from camera import cam, find_corner_coordinates, detector
 
 DISTANCE_TO_CENTER = 0.115
@@ -20,19 +19,6 @@ ROBOT_RADIUS = 0.2250
 DISTANCE_TO_CENTER = 0.115
 BOX_RADIUS = 0.17
 """
-
-
-def Collided(x, y, obstacle_centers):
-    crashed = False
-    for circle in obstacle_centers:
-        if sqrt((x-circle[0])**2+(y-circle[1])**2) <= ROBOT_RADIUS + BOX_RADIUS:
-            crashed = True
-            break
-    return crashed
-        
-
-
-
 
 image = cam.capture_array("main")
 corners, ids, rejected = detector.detectMarkers(image)
@@ -47,7 +33,6 @@ obstacle_centers = []
 for i in range(len(ids)):
     x, y, z = tvecs[i][0]
     x_dir, _, z_dir = rvecs[i][0]
-    print(corners[i])
     print(ids[i])
     print(x,y,z)
     print(rvecs[i])
@@ -75,5 +60,3 @@ graph.set_ylim(-0.3,max(z_es)+1)
 
 graph.set_aspect('equal', adjustable='box')
 plt.savefig("map.png")
-
-print(Collided())
