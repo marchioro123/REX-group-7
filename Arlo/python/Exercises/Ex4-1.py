@@ -5,25 +5,39 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
-from math import sin, cos
+from math import sin, cos, sqrt
 
 sys.path.append("..")
 import robot
 from camera import cam, find_corner_coordinates, detector
+
+DISTANCE_TO_CENTER = 0.1
+BOX_RADIUS = 0.18
+ROBOT_RADIUS = 0.2250
+
+
+def Collided(x, y, obstacle_centers):
+    crashed = False
+    for circle in obstacle_centers:
+        if sqrt((x-circle[0])**2+(y-circle[1])**2) <= ROBOT_RADIUS + BOX_RADIUS:
+            crashed = True
+            break
+    return crashed
+        
+
+
 
 
 image = cam.capture_array("main")
 corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
 
-DISTANCE_TO_CENTER = 0.1
-BOX_RADIUS = 0.18
-
 
 _, graph = plt.subplots(figsize=(5, 5))
 
 x_es = []
 z_es = []
+obstacle_centers = []
 for i in range(len(ids)):
     x, y, z = tvecs[i][0]
     x_dir, _, z_dir = rvecs[i][0]
@@ -36,7 +50,9 @@ for i in range(len(ids)):
     z_es.append(z)
     graph.scatter(x, z, color = "blue")
     graph.quiver(x,z, sin(z_dir/2), -cos(z_dir/2))
-    obstacle_circle = patches.Circle((x-sin(z_dir/2)*DISTANCE_TO_CENTER, z+cos(z_dir/2)*DISTANCE_TO_CENTER), radius=BOX_RADIUS, color='red', fill=True)
+    obstacle_center = (x-sin(z_dir/2)*DISTANCE_TO_CENTER, z+cos(z_dir/2)*DISTANCE_TO_CENTER)
+    obstacle_centers.append(obstacle_center)
+    obstacle_circle = patches.Circle(obstacle_center, radius=BOX_RADIUS, color='red', fill=True)
     graph.add_patch(obstacle_circle)
 
 maximum_absolute_value = max(abs(x) for x in x_es)
@@ -53,3 +69,4 @@ graph.set_ylim(-0.3,max(z_es)+1)
 
 graph.set_aspect('equal', adjustable='box')
 plt.savefig("map.png")
+print(Collided)
