@@ -28,6 +28,29 @@ DISTANCE_TO_CENTER = 0.115
 BOX_RADIUS = 0.17
 """
 
+def simplify_path(path, occupancy_map):
+    """Greedy path pruning to reduce unnecessary points."""
+    simplified = [path[0]]
+    i = 0
+    while i < len(path) - 1:
+        # Try to jump as far as possible along the path
+        for j in range(len(path)-1, i, -1):
+            if is_collision_free(simplified[-1], path[j], occupancy_map):
+                simplified.append(path[j])
+                i = j
+                break
+    return simplified
+
+def is_collision_free(p1, p2, occupancy_map):
+    """Check if the straight line between p1 and p2 is free of obstacles."""
+    distance = np.linalg.norm(np.array(p2) - np.array(p1))
+    steps = int(np.ceil(distance / (occupancy_map.resolution * 0.5)))  # More conservative
+    for t in np.linspace(0, 1, steps):
+        point = (1 - t) * np.array(p1) + t * np.array(p2)
+        if occupancy_map.in_collision(point):
+            return False
+    return True
+
 image = cv2.imread("../../../Images/5_codes.png")
 corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
@@ -109,12 +132,16 @@ with writer.saving(fig, "rrt_test.mp4", 100):
         print("Cannot find path")
     else:
         print("found path!!")
+        print(path)
+        print(f"Original path points: {len(path)}")
+        simple_path = simplify_path(path, map)
+        print(f"Simplified path points: {len(simple_path)}")
 
-        # Draw final path
         if show_animation:
             rrt.draw_graph()
-            plt.plot([x for (x, y) in path], [y for (x, y) in path], '-r')
+            plt.plot([x for (x, y) in path], [y for (x, y) in path], '-r', color= "blue")
+            plt.plot([x for (x, y) in simple_path], [y for (x, y) in simple_path], '-r')
             plt.grid(True)
-            plt.pause(0.01)  # Need for Mac
+            plt.pause(0.01)  # Needed for Mac
             plt.show()
             writer.grab_frame()
