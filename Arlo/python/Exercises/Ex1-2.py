@@ -15,6 +15,6 @@ motor.start()
 
 for _ in range(36):
     cmd_queue.put(("turn_n_degrees", 10))
-    time.sleep(3)
+    time.sleep(1)
 
 time.sleep(999)
