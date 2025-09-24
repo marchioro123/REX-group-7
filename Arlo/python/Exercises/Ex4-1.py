@@ -11,9 +11,15 @@ sys.path.append("..")
 import robot
 from camera import cam, find_corner_coordinates, detector
 
-DISTANCE_TO_CENTER = 0.1
-BOX_RADIUS = 0.18
+DISTANCE_TO_CENTER = 0.115
+BOX_RADIUS = 0.17
 ROBOT_RADIUS = 0.2250
+
+"""
+# BOX
+DISTANCE_TO_CENTER = 0.115
+BOX_RADIUS = 0.17
+"""
 
 
 def Collided(x, y, obstacle_centers):

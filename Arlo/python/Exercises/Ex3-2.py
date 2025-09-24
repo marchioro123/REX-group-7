@@ -35,13 +35,11 @@ while found_end is False:
             arlo.go_diff(40,40,1,0)
             sleep(0.1)
             arlo.stop()
-            input()
         elif x < -z/5:
             print("rotated to the left")
             arlo.go_diff(40,40,0,1)
             sleep(0.1)
             arlo.stop()
-            input()
         else:
             print("i am not rotating now")
             if z > 0.5:
@@ -49,7 +47,6 @@ while found_end is False:
                 arlo.go_diff(40,40,1,1)
                 sleep(0.3)
                 arlo.stop()
-                input()
             else:
                 found_end = True
 
