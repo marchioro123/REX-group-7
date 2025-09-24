@@ -13,6 +13,7 @@ cmd_queue = queue.Queue()
 motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
 motor.start()
 
-cmd_queue.put(("turn_n_degrees", 360*3))
+for _ in range(360/5):
+    cmd_queue.put(("turn_n_degrees", 5))
 
 time.sleep(999)
