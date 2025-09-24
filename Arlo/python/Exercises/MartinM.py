@@ -52,6 +52,7 @@ for i in range(map.n_grids[0]):
                 map.grid[i, j] = 1
                 break
 
+print("SDAADSASD")
 robot = PointMassModel(ctrl_range=[-path_res, path_res])
 
 rrt = RRT(
@@ -67,6 +68,7 @@ metadata = dict(title="RRT Test")
 writer = FFMpegWriter(fps=15, metadata=metadata)
 fig = plt.figure()
 
+print("2222222222")
 with writer.saving(fig, "rrt_test.mp4", 100):
     path = rrt.planning(animation=show_animation, writer=writer)
 
