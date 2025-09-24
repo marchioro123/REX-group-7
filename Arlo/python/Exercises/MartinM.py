@@ -42,7 +42,6 @@ maximum_absolute_value = max(abs(x) for x in x_es)
 edge_x = np.linspace(-maximum_absolute_value-0.5, maximum_absolute_value+0.5, 100)
 edge_y = abs(edge_x*1.75)
 
-print("HEREHERE")
 path_res = 0.05
 map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, max(z_es)+1), res=path_res)
 for i in range(map.n_grids[0]):
@@ -53,7 +52,6 @@ for i in range(map.n_grids[0]):
                 map.grid[i, j] = 1
                 break
 
-print("SDAADSASD")
 robot = PointMassModel(ctrl_range=[-path_res, path_res])
 
 rrt = RRT(
@@ -69,7 +67,6 @@ metadata = dict(title="RRT Test")
 writer = FFMpegWriter(fps=15, metadata=metadata)
 fig = plt.figure()
 
-print("2222222222")
 with writer.saving(fig, "rrt_test.mp4", 100):
     path = rrt.planning(animation=show_animation, writer=writer)
 
