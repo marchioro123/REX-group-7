@@ -44,7 +44,7 @@ def simplify_path(path, occupancy_map):
 def is_collision_free(p1, p2, occupancy_map):
     """Check if the straight line between p1 and p2 is free of obstacles."""
     distance = np.linalg.norm(np.array(p2) - np.array(p1))
-    steps = int(np.ceil(distance / (occupancy_map.resolution * 0.5)))  # More conservative
+    steps = int(np.ceil(distance / (occupancy_map.resolution)))  # More conservative
     for t in np.linspace(0, 1, steps):
         point = (1 - t) * np.array(p1) + t * np.array(p2)
         if occupancy_map.in_collision(point):
@@ -100,9 +100,12 @@ path_res = 0.05
 map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, max(z_es)+1), res=path_res)
 for i in range(map.n_grids[0]):
     for j in range(map.n_grids[1]):
-        centroid = np.array([map.map_area[0][0] + map.resolution * (i+0.5), map.map_area[0][1] + map.resolution * (j+0.5)])
+        centroid = np.array([
+            map.map_area[0][0] + map.resolution * (i+0.5),
+            map.map_area[0][1] + map.resolution * (j+0.5)
+            ])
         for o in obstacle_centers:
-            if np.linalg.norm(centroid - o) <= BOX_RADIUS + ROBOT_RADIUS:
+            if np.linalg.norm(centroid - o) <= BOX_RADIUS + ROBOT_RADIUS + 0.5 * map.resolution:
                 map.grid[i, j] = 1
                 break
 
@@ -139,7 +142,7 @@ with writer.saving(fig, "rrt_test.mp4", 100):
 
         if show_animation:
             rrt.draw_graph()
-            plt.plot([x for (x, y) in path], [y for (x, y) in path], '-r', color= "blue")
+            plt.plot([x for (x, y) in path], [y for (x, y) in path], '-b')
             plt.plot([x for (x, y) in simple_path], [y for (x, y) in simple_path], '-r')
             plt.grid(True)
             plt.pause(0.01)  # Needed for Mac
