@@ -8,6 +8,7 @@ from math import sin, cos, sqrt
 from matplotlib.animation import FFMpegWriter
 import queue
 import threading
+import time
 
 sys.path.append("..")
 from utils import find_corner_coordinates, detector
@@ -114,3 +115,4 @@ for point in reversed(path[:-1]):
     angle = (angle + turn_angle) % 360
 
 
+time.sleep(999)
