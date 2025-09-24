@@ -10,9 +10,9 @@ from matplotlib.animation import FFMpegWriter
 sys.path.append("..")
 from utils import find_corner_coordinates, detector
 
-from RRT.grid_occ import GridOccupancyMap
-from RRT.robot_models import PointMassModel
-from RRT.rrt import RRT
+from path_planning.grid_occ import GridOccupancyMap
+from path_planning.robot_models import PointMassModel
+from path_planning.rrt import RRT
 
 DISTANCE_TO_CENTER = 0.1
 BOX_RADIUS = 0.18
