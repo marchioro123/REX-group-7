@@ -12,17 +12,18 @@ import time
 
 sys.path.append("..")
 from utils import find_corner_coordinates, detector
+from utils import simplify_path
 
 from path_planning.grid_occ import GridOccupancyMap
 from path_planning.robot_models import PointMassModel
 from path_planning.rrt import RRT
-from camera import cam
+#from camera import cam
 
 DISTANCE_TO_CENTER = 0.1
 BOX_RADIUS = 0.18
 ROBOT_RADIUS = 0.2250
-
-image = cam.capture_array("main") #cv2.imread("../../../Images/3_boxes.png")
+image = cv2.imread("../../../Images/3_boxes.png")
+#image = cam.capture_array("main") #cv2.imread("../../../Images/3_boxes.png")
 
 corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
@@ -75,10 +76,14 @@ with writer.saving(fig, "rrt_test.mp4", 100):
     else:
         print("found path!!")
         print(path)
+        print("simple path")
+        simple_path = simplify_path(path, map)
+        print(simple_path)
         # Draw final path
         if show_animation:
             rrt.draw_graph()
-            plt.plot([x for (x, y) in path], [y for (x, y) in path], '-r')
+            plt.plot([x for (x, y) in path], [y for (x, y) in path], '-b')
+            plt.plot([x for (x, y) in simple_path], [y for (x, y) in simple_path], '-r')
             plt.grid(True)
             plt.pause(0.01)  # Need for Mac
             plt.show()
@@ -98,7 +103,7 @@ motor.start()
 from utils import calculate_distance, calculate_turn_angle
 pos_x, pos_y, angle = 0, 0, 0
 
-for point in reversed(path[:-1]):
+for point in reversed(simple_path[:-1]):
     target_x, target_y = point
 
     turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
