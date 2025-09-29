@@ -19,10 +19,8 @@ class MotorThread(threading.Thread):
                 if self._wait_until <= time.monotonic():
                     name, *args = self.cmd_queue.get(block=False)
 
-                    if name == "turn":
-                        self._turn(*args)
-                    elif name == "turn_90_degrees":
-                        self._turn_90_degrees(*args)
+                    if name == "turn_n_degrees":
+                        self._turn_n_degrees(*args)
                     elif name == "drive_n_cm_forward":
                         self._drive_n_cm_forward(*args)
 
@@ -57,25 +55,24 @@ class MotorThread(threading.Thread):
             self._is_drivingForward = False
             self.arlo.stop()
 
-    def _turn(self, direction: int, seconds: float):
-        LEFTSPEED, RIGHTSPEED = 57, 55
-        ldir, rdir = (0, 1) if direction == 0 else (1, 0)
+    def _turn_n_degrees(self, degrees: float):
+        if (degrees < 0):
+            LEFTSPEED, RIGHTSPEED = 57, 55
+            duration = 0.0123 * abs(degrees)
+            with self.serial_lock:
+                self._is_turning = True
+                self._is_drivingForward = False
+                self._wait_until = time.monotonic() + duration
+                self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 0, 1)
 
-        with self.serial_lock:
-            self._is_turning = True
-            self._is_drivingForward = False
-            self._wait_until = time.monotonic() + seconds
-            self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, ldir, rdir)
-
-    def _turn_90_degrees(self, direction: int):
-        LEFTSPEED, RIGHTSPEED = 105, 100
-        ldir, rdir = (0, 1) if direction == 0 else (1, 0)
-
-        with self.serial_lock:
-            self._is_turning = True
-            self._is_drivingForward = False
-            self._wait_until = time.monotonic() + 0.37
-            self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, ldir, rdir)
+        else:
+            LEFTSPEED, RIGHTSPEED = 57, 55
+            duration = 0.0115 * degrees
+            with self.serial_lock:
+                self._is_turning = True
+                self._is_drivingForward = False
+                self._wait_until = time.monotonic() + duration
+                self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 0)
 
     def _drive_n_cm_forward(self, speed: int, cm: float):
         if speed == 0:
@@ -92,3 +89,28 @@ class MotorThread(threading.Thread):
             self._is_drivingForward = True 
             self._wait_until = time.monotonic() + duration
             self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
+
+
+
+
+
+
+    # def _turn(self, direction: int, seconds: float):
+    #     LEFTSPEED, RIGHTSPEED = 57, 55
+    #     ldir, rdir = (0, 1) if direction == 0 else (1, 0)
+
+    #     with self.serial_lock:
+    #         self._is_turning = True
+    #         self._is_drivingForward = False
+    #         self._wait_until = time.monotonic() + seconds
+    #         self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, ldir, rdir)
+
+    # def _turn_90_degrees(self, direction: int):
+    #     LEFTSPEED, RIGHTSPEED = 105, 100
+    #     ldir, rdir = (0, 1) if direction == 0 else (1, 0)
+
+    #     with self.serial_lock:
+    #         self._is_turning = True
+    #         self._is_drivingForward = False
+    #         self._wait_until = time.monotonic() + 0.37
+    #         self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, ldir, rdir)

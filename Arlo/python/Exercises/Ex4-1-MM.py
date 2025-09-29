@@ -4,22 +4,16 @@ import numpy as np
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-
+import cv2
 from math import sin, cos, sqrt
 
 sys.path.append("..")
 import robot
 from camera import cam, find_corner_coordinates, detector
 
-DISTANCE_TO_CENTER = 0.115
-BOX_RADIUS = 0.17
+DISTANCE_TO_CENTER = 0.1
+BOX_RADIUS = 0.18
 ROBOT_RADIUS = 0.2250
-
-"""
-# BOX
-DISTANCE_TO_CENTER = 0.115
-BOX_RADIUS = 0.17
-"""
 
 
 def Collided(x, y, obstacle_centers):
@@ -35,6 +29,9 @@ def Collided(x, y, obstacle_centers):
 
 
 image = cam.capture_array("main")
+
+cv2.imwrite("frame.png", image)
+
 corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)
 
@@ -75,5 +72,4 @@ graph.set_ylim(-0.3,max(z_es)+1)
 
 graph.set_aspect('equal', adjustable='box')
 plt.savefig("map.png")
-
-print(Collided())
+print(Collided)

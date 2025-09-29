@@ -40,3 +40,13 @@ marker_length = 0.145
 def find_corner_coordinates(corners):
     return aruco.estimatePoseSingleMarkers(corners, marker_length, camera_matrix, dist_coeffs)
 
+"""
+Example of Usage:
+--------------------------------
+from camera import cam, find_corner_coordinates, detector
+
+image = cam.capture_array("main")
+corners, ids, rejected = detector.detectMarkers(image)
+rvecs, tvecs, _ = find_corner_coordinates(corners)
+--------------------------------
+"""
