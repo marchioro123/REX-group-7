@@ -1,5 +1,6 @@
 import numpy as np
 import random_numbers as rn
+from math import sqrt
 
 
 class Particle(object):
@@ -33,6 +34,12 @@ class Particle(object):
 
     def setWeight(self, val):
         self.weight = val
+
+    def distFrom(self, Lx, Ly):
+        return sqrt((Lx- self.x)**2 + (Ly - self.y)**2)
+
+
+
 
 
 def estimate_pose(particles_list):

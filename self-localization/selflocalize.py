@@ -5,6 +5,7 @@ import numpy as np
 import time
 from timeit import default_timer as timer
 import sys
+from scipy.stats import norm
 
 
 # Flags
@@ -191,14 +192,28 @@ try:
         
         # Detect objects
         objectIDs, dists, angles = cam.detect_aruco_objects(colour)
+
+        best_distances = [None] * len(landmarkIDs)
+        best_angles = [None] * len(landmarkIDs)
+
+
         if not isinstance(objectIDs, type(None)):
             # List detected objects
             for i in range(len(objectIDs)):
                 print("Object ID = ", objectIDs[i], ", Distance = ", dists[i], ", angle = ", angles[i])
+                if objectIDs[i] == landmarkIDs[0]:
+                    if best_distances[0] is None or dists[i] < first_dist:
+                        first_dist, first_angle = dists[i], angles[i]
+                if objectIDs[i] == landmarkIDs[1]:
+                    if second_dist is None or dists[i] < second_dist:
+                        second_dist, second_angle = dists[i], angles[i] 
                 # XXX: Do something for each detected object - remember, the same ID may appear several times
 
             # Compute particle weights
             # XXX: You do this
+            if first_dist is not None:
+                for part in particles:
+                    part.setWeight(norm.pdf( part.distFrom(landmarks[1][0], ) , loc=observedDist, scale=1.0))
 
             # Resampling
             # XXX: You do this
