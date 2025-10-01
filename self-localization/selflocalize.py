@@ -202,10 +202,10 @@ try:
         # Use motor controls to update particles
         # XXX: Make the robot drive
         # XXX: You do this
-        if (seen[1] == True and seen[8] == True) {
-            target_x, target_y = point
+        if (seen[1] == True and seen[8] == True):
+            target_x, target_y = (landmarks[8][0] + landmarks[1][0]) / 2, (landmarks[8][1] + landmarks[1][1]) / 2
 
-            turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
+            turn_angle = calculate_turn_angle(est_pose.getX(), est_pose.getY(), est_pose.getTheta()*180/np.pi, target_x, target_y)
             distance = calculate_distance(pos_x, pos_y, target_x, target_y)
             print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
 
@@ -216,10 +216,10 @@ try:
             pos_x, pos_y = target_x, target_y
             angle = (angle + turn_angle) % 360
 
-        }
-        else {
-            
-        }
+        else:
+            cmd_queue.put(("turn_n_degrees", 60))
+
+        
 
 
         # Fetch next frame
