@@ -3,10 +3,13 @@ import particle
 import camera
 import numpy as np
 import time
+import threading
+import queue
 import math
 from timeit import default_timer as timer
 import sys
 from scipy.stats import norm
+
 
 
 
@@ -29,6 +32,8 @@ if isRunningOnArlo():
 
 try:
     import robot
+    from motor_thread import MotorThread
+    from utils import calculate_distance, calculate_turn_angle
     onRobot = True
 except ImportError:
     print("selflocalize.py: robot module not present - forcing not running on Arlo!")
@@ -56,7 +61,10 @@ landmarks = {
 }
 landmark_colors = [CRED, CGREEN] # Colors used when drawing the landmarks
 
-
+seen = {
+    1: False,
+    8: False
+}
 
 
 
@@ -136,7 +144,7 @@ try:
 
 
     # Initialize particles
-    num_particles = 30
+    num_particles = 1000
     particles = initialize_particles(num_particles)
 
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
@@ -160,6 +168,13 @@ try:
     else:
         #cam = camera.Camera(0, robottype='macbookpro', useCaptureThread=True)
         cam = camera.Camera(1, robottype='macbookpro', useCaptureThread=False)
+
+    arlo = robot.Robot()
+    SERIAL_LOCK = threading.Lock()
+    cmd_queue = queue.Queue()
+    motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
+    motor.start()
+
 
     while True:
 
@@ -187,6 +202,24 @@ try:
         # Use motor controls to update particles
         # XXX: Make the robot drive
         # XXX: You do this
+        if (seen[1] == True and seen[8] == True) {
+            target_x, target_y = point
+
+            turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
+            distance = calculate_distance(pos_x, pos_y, target_x, target_y)
+            print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
+
+            cmd_queue.put(("turn_n_degrees", turn_angle))
+            time.sleep(0.01)
+            cmd_queue.put(("drive_n_cm_forward", 0, distance))
+            time.sleep(0.01)
+            pos_x, pos_y = target_x, target_y
+            angle = (angle + turn_angle) % 360
+
+        }
+        else {
+            
+        }
 
 
         # Fetch next frame
@@ -206,7 +239,7 @@ try:
                     best_distances[objectIDs[i]] = dists[i]
                     best_angles[objectIDs[i]] = angles[i]
                 # XXX: Do something for each detected object - remember, the same ID may appear several times
-            print(best_distances)
+            #print(best_distances)
             # Compute particle weights
             # XXX: You do this
             for p in particles:
@@ -217,17 +250,20 @@ try:
                     continue
                 for p in particles:
                     weight = p.getWeight()
-                    p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=10.0) * weight )
+                    p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=3.0) * weight )
 
             for box_id in best_distances.keys():
                 if (box_id not in landmarkIDs):
                     continue
+
+                Lx, Ly = landmarks[box_id]
+
                 for p in particles:
                     weight = p.getWeight()
-                    box_position = (landmarks[box_id])
-                    particle_angle = p.getTheta()
-                    p.setWeight( norm.pdf(particle_angle , loc=best_angles[box_id], scale=10.0 * math.pi / 180) * weight )
-
+                    absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
+                    dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
+                    p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=3.0 * math.pi / 180) * weight )
+        
             total_weight = np.sum([p.getWeight() for p in particles])
             for p in particles:
                 p.setWeight( p.getWeight() / total_weight )
@@ -243,7 +279,7 @@ try:
             )
             particles = [particles[i].copy() for i in indices]
 
-            particle.add_uncertainty(particles, 2, 5*math.pi / 180)
+            particle.add_uncertainty(particles, 3, 5*math.pi / 180)
 
 
             # Draw detected objects
