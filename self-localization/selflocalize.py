@@ -213,9 +213,20 @@ try:
                 p.setWeight(1.0)
 
             for box_id in best_distances.keys():
+                if (box_id not in landmarkIDs):
+                    continue
                 for p in particles:
                     weight = p.getWeight()
-                    p.setWeight( norm.pdf( p.distFrom(landmarks[8][0], landmarks[8][1]) , loc=best_distances[8], scale=100.0) * weight )
+                    p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=10.0) * weight )
+
+            for box_id in best_distances.keys():
+                if (box_id not in landmarkIDs):
+                    continue
+                for p in particles:
+                    weight = p.getWeight()
+                    box_position = (landmarks[box_id])
+                    particle_angle = p.getTheta()
+                    p.setWeight( norm.pdf(particle_angle , loc=best_angles[box_id], scale=10.0 * math.pi / 180) * weight )
 
             total_weight = np.sum([p.getWeight() for p in particles])
             for p in particles:
