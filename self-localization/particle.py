@@ -38,7 +38,8 @@ class Particle(object):
     def distFrom(self, Lx, Ly):
         return sqrt((Lx- self.x)**2 + (Ly - self.y)**2)
 
-
+    def copy(self):
+        return Particle(self.x, self.y, self.theta, self.weight)
 
 
 

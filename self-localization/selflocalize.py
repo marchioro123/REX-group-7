@@ -3,6 +3,7 @@ import particle
 import camera
 import numpy as np
 import time
+import math
 from timeit import default_timer as timer
 import sys
 from scipy.stats import norm
@@ -48,10 +49,10 @@ CBLACK = (0, 0, 0)
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
-landmarkIDs = [1, 2]
+landmarkIDs = [1, 8]
 landmarks = {
     1: (0.0, 0.0),  # Coordinates for landmark 1
-    2: (300.0, 0.0)  # Coordinates for landmark 2
+    8: (300.0, 0.0)  # Coordinates for landmark 2
 }
 landmark_colors = [CRED, CGREEN] # Colors used when drawing the landmarks
 
@@ -135,7 +136,7 @@ try:
 
 
     # Initialize particles
-    num_particles = 1000
+    num_particles = 30
     particles = initialize_particles(num_particles)
 
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
@@ -197,7 +198,6 @@ try:
         best_distances = dict()
         best_angles = dict()
 
-
         if not isinstance(objectIDs, type(None)):
             # List detected objects
             for i in range(len(objectIDs)):
@@ -206,7 +206,7 @@ try:
                     best_distances[objectIDs[i]] = dists[i]
                     best_angles[objectIDs[i]] = angles[i]
                 # XXX: Do something for each detected object - remember, the same ID may appear several times
-
+            print(best_distances)
             # Compute particle weights
             # XXX: You do this
             for p in particles:
@@ -214,17 +214,25 @@ try:
 
             for box_id in best_distances.keys():
                 for p in particles:
-                    p.setWeight( norm.pdf( p.distFrom(landmarks[1][0], ) , loc=best_distances[box_id], scale=1.0) * p.getWeight() )
+                    weight = p.getWeight()
+                    p.setWeight( norm.pdf( p.distFrom(landmarks[8][0], landmarks[8][1]) , loc=best_distances[8], scale=100.0) * weight )
 
             total_weight = np.sum([p.getWeight() for p in particles])
             for p in particles:
-                p.setWeight( p.getWeight / total_weight )
+                p.setWeight( p.getWeight() / total_weight )
 
             # Resampling
             # XXX: You do this
-            particles = np.random.default_rng().choice(particles, size=num_particles, replace=True, p=[p.getWeight for p in particles])
-            
-            particle.add_uncertainty(particles, 5, 5)
+          #  print([p.getWeight() for p in particles])
+            indices = np.random.default_rng().choice(
+                range(len(particles)),
+                size=num_particles,
+                replace=True,
+                p=[p.getWeight() for p in particles]
+            )
+            particles = [particles[i].copy() for i in indices]
+
+            particle.add_uncertainty(particles, 2, 5*math.pi / 180)
 
 
             # Draw detected objects
