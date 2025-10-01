@@ -8,6 +8,7 @@ import sys
 from scipy.stats import norm
 
 
+
 # Flags
 showGUI = True  # Whether or not to open GUI windows
 onRobot = True  # Whether or not we are running on the Arlo robot
@@ -22,7 +23,7 @@ def isRunningOnArlo():
 
 if isRunningOnArlo():
     # XXX: You need to change this path to point to where your robot.py file is located
-    sys.path.append("../../../../Arlo/python")
+    sys.path.append("../Arlo/python")
 
 
 try:
@@ -193,30 +194,38 @@ try:
         # Detect objects
         objectIDs, dists, angles = cam.detect_aruco_objects(colour)
 
-        best_distances = [None] * len(landmarkIDs)
-        best_angles = [None] * len(landmarkIDs)
+        best_distances = dict()
+        best_angles = dict()
 
 
         if not isinstance(objectIDs, type(None)):
             # List detected objects
             for i in range(len(objectIDs)):
                 print("Object ID = ", objectIDs[i], ", Distance = ", dists[i], ", angle = ", angles[i])
-                if objectIDs[i] == landmarkIDs[0]:
-                    if best_distances[0] is None or dists[i] < first_dist:
-                        first_dist, first_angle = dists[i], angles[i]
-                if objectIDs[i] == landmarkIDs[1]:
-                    if second_dist is None or dists[i] < second_dist:
-                        second_dist, second_angle = dists[i], angles[i] 
+                if (objectIDs[i] not in best_distances.keys()) or (best_distances[objectIDs[i]] > dists[i]):
+                    best_distances[objectIDs[i]] = dists[i]
+                    best_angles[objectIDs[i]] = angles[i]
                 # XXX: Do something for each detected object - remember, the same ID may appear several times
 
             # Compute particle weights
             # XXX: You do this
-            if first_dist is not None:
-                for part in particles:
-                    part.setWeight(norm.pdf( part.distFrom(landmarks[1][0], ) , loc=observedDist, scale=1.0))
+            for p in particles:
+                p.setWeight(1.0)
+
+            for box_id in best_distances.keys():
+                for p in particles:
+                    p.setWeight( norm.pdf( p.distFrom(landmarks[1][0], ) , loc=best_distances[box_id], scale=1.0) * p.getWeight() )
+
+            total_weight = np.sum([p.getWeight() for p in particles])
+            for p in particles:
+                p.setWeight( p.getWeight / total_weight )
 
             # Resampling
             # XXX: You do this
+            particles = np.random.default_rng().choice(particles, size=num_particles, replace=True, p=[p.getWeight for p in particles])
+            
+            particle.add_uncertainty(particles, 5, 5)
+
 
             # Draw detected objects
             cam.draw_aruco_objects(colour)
