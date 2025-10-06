@@ -294,7 +294,7 @@ try:
 
     
         est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
-        print("predX = ", est_pose.getX(), ", predX = ", est_pose.getY(), ", predTheta = ", est_pose.setTheta())
+        print("predX = ", est_pose.getX(), ", predX = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta())
 
         if showGUI:
             # Draw map
