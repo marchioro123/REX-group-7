@@ -10,13 +10,9 @@ from timeit import default_timer as timer
 import sys
 from scipy.stats import norm
 
-
-
-
 # Flags
 showGUI = True  # Whether or not to open GUI windows
 onRobot = True  # Whether or not we are running on the Arlo robot
-
 
 def isRunningOnArlo():
     """Return True if we are running on Arlo, otherwise False.
@@ -24,11 +20,9 @@ def isRunningOnArlo():
     """
     return onRobot
 
-
 if isRunningOnArlo():
     # XXX: You need to change this path to point to where your robot.py file is located
     sys.path.append("../Arlo/python")
-
 
 try:
     import robot
@@ -38,9 +32,6 @@ try:
 except ImportError:
     print("selflocalize.py: robot module not present - forcing not running on Arlo!")
     onRobot = False
-
-
-
 
 # Some color constants in BGR format
 CRED = (0, 0, 255)
@@ -65,8 +56,6 @@ seen = {
     1: False,
     8: False
 }
-
-
 
 def jet(x):
     """Colour map for drawing particles. This function determines the colour of 
@@ -118,8 +107,6 @@ def draw_world(est_pose, particles, world):
     cv2.circle(world, a, 5, CMAGENTA, 2)
     cv2.line(world, a, b, CMAGENTA, 2)
 
-
-
 def initialize_particles(num_particles):
     particles = []
     for i in range(num_particles):
@@ -128,7 +115,6 @@ def initialize_particles(num_particles):
         particles.append(p)
 
     return particles
-
 
 # Main program #
 try:
@@ -202,19 +188,26 @@ try:
         # Use motor controls to update particles
         # XXX: Make the robot drive
         # XXX: You do this
-        if (seen[1] == True and seen[8] == True):
+        if all(seen.values()):
             target_x, target_y = (landmarks[8][0] + landmarks[1][0]) / 2, (landmarks[8][1] + landmarks[1][1]) / 2
+            pos_x, pos_y = est_pose.getX(), est_pose.getY()
 
-            turn_angle = calculate_turn_angle(est_pose.getX(), est_pose.getY(), est_pose.getTheta()*180/np.pi, target_x, target_y)
+            turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_pose.getTheta())) % 360.0, target_x, target_y)
             distance = calculate_distance(pos_x, pos_y, target_x, target_y)
             print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
 
             cmd_queue.put(("turn_n_degrees", turn_angle))
-            time.sleep(0.01)
             cmd_queue.put(("drive_n_cm_forward", 0, distance))
-            time.sleep(0.01)
-            pos_x, pos_y = target_x, target_y
-            angle = (angle + turn_angle) % 360
+
+            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                time.sleep(0.1)
+            motor.clear_has_started()
+            print("Stopped at target")
+
+            particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
+
+            for k in seen:
+                seen[k] = False
 
         else:
             cmd_queue.put(("turn_n_degrees", 60))
@@ -234,12 +227,17 @@ try:
         if not isinstance(objectIDs, type(None)):
             # List detected objects
             for i in range(len(objectIDs)):
-                print("Object ID = ", objectIDs[i], ", Distance = ", dists[i], ", angle = ", angles[i])
-                if (objectIDs[i] not in best_distances.keys()) or (best_distances[objectIDs[i]] > dists[i]):
-                    best_distances[objectIDs[i]] = dists[i]
-                    best_angles[objectIDs[i]] = angles[i]
+                obj_id = objectIDs[i]
+                if (obj_id not in landmarkIDs):
+                    continue
+
+                print("Object ID = ", obj_id, ", Distance = ", dists[i], ", angle = ", angles[i])
+                seen[obj_id] = True
+                if (obj_id not in best_distances.keys()) or (best_distances[obj_id] > dists[i]):
+                    best_distances[obj_id] = dists[i]
+                    best_angles[obj_id] = angles[i]
                 # XXX: Do something for each detected object - remember, the same ID may appear several times
-            #print(best_distances)
+
             # Compute particle weights
             # XXX: You do this
             for p in particles:
