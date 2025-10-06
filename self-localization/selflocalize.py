@@ -48,7 +48,7 @@ CBLACK = (0, 0, 0)
 landmarkIDs = [1, 8]
 landmarks = {
     1: (0.0, 0.0),  # Coordinates for landmark 1
-    8: (300.0, 0.0)  # Coordinates for landmark 2
+    8: (200.0, 0.0)  # Coordinates for landmark 2
 }
 landmark_colors = [CRED, CGREEN] # Colors used when drawing the landmarks
 
@@ -209,19 +209,19 @@ try:
             motor.clear_has_started()
             print("Stopped at target")
 
-        else:
-            print("Turn 50 degrees")
-            turn_angle = 50
-            cmd_queue.put(("turn_n_degrees", turn_angle))
-            particle.move_particles(particles, 0, 0, math.radians(turn_angle))
+        # else:
+        #     print("Turn 50 degrees")
+        #     turn_angle = 50
+        #     cmd_queue.put(("turn_n_degrees", turn_angle))
+        #     particle.move_particles(particles, 0, 0, math.radians(turn_angle))
 
-            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-                time.sleep(0.1)
-            motor.clear_has_started()
-            print("Finished turning")
+        #     while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+        #         time.sleep(0.1)
+        #     motor.clear_has_started()
+        #     print("Finished turning")
 
 
-        time.sleep(1)
+        # time.sleep(1)
         # Fetch next frame
         colour = cam.get_next_frame()
         
