@@ -246,7 +246,9 @@ try:
             # Compute particle weights
             # XXX: You do this
             for i in range(100):
-                print(i)
+                if (i % 10 == 0):
+                    print(i)
+
                 for p in particles:
                     p.setWeight(1.0)
 
