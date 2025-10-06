@@ -199,20 +199,25 @@ try:
             cmd_queue.put(("turn_n_degrees", turn_angle))
             cmd_queue.put(("drive_n_cm_forward", 0, distance))
 
-            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-                time.sleep(0.1)
-            motor.clear_has_started()
-            print("Stopped at target")
-
             particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
 
             for k in seen:
                 seen[k] = False
 
+            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                time.sleep(0.1)
+            motor.clear_has_started()
+            print("Stopped at target")
+
         else:
+            print("Turn 60 degrees")
             cmd_queue.put(("turn_n_degrees", 60))
 
-        
+            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                time.sleep(0.1)
+            motor.clear_has_started()
+            print("Finished turning")
+
 
 
         # Fetch next frame
