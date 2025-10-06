@@ -161,8 +161,6 @@ try:
     motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
     motor.start()
 
-    i = 0
-
     while True:
 
         # Move the robot according to user input (only for testing)
@@ -189,7 +187,7 @@ try:
         # # Use motor controls to update particles
         # # XXX: Make the robot drive
         # # XXX: You do this
-        if all(seen.values()) and i == 4:
+        if all(seen.values()):
             target_x, target_y = (landmarks[8][0] + landmarks[1][0]) / 2, (landmarks[8][1] + landmarks[1][1]) / 2
             pos_x, pos_y = est_pose.getX(), est_pose.getY()
            
@@ -303,7 +301,6 @@ try:
 
         est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
         print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta())
-        i = i+1
 
         if showGUI:
             # Draw map
