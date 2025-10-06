@@ -189,7 +189,7 @@ try:
         # # Use motor controls to update particles
         # # XXX: Make the robot drive
         # # XXX: You do this
-        if all(seen.values()) and i == 50:
+        if all(seen.values()) and i == 4:
             target_x, target_y = (landmarks[8][0] + landmarks[1][0]) / 2, (landmarks[8][1] + landmarks[1][1]) / 2
             pos_x, pos_y = est_pose.getX(), est_pose.getY()
            
