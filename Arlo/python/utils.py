@@ -10,7 +10,7 @@ def should_stop(front_dist, left_dist, right_dist):
 def calculate_distance(x1, y1, x2, y2):
     dx = x2 - x1
     dy = y2 - y1
-    return math.sqrt(dx**2 + dy**2) * 100
+    return math.sqrt(dx**2 + dy**2)
 
 def calculate_turn_angle(x1, y1, angle_deg, x2, y2):
     dx, dy = x2 - x1, y2 - y1
