@@ -26,7 +26,7 @@ if isRunningOnArlo():
 
 try:
     import robot
-  #  from motor_thread import MotorThread
+    from motor_thread import MotorThread
     from utils import calculate_distance, calculate_turn_angle
     onRobot = True
 except ImportError:
