@@ -213,7 +213,7 @@ try:
             print("Turn 50 degrees")
             turn_angle = 50
             cmd_queue.put(("turn_n_degrees", turn_angle))
-            particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
+            particle.move_particles(particles, 0, 0, math.radians(turn_angle))
 
             while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
                 time.sleep(0.1)
