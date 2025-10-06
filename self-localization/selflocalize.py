@@ -219,7 +219,7 @@ try:
             print("Finished turning")
 
 
-
+        time.sleep(1)
         # Fetch next frame
         colour = cam.get_next_frame()
         
