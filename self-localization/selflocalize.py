@@ -161,6 +161,7 @@ try:
     motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
     motor.start()
 
+    i = 0
 
     while True:
 
@@ -188,10 +189,10 @@ try:
         # # Use motor controls to update particles
         # # XXX: Make the robot drive
         # # XXX: You do this
-        if all(seen.values()):
+        if all(seen.values()) and i == 50:
             target_x, target_y = (landmarks[8][0] + landmarks[1][0]) / 2, (landmarks[8][1] + landmarks[1][1]) / 2
             pos_x, pos_y = est_pose.getX(), est_pose.getY()
-
+           
             turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_pose.getTheta())) % 360.0, target_x, target_y)
             distance = calculate_distance(pos_x, pos_y, target_x, target_y)
             print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
@@ -302,6 +303,7 @@ try:
 
         est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
         print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta())
+        i = i+1
 
         if showGUI:
             # Draw map
