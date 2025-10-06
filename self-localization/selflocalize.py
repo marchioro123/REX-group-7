@@ -130,7 +130,7 @@ try:
 
 
     # Initialize particles
-    num_particles = 200
+    num_particles = 1000
     particles = initialize_particles(num_particles)
 
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
@@ -211,7 +211,9 @@ try:
 
         else:
             print("Turn 50 degrees")
-            cmd_queue.put(("turn_n_degrees", 50))
+            turn_angle = 50
+            cmd_queue.put(("turn_n_degrees", turn_angle))
+            particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
 
             while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
                 time.sleep(0.1)
@@ -219,7 +221,7 @@ try:
             print("Finished turning")
 
 
-        time.sleep(1)
+        # time.sleep(1)
         # Fetch next frame
         colour = cam.get_next_frame()
         
@@ -245,9 +247,9 @@ try:
 
             # Compute particle weights
             # XXX: You do this
-            for i in range(100):
-                if (i % 10 == 0):
-                    print(i)
+            for i in range(20):
+            # if (i % 10 == 0):
+            #     print(i)
 
                 for p in particles:
                     p.setWeight(1.0)
@@ -293,16 +295,16 @@ try:
                 particle.add_uncertainty(particles, 3, 5*math.pi / 180)
 
 
-            # Draw detected objects
-            cam.draw_aruco_objects(colour)
-        else:
-            # No observation - reset weights to uniform distribution
-            for p in particles:
-                p.setWeight(1.0/num_particles)
+                # Draw detected objects
+                cam.draw_aruco_objects(colour)
+            else:
+                # No observation - reset weights to uniform distribution
+                for p in particles:
+                    p.setWeight(1.0/num_particles)
 
-    
-        est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
-        print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta())
+
+            est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
+            print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta())
 
         if showGUI:
             # Draw map
