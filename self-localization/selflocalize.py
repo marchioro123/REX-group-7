@@ -11,7 +11,7 @@ import sys
 from scipy.stats import norm
 
 # Flags
-showGUI = False  # Whether or not to open GUI windows
+showGUI = True  # Whether or not to open GUI windows
 onRobot = True  # Whether or not we are running on the Arlo robot
 
 def isRunningOnArlo():
@@ -155,11 +155,11 @@ try:
         #cam = camera.Camera(0, robottype='macbookpro', useCaptureThread=True)
         cam = camera.Camera(1, robottype='macbookpro', useCaptureThread=False)
 
-    arlo = robot.Robot()
-    SERIAL_LOCK = threading.Lock()
-    cmd_queue = queue.Queue()
-    motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
-    motor.start()
+    # arlo = robot.Robot()
+    # SERIAL_LOCK = threading.Lock()
+    # cmd_queue = queue.Queue()
+    # motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
+    # motor.start()
 
 
     while True:
@@ -185,41 +185,42 @@ try:
 
 
         
-        # Use motor controls to update particles
-        # XXX: Make the robot drive
-        # XXX: You do this
+        # # Use motor controls to update particles
+        # # XXX: Make the robot drive
+        # # XXX: You do this
         if all(seen.values()):
-            target_x, target_y = (landmarks[8][0] + landmarks[1][0]) / 2, (landmarks[8][1] + landmarks[1][1]) / 2
-            pos_x, pos_y = est_pose.getX(), est_pose.getY()
+            time.sleep(1000)
+        #     target_x, target_y = (landmarks[8][0] + landmarks[1][0]) / 2, (landmarks[8][1] + landmarks[1][1]) / 2
+        #     pos_x, pos_y = est_pose.getX(), est_pose.getY()
 
-            turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_pose.getTheta())) % 360.0, target_x, target_y)
-            distance = calculate_distance(pos_x, pos_y, target_x, target_y)
-            print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
+        #     turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_pose.getTheta())) % 360.0, target_x, target_y)
+        #     distance = calculate_distance(pos_x, pos_y, target_x, target_y)
+        #     print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
 
-            cmd_queue.put(("turn_n_degrees", turn_angle))
-            cmd_queue.put(("drive_n_cm_forward", 0, distance))
+        #     cmd_queue.put(("turn_n_degrees", turn_angle))
+        #     cmd_queue.put(("drive_n_cm_forward", 0, distance))
 
-            particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
+        #     particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
 
-            for k in seen:
-                seen[k] = False
+        #     for k in seen:
+        #         seen[k] = False
 
-            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-                time.sleep(0.1)
-            motor.clear_has_started()
-            print("Stopped at target")
+        #     while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+        #         time.sleep(0.1)
+        #     motor.clear_has_started()
+        #     print("Stopped at target")
 
-        else:
-            print("Turn 50 degrees")
-            cmd_queue.put(("turn_n_degrees", 50))
+        # else:
+        #     print("Turn 50 degrees")
+        #     cmd_queue.put(("turn_n_degrees", 50))
 
-            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-                time.sleep(0.1)
-            motor.clear_has_started()
-            print("Finished turning")
+        #     while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+        #         time.sleep(0.1)
+        #     motor.clear_has_started()
+        #     print("Finished turning")
 
 
-        time.sleep(1)
+        # time.sleep(1)
         # Fetch next frame
         colour = cam.get_next_frame()
         
@@ -245,44 +246,49 @@ try:
 
             # Compute particle weights
             # XXX: You do this
-            for p in particles:
-                p.setWeight(1.0)
-
-            for box_id in best_distances.keys():
-                if (box_id not in landmarkIDs):
-                    continue
+            for _ in range(100):
                 for p in particles:
-                    weight = p.getWeight()
-                    p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=3.0) * weight )
+                    p.setWeight(1.0)
 
-            for box_id in best_distances.keys():
-                if (box_id not in landmarkIDs):
-                    continue
+                for box_id in best_distances.keys():
+                    if (box_id not in landmarkIDs):
+                        continue
+                    for p in particles:
+                        weight = p.getWeight()
+                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=3.0) * weight )
 
-                Lx, Ly = landmarks[box_id]
+                for box_id in best_distances.keys():
+                    if (box_id not in landmarkIDs):
+                        continue
 
-                for p in particles:
-                    weight = p.getWeight()
-                    absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
-                    dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
-                    p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=3.0 * math.pi / 180) * weight )
-        
-            total_weight = np.sum([p.getWeight() for p in particles])
-            for p in particles:
-                p.setWeight( p.getWeight() / total_weight )
+                    Lx, Ly = landmarks[box_id]
 
-            # Resampling
-            # XXX: You do this
-          #  print([p.getWeight() for p in particles])
-            indices = np.random.default_rng().choice(
-                range(len(particles)),
-                size=num_particles,
-                replace=True,
-                p=[p.getWeight() for p in particles]
-            )
-            particles = [particles[i].copy() for i in indices]
+                    for p in particles:
+                        weight = p.getWeight()
+                        absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
+                        dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
+                        p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=3.0 * math.pi / 180) * weight )
+            
+                total_weight = np.sum([p.getWeight() for p in particles])
+                if (total_weight != 0):
+                    for p in particles:
+                        p.setWeight( p.getWeight() / total_weight )
+                else:
+                    for p in particles:
+                        p.setWeight( 1 / num_particles )
 
-            particle.add_uncertainty(particles, 3, 5*math.pi / 180)
+                # Resampling
+                # XXX: You do this
+            #  print([p.getWeight() for p in particles])
+                indices = np.random.default_rng().choice(
+                    range(len(particles)),
+                    size=num_particles,
+                    replace=True,
+                    p=[p.getWeight() for p in particles]
+                )
+                particles = [particles[i].copy() for i in indices]
+
+                particle.add_uncertainty(particles, 3, 5*math.pi / 180)
 
 
             # Draw detected objects
@@ -294,7 +300,7 @@ try:
 
     
         est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
-        print("predX = ", est_pose.getX(), ", predX = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta())
+        print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta())
 
         if showGUI:
             # Draw map
