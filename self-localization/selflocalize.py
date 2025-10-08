@@ -238,7 +238,7 @@ try:
                     if (obj_id not in landmarkIDs):
                         continue
 
-                    print("Object ID = ", obj_id, ", Distance = ", dists[i], ", angle = ", angles[i])
+                    print("Object ID = ", obj_id, ", Distance = ", dists[i], ", angle = ", angles[i]*180/np.pi)
                     seen[obj_id] = True
                     if (obj_id not in best_distances.keys()) or (best_distances[obj_id] > dists[i]):
                         best_distances[obj_id] = dists[i]
@@ -266,7 +266,17 @@ try:
                         print("POSITION WEIGHT WAS 0")
                         for p in particles:
                             p.setWeight( 1 / num_particles )
+                        
+                indices = np.random.default_rng().choice(
+                range(len(particles)),
+                size=num_particles,
+                replace=True,
+                p=[p.getWeight() for p in particles]
+                )
+                particles = [particles[i].copy() for i in indices]
 
+                for p in particles:
+                    p.setWeight(1.0)
 
                 for box_id in best_distances.keys():
                     if (box_id not in landmarkIDs):
@@ -276,7 +286,7 @@ try:
 
                     for p in particles:
                         weight = p.getWeight()
-                        absolute_dir = math.atan2(Lx - p.getX(), Ly - p.getY())
+                        absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
                         # if absolute_dir < 0:
                         #     absolute_dir += 2 * math.pi
                             
