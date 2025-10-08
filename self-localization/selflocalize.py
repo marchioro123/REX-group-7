@@ -271,7 +271,8 @@ try:
                 for box_id in best_distances.keys():
                     if (box_id not in landmarkIDs):
                         continue
-
+                    if (i < 1):
+                        continue
                     Lx, Ly = landmarks[box_id]
 
                     for p in particles:
