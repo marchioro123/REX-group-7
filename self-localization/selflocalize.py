@@ -267,28 +267,7 @@ try:
                         absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
                         dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
                         p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=3.0 * math.pi / 180) * weight )
-            
-                total_weight = np.sum([p.getWeight() for p in particles])
-                if (total_weight != 0):
-                    for p in particles:
-                        p.setWeight( p.getWeight() / total_weight )
-                else:
-                    for p in particles:
-                        p.setWeight( 1 / num_particles )
-
-                # Resampling
-                # XXX: You do this
-            #  print([p.getWeight() for p in particles])
-                indices = np.random.default_rng().choice(
-                    range(len(particles)),
-                    size=num_particles,
-                    replace=True,
-                    p=[p.getWeight() for p in particles]
-                )
-                particles = [particles[i].copy() for i in indices]
-
-                particle.add_uncertainty(particles, 0, 3*math.pi / 180)
-
+        
 
                 # Draw detected objects
                 cam.draw_aruco_objects(colour)
@@ -297,9 +276,32 @@ try:
                 for p in particles:
                     p.setWeight(1.0/num_particles)
 
+            particle.add_uncertainty(particles, 0, 3*math.pi / 180)
 
-            est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
-            print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta())
+        est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
+        print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta())
+
+        total_weight = np.sum([p.getWeight() for p in particles])
+        if (total_weight != 0):
+            for p in particles:
+                p.setWeight( p.getWeight() / total_weight )
+        else:
+            for p in particles:
+                p.setWeight( 1 / num_particles )
+
+        # Resampling
+        # XXX: You do this
+    #  print([p.getWeight() for p in particles])
+        indices = np.random.default_rng().choice(
+            range(len(particles)),
+            size=num_particles,
+            replace=True,
+            p=[p.getWeight() for p in particles]
+        )
+        particles = [particles[i].copy() for i in indices]
+
+        particle.add_uncertainty(particles, 0, 3*math.pi / 180)
+
 
         if showGUI:
             # Draw map
