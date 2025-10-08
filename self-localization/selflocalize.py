@@ -287,7 +287,7 @@ try:
                             print("Absolute dir ", absolute_dir*180/np.pi)
                             print("getTheta = ",p.getTheta()*180/np.pi)
                             print("Best_angles = ",best_angles[box_id]*180/np.pi)
-                            print("dir_delta = ",dir_delta*180/np.pi)
+                            print("dir_delta = ",((dir_delta + np.pi) % (2*np.pi) - np.pi)*180/np.pi)
                             print("New weight = ", norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180), "\n")
                         
                         p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180) * weight )
