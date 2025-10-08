@@ -205,17 +205,17 @@ try:
                 time.sleep(0.1)
             motor.clear_has_started()
             print("Stopped at target")
+            
+        else:
+            print("Turn 50 degrees")
+            turn_angle = 50
+            cmd_queue.put(("turn_n_degrees", turn_angle))
+            particle.move_particles(particles, 0, 0, math.radians(turn_angle))
 
-        # else:
-        #     print("Turn 50 degrees")
-        #     turn_angle = 50
-        #     cmd_queue.put(("turn_n_degrees", turn_angle))
-        #     particle.move_particles(particles, 0, 0, math.radians(turn_angle))
-
-        #     while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-        #         time.sleep(0.1)
-        #     motor.clear_has_started()
-        #     print("Finished turning")
+            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                time.sleep(0.1)
+            motor.clear_has_started()
+            print("Finished turning")
 
         for j in range(1):
             # time.sleep(1)
