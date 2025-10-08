@@ -263,6 +263,7 @@ try:
                         for p in particles:
                             p.setWeight( p.getWeight() / total_weight )
                     else:
+                        print("POSITION WEIGHT WAS 0")
                         for p in particles:
                             p.setWeight( 1 / num_particles )
 
@@ -280,10 +281,12 @@ try:
                         p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=20.0 * math.pi / 180) * weight )
                     
                     total_weight = np.sum([p.getWeight() for p in particles])
+
                     if (total_weight != 0):
                         for p in particles:
                             p.setWeight( p.getWeight() / total_weight )
                     else:
+                        print("ANGLE WEIGHT WAS 0")
                         for p in particles:
                             p.setWeight( 1 / num_particles )
             
