@@ -221,6 +221,7 @@ try:
             while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
                 time.sleep(0.1)
             motor.clear_has_started()
+            particle.add_uncertainty(particles, 0, 2*math.pi / 180)
             print("Finished turning")
 
         time.sleep(1)
