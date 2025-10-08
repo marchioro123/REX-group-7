@@ -184,27 +184,27 @@ try:
         # # Use motor controls to update particles
         # # XXX: Make the robot drive
         # # XXX: You do this
-        # if all(seen.values()):
-        #    time.sleep(1000)
-            # target_x, target_y = (landmarks[6][0] + landmarks[1][0]) / 2, (landmarks[6][1] + landmarks[1][1]) / 2
-            # pos_x, pos_y, est_theta = est_pose.getX(), est_pose.getY(), est_pose.getTheta()
+        if all(seen.values()):
+          # time.sleep(1000)
+            target_x, target_y = (landmarks[6][0] + landmarks[1][0]) / 2, (landmarks[6][1] + landmarks[1][1]) / 2
+            pos_x, pos_y, est_theta = est_pose.getX(), est_pose.getY(), est_pose.getTheta()
            
-            # turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_theta)) % 360.0, target_x, target_y)
-            # distance = calculate_distance(pos_x, pos_y, target_x, target_y)
-            # print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
+            turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_theta)) % 360.0, target_x, target_y)
+            distance = calculate_distance(pos_x, pos_y, target_x, target_y)
+            print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
 
-            # cmd_queue.put(("turn_n_degrees", turn_angle))
-            # cmd_queue.put(("drive_n_cm_forward", 0, distance))
+            cmd_queue.put(("turn_n_degrees", turn_angle))
+            cmd_queue.put(("drive_n_cm_forward", 0, distance))
 
-            # particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
+            particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
 
-            # for k in seen:
-            #     seen[k] = False
+            for k in seen:
+                seen[k] = False
 
-            # while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-            #     time.sleep(0.1)
-            # motor.clear_has_started()
-            # print("Stopped at target")
+            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                time.sleep(0.1)
+            motor.clear_has_started()
+            print("Stopped at target")
 
         # else:
         #     print("Turn 50 degrees")
