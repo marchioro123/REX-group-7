@@ -276,7 +276,7 @@ try:
 
                     for p in particles:
                         weight = p.getWeight()
-                        absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
+                        absolute_dir = -math.atan2(Ly - p.getY(), Lx - p.getX())
                         # if absolute_dir < 0:
                         #     absolute_dir += 2 * math.pi
                             
