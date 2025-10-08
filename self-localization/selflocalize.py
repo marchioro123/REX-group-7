@@ -257,27 +257,27 @@ try:
                         weight = p.getWeight()
                         p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=10) * weight )
 
-                # for box_id in best_distances.keys():
-                #     if (box_id not in landmarkIDs):
-                #         continue
-                #     Lx, Ly = landmarks[box_id]
-                #     k=0
-                #     for p in particles:
+                for box_id in best_distances.keys():
+                    if (box_id not in landmarkIDs):
+                        continue
+                    Lx, Ly = landmarks[box_id]
+                    k=0
+                    for p in particles:
                         
-                #         weight = p.getWeight()
-                #         dist_from = p.distFrom(landmarks[box_id][0], landmarks[box_id][1])
+                        weight = p.getWeight()
+                        dist_from = p.distFrom(landmarks[box_id][0], landmarks[box_id][1])
 
-                #         dir_landmark = np.array(((Lx - p.getX()) / dist_from, (Ly - p.getY()) / dist_from))
-                #         dir_particle = np.array((np.cos(p.getTheta()), np.sin(p.getTheta())))
-                #         dir_orth_particle = np.array((- np.sin(p.getTheta()), np.cos(p.getTheta())))
+                        dir_landmark = np.array(((Lx - p.getX()) / dist_from, (Ly - p.getY()) / dist_from))
+                        dir_particle = np.array((np.cos(p.getTheta()), np.sin(p.getTheta())))
+                        dir_orth_particle = np.array((- np.sin(p.getTheta()), np.cos(p.getTheta())))
 
-                #         theta = np.sign(dir_landmark @ dir_orth_particle) * np.arccos(dir_landmark @ dir_particle)
+                        theta = np.sign(dir_landmark @ dir_orth_particle) * np.arccos(dir_landmark @ dir_particle)
 
-                #      #   if (k==0):
-                #       #  print(dir_landmark @ dir_particle)
+                     #   if (k==0):
+                      #  print(dir_landmark @ dir_particle)
 
-                #         p.setWeight( norm.pdf(best_angles[box_id] - theta, loc=0, scale=15 * math.pi / 180) * weight )
-                #         k=k+1
+                        p.setWeight( norm.pdf(best_angles[box_id] - theta, loc=0, scale=15 * math.pi / 180) * weight )
+                        k=k+1
 
                 total_weight = np.sum([p.getWeight() for p in particles])
 
