@@ -204,6 +204,8 @@ try:
             while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
                 time.sleep(0.1)
             motor.clear_has_started()
+
+            particle.add_uncertainty(particles, 10, 5*math.pi / 180)
             print("Stopped at target")
 
         else:
