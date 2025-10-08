@@ -227,6 +227,9 @@ try:
 
         best_distances = dict()
         best_angles = dict()
+        
+        for p in particles:
+            p.setWeight(1.0)
 
         for i in range(5):
             if not isinstance(objectIDs, type(None)):
@@ -245,9 +248,6 @@ try:
 
                 # Compute particle weights
                 # XXX: You do this
-
-                for p in particles:
-                    p.setWeight(1.0)
 
                 # for box_id in best_distances.keys():
                 #     if (box_id not in landmarkIDs):
