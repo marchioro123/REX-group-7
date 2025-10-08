@@ -130,7 +130,7 @@ try:
 
 
     # Initialize particles
-    num_particles = 5000
+    num_particles = 2000
     particles = initialize_particles(num_particles)
 
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
@@ -218,7 +218,7 @@ try:
             print("Finished turning")
 
         time.sleep(1)
-        
+
         for j in range(1):
             # time.sleep(1)
             # Fetch next frame
@@ -242,7 +242,7 @@ try:
                     print("Object ID = ", obj_id, ", Distance = ", dists[i], ", angle = ", angles[i]*180/np.pi)
                     seen[obj_id] = True
                     if (obj_id not in best_distances.keys()) or (best_distances[obj_id] > dists[i]):
-                        best_distances[obj_id] = dists[i]
+                        best_distances[obj_id] = dists[i] + 22.5
                         best_angles[obj_id] = angles[i]
                 # XXX: Do something for each detected object - remember, the same ID may appear several times
 
