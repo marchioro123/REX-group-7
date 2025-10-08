@@ -11,7 +11,7 @@ import sys
 from scipy.stats import norm
 
 # Flags
-showGUI = True  # Whether or not to open GUI windows
+showGUI = False  # Whether or not to open GUI windows
 onRobot = True  # Whether or not we are running on the Arlo robot
 
 def isRunningOnArlo():
@@ -298,7 +298,7 @@ try:
 
 
         est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
-        print("predX = ", est_pose.getX(), ", predY = ", -est_pose.getY(), ", predTheta = ", est_pose.getTheta())
+        print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta())
 
         if showGUI:
             # Draw map
