@@ -282,11 +282,11 @@ try:
                         #     absolute_dir += 2 * math.pi
                             
                         dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
-                        print(absolute_dir)
-                        print(p.getTheta())
-                        print(best_angles[box_id])
-                        print(dir_delta)
-                        print(norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi))
+                        print("Absolute dir ", absolute_dir)
+                        print("getTheta = ",p.getTheta())
+                        print("Best_angles = ",best_angles[box_id])
+                        print("dir_delta = ",dir_delta)
+                        print("New weight = ", norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180))
                         p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180) * weight )
                     
                 total_weight = np.sum([p.getWeight() for p in particles])
