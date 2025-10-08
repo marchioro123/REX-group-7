@@ -266,7 +266,7 @@ try:
                         weight = p.getWeight()
                         absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
                         dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
-                        p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180) * weight )
+                        p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=3.0 * math.pi / 180) * weight )
             
                 total_weight = np.sum([p.getWeight() for p in particles])
                 if (total_weight != 0):
