@@ -237,7 +237,7 @@ try:
             best_angles = dict()
 
             if not isinstance(objectIDs, type(None)):
-                particle.add_uncertainty(particles, 1, 1*math.pi / 180)
+                particle.add_uncertainty(particles, 5, 5*math.pi / 180)
                 
                 # List detected objects
                 for i in range(len(objectIDs)):
