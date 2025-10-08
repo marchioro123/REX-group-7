@@ -11,7 +11,7 @@ import sys
 from scipy.stats import norm
 
 # Flags
-showGUI = False  # Whether or not to open GUI windows
+showGUI = True  # Whether or not to open GUI windows
 onRobot = True  # Whether or not we are running on the Arlo robot
 
 def isRunningOnArlo():
@@ -45,16 +45,16 @@ CBLACK = (0, 0, 0)
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
-landmarkIDs = [1, 8]
+landmarkIDs = [1, 6]
 landmarks = {
     1: (0.0, 0.0),  # Coordinates for landmark 1
-    8: (200.0, 0.0)  # Coordinates for landmark 2
+    6: (200.0, 0.0)  # Coordinates for landmark 2
 }
 landmark_colors = [CRED, CGREEN] # Colors used when drawing the landmarks
 
 seen = {
     1: False,
-    8: False
+    6: False
 }
 
 def jet(x):
@@ -155,11 +155,11 @@ try:
         #cam = camera.Camera(0, robottype='macbookpro', useCaptureThread=True)
         cam = camera.Camera(1, robottype='macbookpro', useCaptureThread=False)
 
-    arlo = robot.Robot()
-    SERIAL_LOCK = threading.Lock()
-    cmd_queue = queue.Queue()
-    motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
-    motor.start()
+    # arlo = robot.Robot()
+    # SERIAL_LOCK = threading.Lock()
+    # cmd_queue = queue.Queue()
+    # motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
+    # motor.start()
 
     while True:
 
@@ -185,25 +185,26 @@ try:
         # # XXX: Make the robot drive
         # # XXX: You do this
         if all(seen.values()):
-            target_x, target_y = (landmarks[8][0] + landmarks[1][0]) / 2, (landmarks[8][1] + landmarks[1][1]) / 2
-            pos_x, pos_y, est_theta = est_pose.getX(), -est_pose.getY(), est_pose.getTheta()
+            time.sleep(1000)
+            # target_x, target_y = (landmarks[6][0] + landmarks[1][0]) / 2, (landmarks[6][1] + landmarks[1][1]) / 2
+            # pos_x, pos_y, est_theta = est_pose.getX(), -est_pose.getY(), est_pose.getTheta()
            
-            turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_theta)) % 360.0, target_x, target_y)
-            distance = calculate_distance(pos_x, pos_y, target_x, target_y)
-            print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
+            # turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_theta)) % 360.0, target_x, target_y)
+            # distance = calculate_distance(pos_x, pos_y, target_x, target_y)
+            # print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
 
-            cmd_queue.put(("turn_n_degrees", turn_angle))
-            cmd_queue.put(("drive_n_cm_forward", 0, distance))
+            # cmd_queue.put(("turn_n_degrees", turn_angle))
+            # cmd_queue.put(("drive_n_cm_forward", 0, distance))
 
-            particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
+            # particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
 
-            for k in seen:
-                seen[k] = False
+            # for k in seen:
+            #     seen[k] = False
 
-            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-                time.sleep(0.1)
-            motor.clear_has_started()
-            print("Stopped at target")
+            # while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+            #     time.sleep(0.1)
+            # motor.clear_has_started()
+            # print("Stopped at target")
 
         # else:
         #     print("Turn 50 degrees")
@@ -238,7 +239,7 @@ try:
                 seen[obj_id] = True
                 if (obj_id not in best_distances.keys()) or (best_distances[obj_id] > dists[i]):
                     best_distances[obj_id] = dists[i]
-                    best_angles[obj_id] = -angles[i]
+                    best_angles[obj_id] = angles[i]
                 # XXX: Do something for each detected object - remember, the same ID may appear several times
 
             # Compute particle weights
