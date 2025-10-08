@@ -258,14 +258,14 @@ try:
                         weight = p.getWeight()
                         p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=10.0) * weight )
 
-                    total_weight = np.sum([p.getWeight() for p in particles])
-                    if (total_weight != 0):
-                        for p in particles:
-                            p.setWeight( p.getWeight() / total_weight )
-                    else:
-                        print("POSITION WEIGHT WAS 0")
-                        for p in particles:
-                            p.setWeight( 1 / num_particles )
+                total_weight = np.sum([p.getWeight() for p in particles])
+                if (total_weight != 0):
+                    for p in particles:
+                        p.setWeight( p.getWeight() / total_weight )
+                else:
+                    print("POSITION WEIGHT WAS 0")
+                    for p in particles:
+                        p.setWeight( 1 / num_particles )
 
 
                 # for box_id in best_distances.keys():
