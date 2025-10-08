@@ -255,7 +255,7 @@ try:
                         continue
                     for p in particles:
                         weight = p.getWeight()
-                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=10.0) * weight )
+                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=100.0/(4*j+1) * weight ))
 
                 total_weight = np.sum([p.getWeight() for p in particles])
                 if (total_weight != 0):
@@ -288,7 +288,7 @@ try:
                             print("getTheta = ",p.getTheta()*180/np.pi)
                             print("Best_angles = ",best_angles[box_id]*180/np.pi)
                             print("dir_delta = ",((dir_delta + np.pi) % (2*np.pi) - np.pi)*180/np.pi)
-                            print("New weight = ", norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180), "\n")
+                            print("New weight = ", norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=60.0/(4*j+1) * math.pi / 180), "\n")
                         
                         p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180) * weight )
                         k=k+1
