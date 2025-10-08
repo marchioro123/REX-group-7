@@ -276,7 +276,7 @@ try:
                      #   if (k==0):
                       #  print(dir_landmark @ dir_particle)
 
-                        p.setWeight( norm.pdf(theta-best_angles[box_id], loc=0, scale=15 * math.pi / 180) * weight )
+                        p.setWeight( norm.pdf(best_angles[box_id] - theta, loc=0, scale=15 * math.pi / 180) * weight )
                         k=k+1
                 total_weight = np.sum([p.getWeight() for p in particles])
 
