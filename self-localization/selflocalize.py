@@ -208,6 +208,8 @@ try:
             particle.add_uncertainty(particles, 10, 5*math.pi / 180)
             print("Stopped at target")
 
+            input()
+
         else:
             print("Turn 50 degrees")
             turn_angle = 50
