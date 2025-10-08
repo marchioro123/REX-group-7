@@ -14,7 +14,7 @@ motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
 motor.start()
 
 
-cmd_queue.put(("turn_n_degrees", 360))
+cmd_queue.put(("turn_n_degrees", 90))
 
 
 time.sleep(9999)
