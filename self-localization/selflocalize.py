@@ -228,7 +228,7 @@ try:
         best_distances = dict()
         best_angles = dict()
 
-        for i in range(5):
+        for j in range(5):
             if not isinstance(objectIDs, type(None)):
                 particle.add_uncertainty(particles, 3, 3*math.pi / 180)
                 
@@ -271,7 +271,7 @@ try:
                 for box_id in best_distances.keys():
                     if (box_id not in landmarkIDs):
                         continue
-                    if (i < 1):
+                    if (j < 1):
                         continue
                     Lx, Ly = landmarks[box_id]
 
@@ -286,7 +286,8 @@ try:
                         print("getTheta = ",p.getTheta())
                         print("Best_angles = ",best_angles[box_id])
                         print("dir_delta = ",dir_delta)
-                        print("New weight = ", norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180))
+                        print("New weight = ", norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180), "\n")
+                        
                         p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180) * weight )
                     
                 total_weight = np.sum([p.getWeight() for p in particles])
