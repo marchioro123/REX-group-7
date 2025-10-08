@@ -187,7 +187,7 @@ try:
         if all(seen.values()):
           # time.sleep(1000)
             target_x, target_y = (landmarks[6][0] + landmarks[1][0]) / 2, (landmarks[6][1] + landmarks[1][1]) / 2
-            pos_x, pos_y, est_theta = est_pose.getX(), -est_pose.getY(), est_pose.getTheta()
+            pos_x, pos_y, est_theta = est_pose.getX(), est_pose.getY(), est_pose.getTheta()
            
             turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_theta)) % 360.0, target_x, target_y)
             distance = calculate_distance(pos_x, pos_y, target_x, target_y)
