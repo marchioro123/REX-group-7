@@ -217,7 +217,7 @@ try:
         #     motor.clear_has_started()
         #     print("Finished turning")
 
-        for j in range(5):
+        for j in range(20):
             # time.sleep(1)
             # Fetch next frame
             colour = cam.get_next_frame()
