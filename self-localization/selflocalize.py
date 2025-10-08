@@ -243,7 +243,7 @@ try:
                     if (obj_id not in best_distances.keys()) or (best_distances[obj_id] > dists[i]):
                         best_distances[obj_id] = dists[i]
                         best_angles[obj_id] = angles[i]
-                    # XXX: Do something for each detected object - remember, the same ID may appear several times
+                # XXX: Do something for each detected object - remember, the same ID may appear several times
 
                 # Compute particle weights
                 # XXX: You do this
@@ -282,7 +282,12 @@ try:
                         #     absolute_dir += 2 * math.pi
                             
                         dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
-                        p.setWeight( norm.pdf(-((dir_delta + np.pi) % (2*np.pi) - np.pi), loc=0, scale=10.0 * math.pi / 180) * weight )
+                        print(absolute_dir)
+                        print(p.getTheta())
+                        print(best_angles[box_id])
+                        print(dir_delta)
+                        print(norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi))
+                        p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180) * weight )
                     
                 total_weight = np.sum([p.getWeight() for p in particles])
 
