@@ -260,11 +260,8 @@ try:
                 for box_id in best_distances.keys():
                     if (box_id not in landmarkIDs):
                         continue
-                    if (j < 1):
-                        continue
                     Lx, Ly = landmarks[box_id]
 
-                    k=0
                     for p in particles:
                         
                         weight = p.getWeight()
@@ -277,18 +274,9 @@ try:
                         dir_orth_particle = np.array((- np.sin(p.getTheta()), np.cos(p.getTheta())))
 
                         theta = np.sign(dir_landmark @ dir_orth_particle) * np.arccos(dir_landmark @ dir_particle)
-
-
-                        # if (k==0):
-                        #     print("getX = ", p.getX(), ", getY = ", p.getY())
-                        #     print("Absolute dir ", absolute_dir*180/np.pi)
-                        #     print("getTheta = ",p.getTheta()*180/np.pi)
-                        #     print("Best_angles = ",best_angles[box_id]*180/np.pi)
-                        #     print("dir_delta = ",((dir_delta + np.pi) % (2*np.pi) - np.pi)*180/np.pi)
-                        #     print("New weight = ", norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=60.0/(4*j+1) * math.pi / 180), "\n")
+                        print(dir_landmark @ dir_particle)
                         
                         p.setWeight( norm.pdf(theta-best_angles[box_id], loc=0, scale=15 * math.pi / 180) * weight )
-                        k=k+1
                     
                 total_weight = np.sum([p.getWeight() for p in particles])
 
