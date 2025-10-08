@@ -283,6 +283,7 @@ try:
                         #     absolute_dir += 2 * math.pi
                         dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
                         if (k==0):
+                            print("getX = ", p.getX(), ", getY = ", p.getY())
                             print("Absolute dir ", absolute_dir*180/np.pi)
                             print("getTheta = ",p.getTheta()*180/np.pi)
                             print("Best_angles = ",best_angles[box_id]*180/np.pi)
