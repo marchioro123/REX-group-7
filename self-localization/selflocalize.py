@@ -255,7 +255,7 @@ try:
                         continue
                     for p in particles:
                         weight = p.getWeight()
-                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=100.0/(4*j+1) * weight ))
+                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=100.0/(4*j+1)) * weight )
 
                 total_weight = np.sum([p.getWeight() for p in particles])
                 if (total_weight != 0):
