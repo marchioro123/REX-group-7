@@ -265,11 +265,9 @@ try:
                     for p in particles:
                         
                         weight = p.getWeight()
-                        
-                        absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
-                        dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
+                        dist_from = p.distFrom(landmarks[box_id][0], landmarks[box_id][1])
 
-                        dir_landmark = np.array(((Lx - p.getX()) / best_distances[box_id], (Ly - p.getY()) / best_distances[box_id]))
+                        dir_landmark = np.array(((Lx - p.getX()) / dist_from, (Ly - p.getY()) / dist_from))
                         dir_particle = np.array((np.cos(p.getTheta()), np.sin(p.getTheta())))
                         dir_orth_particle = np.array((- np.sin(p.getTheta()), np.cos(p.getTheta())))
 
