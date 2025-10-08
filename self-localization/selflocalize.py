@@ -205,7 +205,7 @@ try:
                 time.sleep(0.1)
             motor.clear_has_started()
 
-            particle.add_uncertainty(particles, 10, 5*math.pi / 180)
+           # particle.add_uncertainty(particles, 10, 5*math.pi / 180)
             print("Stopped at target")
 
         else:
@@ -244,7 +244,7 @@ try:
                     print("Object ID = ", obj_id, ", Distance = ", dists[i], ", angle = ", angles[i]*180/np.pi)
                     seen[obj_id] = True
                     if (obj_id not in best_distances.keys()) or (best_distances[obj_id] > dists[i]):
-                        best_distances[obj_id] = dists[i] + 22.5
+                        best_distances[obj_id] = dists[i]
                         best_angles[obj_id] = angles[i]
                 # XXX: Do something for each detected object - remember, the same ID may appear several times
 
