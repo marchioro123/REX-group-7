@@ -304,7 +304,7 @@ try:
             #  print([p.getWeight() for p in particles])
                 indices = np.random.default_rng().choice(
                     range(len(particles)),
-                    size=num_particles-200,
+                    size=num_particles-100,
                     replace=True,
                     p=[p.getWeight() for p in particles]
                 )
@@ -322,7 +322,7 @@ try:
             est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
 
             print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta()*180/np.pi)
-            particles = particles + initialize_particles(200)
+            particles = particles + initialize_particles(100)
 
         if showGUI:
             # Draw map
