@@ -276,10 +276,10 @@ try:
 
                     for p in particles:
                         weight = p.getWeight()
-                        absolute_dir = math.atan2(Ly - best_distances[box_id][1], Lx - best_distances[box_id][0])
-                        # if absolute_dir < 0:
-                        #     absolute_dir += 2 * math.pi
-
+                        absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
+                        if absolute_dir < 0:
+                            absolute_dir += 2 * math.pi
+                            
                         dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
                         p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=5.0 * math.pi / 180) * weight )
                     
