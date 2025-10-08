@@ -226,7 +226,7 @@ try:
 
         time.sleep(1)
 
-        for j in range(3):
+        for j in range(1):
             # time.sleep(1)
             # Fetch next frame
             colour = cam.get_next_frame()
