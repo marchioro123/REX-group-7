@@ -145,7 +145,7 @@ class Camera(object):
             self.intrinsic_matrix.shape = (3, 3)
             #self.distortion_coeffs = np.asarray([ 1.1911006165076067e-01, -1.0003366233413549e+00,
             #       1.9287903277399834e-02, -2.3728201444308114e-03, -2.8137265581326476e-01 ], dtype = np.float64)
-            self.distortion_coeffs = np.asarray([0., 0., 0, -3.5538453075048249e-03, 0.], dtype = np.float64)
+            self.distortion_coeffs = np.asarray([0., 0., 2.0546093607192093e-02, 0, 0.], dtype = np.float64)
         elif robottype == 'frindo':
             self.imageSize = (640, 480)
             #self.intrinsic_matrix = np.asarray([ 7.1305391967046853e+02, 0., 3.1172820723774367e+02, 0.,
