@@ -207,7 +207,7 @@ try:
                 time.sleep(0.1)
             motor.clear_has_started()
 
-            particle.add_uncertainty(particles, 10, 5*math.pi / 180)
+            particle.add_uncertainty(particles, 10, 10*math.pi / 180)
             print("Stopped at target")
 
             input()
@@ -221,7 +221,7 @@ try:
             while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
                 time.sleep(0.1)
             motor.clear_has_started()
-            particle.add_uncertainty(particles, 0, 2*math.pi / 180)
+            particle.add_uncertainty(particles, 0, 10*math.pi / 180)
             print("Finished turning")
 
         time.sleep(1)
@@ -249,7 +249,7 @@ try:
                     print("Object ID = ", obj_id, ", Distance = ", dists[i], ", angle = ", angles[i]*180/np.pi)
                     seen[obj_id] = True
                     if (obj_id not in best_distances.keys()) or (best_distances[obj_id] > dists[i]):
-                        best_distances[obj_id] = dists[i] 
+                        best_distances[obj_id] = dists[i] + 22.5
                         best_angles[obj_id] = angles[i]
                 # XXX: Do something for each detected object - remember, the same ID may appear several times
 
@@ -304,7 +304,7 @@ try:
             #  print([p.getWeight() for p in particles])
                 indices = np.random.default_rng().choice(
                     range(len(particles)),
-                    size=num_particles,
+                    size=num_particles-200,
                     replace=True,
                     p=[p.getWeight() for p in particles]
                 )
@@ -320,7 +320,9 @@ try:
 
 
             est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
+
             print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta()*180/np.pi)
+            particles = particles + initialize_particles(200)
 
         if showGUI:
             # Draw map
