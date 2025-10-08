@@ -255,17 +255,7 @@ try:
                         continue
                     for p in particles:
                         weight = p.getWeight()
-                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=200.0/(4*j+1)) * weight )
-
-                total_weight = np.sum([p.getWeight() for p in particles])
-                if (total_weight != 0):
-                    for p in particles:
-                        p.setWeight( p.getWeight() / total_weight )
-                else:
-                    print("POSITION WEIGHT WAS 0")
-                    for p in particles:
-                        p.setWeight( 1 / num_particles )
-
+                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=15) * weight )
 
                 for box_id in best_distances.keys():
                     if (box_id not in landmarkIDs):
@@ -278,10 +268,17 @@ try:
                     for p in particles:
                         
                         weight = p.getWeight()
+                        
                         absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
-                        # if absolute_dir < 0:
-                        #     absolute_dir += 2 * math.pi
                         dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
+
+                        dir_landmark = np.array(((Lx - p.getX()) / best_distances[box_id], (Ly - p.getY()) / best_distances[box_id]))
+                        dir_particle = np.array((np.cos(p.getTheta()), np.sin(p.getTheta())))
+                        dir_orth_particle = np.array((- np.sin(p.getTheta()), np.cos(p.getTheta())))
+
+                        theta = np.sign(dir_landmark @ dir_orth_particle) * np.arccos(dir_landmark @ dir_particle)
+
+
                         # if (k==0):
                         #     print("getX = ", p.getX(), ", getY = ", p.getY())
                         #     print("Absolute dir ", absolute_dir*180/np.pi)
@@ -290,7 +287,7 @@ try:
                         #     print("dir_delta = ",((dir_delta + np.pi) % (2*np.pi) - np.pi)*180/np.pi)
                         #     print("New weight = ", norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=60.0/(4*j+1) * math.pi / 180), "\n")
                         
-                        p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=100.0/(4*j+1) * math.pi / 180) * weight )
+                        p.setWeight( norm.pdf(theta-best_angles[box_id], loc=0, scale=15 * math.pi / 180) * weight )
                         k=k+1
                     
                 total_weight = np.sum([p.getWeight() for p in particles])
