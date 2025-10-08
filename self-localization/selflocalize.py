@@ -275,8 +275,8 @@ try:
 
                         theta = np.sign(dir_landmark @ dir_orth_particle) * np.arccos(dir_landmark @ dir_particle)
 
-                        if (k==0):
-                            print(dir_landmark @ dir_particle)
+                     #   if (k==0):
+                        print(dir_landmark @ dir_particle)
 
                         p.setWeight( norm.pdf(theta-best_angles[box_id], loc=0, scale=15 * math.pi / 180) * weight )
                         k=k+1
