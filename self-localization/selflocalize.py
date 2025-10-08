@@ -217,7 +217,7 @@ try:
         #     motor.clear_has_started()
         #     print("Finished turning")
 
-        for j in range(5):
+        for j in range(1):
             # time.sleep(1)
             # Fetch next frame
             colour = cam.get_next_frame()
@@ -229,7 +229,7 @@ try:
             best_angles = dict()
 
             if not isinstance(objectIDs, type(None)):
-                particle.add_uncertainty(particles, 3, 3*math.pi / 180)
+                particle.add_uncertainty(particles, 1, 1*math.pi / 180)
                 
                 # List detected objects
                 for i in range(len(objectIDs)):
@@ -276,7 +276,7 @@ try:
                      #   if (k==0):
                       #  print(dir_landmark @ dir_particle)
 
-                        p.setWeight( norm.pdf(best_angles[box_id] - theta, loc=0, scale=15 * math.pi / 180) * weight )
+                        p.setWeight( norm.pdf(best_angles[box_id] - theta, loc=0, scale=5 * math.pi / 180) * weight )
                         k=k+1
 
                 total_weight = np.sum([p.getWeight() for p in particles])
