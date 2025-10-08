@@ -227,7 +227,7 @@ try:
 
         best_distances = dict()
         best_angles = dict()
-        
+
         for p in particles:
             p.setWeight(1.0)
 
@@ -249,12 +249,12 @@ try:
                 # Compute particle weights
                 # XXX: You do this
 
-                # for box_id in best_distances.keys():
-                #     if (box_id not in landmarkIDs):
-                #         continue
-                #     for p in particles:
-                #         weight = p.getWeight()
-                #         p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=15.0) * weight )
+                for box_id in best_distances.keys():
+                    if (box_id not in landmarkIDs):
+                        continue
+                    for p in particles:
+                        weight = p.getWeight()
+                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=15.0) * weight )
 
                 for box_id in best_distances.keys():
                     if (box_id not in landmarkIDs):
@@ -300,7 +300,7 @@ try:
         )
         particles = [particles[i].copy() for i in indices]
 
-        particle.add_uncertainty(particles, 0, 3*math.pi / 180)
+      #  particle.add_uncertainty(particles, 3, 3*math.pi / 180)
 
 
         if showGUI:
