@@ -254,7 +254,7 @@ try:
                         continue
                     for p in particles:
                         weight = p.getWeight()
-                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=3.0) * weight )
+                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=5.0) * weight )
 
                 for box_id in best_distances.keys():
                     if (box_id not in landmarkIDs):
@@ -266,7 +266,7 @@ try:
                         weight = p.getWeight()
                         absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
                         dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
-                        p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=1.0 * math.pi / 180) * weight )
+                        p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=3.0 * math.pi / 180) * weight )
             
                 total_weight = np.sum([p.getWeight() for p in particles])
                 if (total_weight != 0):
@@ -287,7 +287,7 @@ try:
                 )
                 particles = [particles[i].copy() for i in indices]
 
-                particle.add_uncertainty(particles, 3, 1*math.pi / 180)
+                particle.add_uncertainty(particles, 5, 3*math.pi / 180)
 
 
                 # Draw detected objects
