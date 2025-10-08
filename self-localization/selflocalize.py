@@ -287,7 +287,7 @@ try:
                 )
                 particles = [particles[i].copy() for i in indices]
 
-                particle.add_uncertainty(particles, 5, 3*math.pi / 180)
+                particle.add_uncertainty(particles, 3, 2*math.pi / 180)
 
 
                 # Draw detected objects
