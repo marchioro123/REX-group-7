@@ -268,32 +268,32 @@ try:
                         p.setWeight( 1 / num_particles )
 
 
-                # for box_id in best_distances.keys():
-                #     if (box_id not in landmarkIDs):
-                #         continue
-                #     if (i < 1):
-                #         continue
-                #     Lx, Ly = landmarks[box_id]
+                for box_id in best_distances.keys():
+                    if (box_id not in landmarkIDs):
+                        continue
+                    if (i < 1):
+                        continue
+                    Lx, Ly = landmarks[box_id]
 
-                #     for p in particles:
-                #         weight = p.getWeight()
-                #         absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
-                #         # if absolute_dir < 0:
-                #         #     absolute_dir += 2 * math.pi
+                    for p in particles:
+                        weight = p.getWeight()
+                        absolute_dir = math.atan2(Ly - p.getY(), Lx - p.getX())
+                        # if absolute_dir < 0:
+                        #     absolute_dir += 2 * math.pi
                             
-                #         dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
-                #         p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180) * weight )
+                        dir_delta = absolute_dir - p.getTheta() - best_angles[box_id]
+                        p.setWeight( norm.pdf((dir_delta + np.pi) % (2*np.pi) - np.pi, loc=0, scale=10.0 * math.pi / 180) * weight )
                     
-                #     total_weight = np.sum([p.getWeight() for p in particles])
+                total_weight = np.sum([p.getWeight() for p in particles])
 
-                #     if (total_weight != 0):
-                #         for p in particles:
-                #             p.setWeight( p.getWeight() / total_weight )
-                #     else:
-                #         print("ANGLE WEIGHT WAS 0")
-                #         for p in particles:
-                #             p.setWeight( 1 / num_particles )
-            
+                if (total_weight != 0):
+                    for p in particles:
+                        p.setWeight( p.getWeight() / total_weight )
+                else:
+                    print("ANGLE WEIGHT WAS 0")
+                    for p in particles:
+                        p.setWeight( 1 / num_particles )
+        
 
                 # Resampling
                 # XXX: You do this
