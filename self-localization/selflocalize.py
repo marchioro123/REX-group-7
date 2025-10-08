@@ -248,7 +248,10 @@ try:
 
                     print("Object ID = ", obj_id, ", Distance = ", dists[i], ", angle = ", angles[i]*180/np.pi)
                     seen[obj_id] = True
-                    if (obj_id not in best_distances.keys()) or (best_distances[obj_id] > dists[i]):
+                    if (obj_id in best_distances.keys()):
+                        best_distances[obj_id] = (best_distances[i] + dists[i] + 22.5) / 2
+                        best_angles[obj_id] = (best_angles[obj_id] + angles[i]) / 2             
+                    if (obj_id not in best_distances.keys()):
                         best_distances[obj_id] = dists[i] + 22.5
                         best_angles[obj_id] = angles[i]
                 # XXX: Do something for each detected object - remember, the same ID may appear several times
