@@ -184,8 +184,8 @@ try:
         # # Use motor controls to update particles
         # # XXX: Make the robot drive
         # # XXX: You do this
-        if all(seen.values()):
-           time.sleep(1000)
+        # if all(seen.values()):
+        #    time.sleep(1000)
             # target_x, target_y = (landmarks[6][0] + landmarks[1][0]) / 2, (landmarks[6][1] + landmarks[1][1]) / 2
             # pos_x, pos_y, est_theta = est_pose.getX(), est_pose.getY(), est_pose.getTheta()
            
@@ -217,7 +217,7 @@ try:
         #     motor.clear_has_started()
         #     print("Finished turning")
 
-        for j in range(20):
+        for j in range(1):
             # time.sleep(1)
             # Fetch next frame
             colour = cam.get_next_frame()
