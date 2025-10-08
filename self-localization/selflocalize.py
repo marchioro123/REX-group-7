@@ -205,7 +205,7 @@ try:
                 time.sleep(0.1)
             motor.clear_has_started()
             print("Stopped at target")
-            
+
         else:
             print("Turn 50 degrees")
             turn_angle = 50
@@ -217,6 +217,8 @@ try:
             motor.clear_has_started()
             print("Finished turning")
 
+        time.sleep(1)
+        
         for j in range(1):
             # time.sleep(1)
             # Fetch next frame
