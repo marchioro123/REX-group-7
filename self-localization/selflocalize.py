@@ -254,7 +254,7 @@ try:
                         continue
                     for p in particles:
                         weight = p.getWeight()
-                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=5.0) * weight )
+                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=15.0) * weight )
 
                 for box_id in best_distances.keys():
                     if (box_id not in landmarkIDs):
