@@ -1,5 +1,5 @@
 import cv2
-from .. import camera
+from ..Arlo.python import camera
 import numpy as np
 import time
 import threading
@@ -7,7 +7,7 @@ import queue
 import math
 from timeit import default_timer as timer
 import sys
-from selflocalization import particle
+import particle
 from scipy.stats import norm
 
 # Flags
