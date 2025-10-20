@@ -10,6 +10,7 @@ class MotorThread(threading.Thread):
         self.serial_lock = serial_lock
 
         self._wait_until = 0
+        self._has_started = False
         self._is_turning = False
         self._is_drivingForward = False
 
@@ -34,6 +35,10 @@ class MotorThread(threading.Thread):
 
             time.sleep(0.01)
 
+    def has_started(self):
+        with self.serial_lock:
+            return self._has_started
+        
     def is_turning(self):
         with self.serial_lock:
             return self._is_turning
@@ -41,7 +46,11 @@ class MotorThread(threading.Thread):
     def is_driving_forward(self):
         with self.serial_lock:
             return self._is_drivingForward
-    
+        
+    def clear_has_started(self):
+        with self.serial_lock:
+            self._has_started = False
+
     def hard_stop(self):
         while True:
             try:
@@ -57,38 +66,41 @@ class MotorThread(threading.Thread):
 
     def _turn_n_degrees(self, degrees: float):
         if (degrees < 0):
-            LEFTSPEED, RIGHTSPEED = 57, 55
-            duration = 0.0123 * abs(degrees)
+            LEFTSPEED, RIGHTSPEED = 55, 55
+            duration = 0.0132 * abs(degrees)
             with self.serial_lock:
                 self._is_turning = True
                 self._is_drivingForward = False
                 self._wait_until = time.monotonic() + duration
                 self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 0, 1)
+                self._has_started = True
 
         else:
-            LEFTSPEED, RIGHTSPEED = 57, 55
-            duration = 0.0115 * degrees
+            LEFTSPEED, RIGHTSPEED = 55, 55
+            duration = 0.0129 * degrees
             with self.serial_lock:
                 self._is_turning = True
                 self._is_drivingForward = False
                 self._wait_until = time.monotonic() + duration
                 self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 0)
+                self._has_started = True
 
     def _drive_n_cm_forward(self, speed: int, cm: float):
         if speed == 0:
-            LEFTSPEED, RIGHTSPEED, k = 41, 40, 0.039
+            LEFTSPEED, RIGHTSPEED, k = 41, 40, 0.053
         elif speed == 1:
-            LEFTSPEED, RIGHTSPEED, k = 86, 83, 0.0162
+            LEFTSPEED, RIGHTSPEED, k = 86, 86, 0.0162
         else:
             LEFTSPEED, RIGHTSPEED, k = 127, 115, 0.0105
 
         duration = k * cm
 
         with self.serial_lock:
-            self._is_turning = False
             self._is_drivingForward = True 
+            self._is_turning = False
             self._wait_until = time.monotonic() + duration
             self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
+            self._has_started = True
 
 
 

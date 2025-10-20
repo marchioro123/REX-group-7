@@ -3,15 +3,16 @@ import particle
 import camera
 import numpy as np
 import time
+import threading
+import queue
+import math
 from timeit import default_timer as timer
 import sys
 from scipy.stats import norm
 
-
 # Flags
-showGUI = True  # Whether or not to open GUI windows
+showGUI = False  # Whether or not to open GUI windows
 onRobot = True  # Whether or not we are running on the Arlo robot
-
 
 def isRunningOnArlo():
     """Return True if we are running on Arlo, otherwise False.
@@ -19,21 +20,18 @@ def isRunningOnArlo():
     """
     return onRobot
 
-
 if isRunningOnArlo():
     # XXX: You need to change this path to point to where your robot.py file is located
-    sys.path.append("../../../../Arlo/python")
-
+    sys.path.append("../Arlo/python")
 
 try:
     import robot
+    from motor_thread import MotorThread
+    from utils import calculate_distance, calculate_turn_angle
     onRobot = True
 except ImportError:
     print("selflocalize.py: robot module not present - forcing not running on Arlo!")
     onRobot = False
-
-
-
 
 # Some color constants in BGR format
 CRED = (0, 0, 255)
@@ -47,16 +45,17 @@ CBLACK = (0, 0, 0)
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
-landmarkIDs = [1, 2]
+landmarkIDs = [1, 6]
 landmarks = {
     1: (0.0, 0.0),  # Coordinates for landmark 1
-    2: (300.0, 0.0)  # Coordinates for landmark 2
+    6: (200.0, 0.0)  # Coordinates for landmark 2
 }
 landmark_colors = [CRED, CGREEN] # Colors used when drawing the landmarks
 
-
-
-
+seen = {
+    1: False,
+    6: False
+}
 
 def jet(x):
     """Colour map for drawing particles. This function determines the colour of 
@@ -108,8 +107,6 @@ def draw_world(est_pose, particles, world):
     cv2.circle(world, a, 5, CMAGENTA, 2)
     cv2.line(world, a, b, CMAGENTA, 2)
 
-
-
 def initialize_particles(num_particles):
     particles = []
     for i in range(num_particles):
@@ -118,7 +115,6 @@ def initialize_particles(num_particles):
         particles.append(p)
 
     return particles
-
 
 # Main program #
 try:
@@ -134,7 +130,7 @@ try:
 
 
     # Initialize particles
-    num_particles = 1000
+    num_particles = 2000
     particles = initialize_particles(num_particles)
 
     est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
@@ -159,6 +155,12 @@ try:
         #cam = camera.Camera(0, robottype='macbookpro', useCaptureThread=True)
         cam = camera.Camera(1, robottype='macbookpro', useCaptureThread=False)
 
+    arlo = robot.Robot()
+    SERIAL_LOCK = threading.Lock()
+    cmd_queue = queue.Queue()
+    motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
+    motor.start()
+
     while True:
 
         # Move the robot according to user input (only for testing)
@@ -178,55 +180,152 @@ try:
                 angular_velocity += 0.2
             elif action == ord('d'): # Right
                 angular_velocity -= 0.2
-
-
-
         
-        # Use motor controls to update particles
-        # XXX: Make the robot drive
-        # XXX: You do this
+        # # Use motor controls to update particles
+        # # XXX: Make the robot drive
+        # # XXX: You do this
+        if all(seen.values()):
+          # time.sleep(1000)
+          
+            target_x, target_y = (landmarks[6][0] + landmarks[1][0]) / 2, (landmarks[6][1] + landmarks[1][1]) / 2
+            pos_x, pos_y, est_theta = est_pose.getX(), est_pose.getY(), est_pose.getTheta()
+           
+            turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_theta)) % 360.0, target_x, target_y)
+            distance = calculate_distance(pos_x, pos_y, target_x, target_y)
+            print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
+            input()
 
+            cmd_queue.put(("turn_n_degrees", turn_angle))
+            cmd_queue.put(("drive_n_cm_forward", 0, distance))
 
-        # Fetch next frame
-        colour = cam.get_next_frame()
-        
-        # Detect objects
-        objectIDs, dists, angles = cam.detect_aruco_objects(colour)
+            particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
 
-        best_distances = [None] * len(landmarkIDs)
-        best_angles = [None] * len(landmarkIDs)
+            for k in seen:
+                seen[k] = False
 
+            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                time.sleep(0.1)
+            motor.clear_has_started()
 
-        if not isinstance(objectIDs, type(None)):
-            # List detected objects
-            for i in range(len(objectIDs)):
-                print("Object ID = ", objectIDs[i], ", Distance = ", dists[i], ", angle = ", angles[i])
-                if objectIDs[i] == landmarkIDs[0]:
-                    if best_distances[0] is None or dists[i] < first_dist:
-                        first_dist, first_angle = dists[i], angles[i]
-                if objectIDs[i] == landmarkIDs[1]:
-                    if second_dist is None or dists[i] < second_dist:
-                        second_dist, second_angle = dists[i], angles[i] 
+            particle.add_uncertainty(particles, 10, 10*math.pi / 180)
+            print("Stopped at target")
+
+            input()
+
+        else:
+            print("Turn 50 degrees")
+            turn_angle = 50
+            cmd_queue.put(("turn_n_degrees", turn_angle))
+            particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
+
+            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                time.sleep(0.1)
+            motor.clear_has_started()
+            particle.add_uncertainty(particles, 0, 10*math.pi / 180)
+            print("Finished turning")
+
+        time.sleep(1)
+
+        for j in range(1):
+            # time.sleep(1)
+            # Fetch next frame
+            colour = cam.get_next_frame()
+            
+            # Detect objects
+            objectIDs, dists, angles = cam.detect_aruco_objects(colour)
+
+            best_distances = dict()
+            best_angles = dict()
+
+            if not isinstance(objectIDs, type(None)):
+                particle.add_uncertainty(particles, 2, 2*math.pi / 180)
+                
+                # List detected objects
+                for i in range(len(objectIDs)):
+                    obj_id = objectIDs[i]
+                    if (obj_id not in landmarkIDs):
+                        continue
+
+                    print("Object ID = ", obj_id, ", Distance = ", dists[i], ", angle = ", angles[i]*180/np.pi)
+                    seen[obj_id] = True
+                    if (obj_id in best_distances.keys()):
+                        best_distances[obj_id] = (best_distances[obj_id] + dists[i] + 22.5) / 2
+                        best_angles[obj_id] = (best_angles[obj_id] + angles[i]) / 2             
+                    if (obj_id not in best_distances.keys()):
+                        best_distances[obj_id] = dists[i] + 22.5
+                        best_angles[obj_id] = angles[i]
                 # XXX: Do something for each detected object - remember, the same ID may appear several times
 
-            # Compute particle weights
-            # XXX: You do this
-            if first_dist is not None:
-                for part in particles:
-                    part.setWeight(norm.pdf( part.distFrom(landmarks[1][0], ) , loc=observedDist, scale=1.0))
+                # Compute particle weights
+                # XXX: You do this
 
-            # Resampling
-            # XXX: You do this
+                for p in particles:
+                    p.setWeight(1.0)
 
-            # Draw detected objects
-            cam.draw_aruco_objects(colour)
-        else:
-            # No observation - reset weights to uniform distribution
-            for p in particles:
-                p.setWeight(1.0/num_particles)
+                for box_id in best_distances.keys():
+                    if (box_id not in landmarkIDs):
+                        continue
+                    for p in particles:
+                        weight = p.getWeight()
+                        p.setWeight( norm.pdf( p.distFrom(landmarks[box_id][0], landmarks[box_id][1]) , loc=best_distances[box_id], scale=10) * weight )
 
-    
-        est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
+                for box_id in best_distances.keys():
+                    if (box_id not in landmarkIDs):
+                        continue
+                    Lx, Ly = landmarks[box_id]
+                    k=0
+                    for p in particles:
+                        
+                        weight = p.getWeight()
+                        dist_from = p.distFrom(landmarks[box_id][0], landmarks[box_id][1])
+
+                        dir_landmark = np.array(((Lx - p.getX()) / dist_from, (Ly - p.getY()) / dist_from))
+                        dir_particle = np.array((np.cos(p.getTheta()), np.sin(p.getTheta())))
+                        dir_orth_particle = np.array((- np.sin(p.getTheta()), np.cos(p.getTheta())))
+
+                        theta = np.sign(dir_landmark @ dir_orth_particle) * np.arccos(dir_landmark @ dir_particle)
+
+                     #   if (k==0):
+                      #  print(dir_landmark @ dir_particle)
+
+                        p.setWeight( norm.pdf(best_angles[box_id] - theta, loc=0, scale=5 * math.pi / 180) * weight )
+                        k=k+1
+
+                total_weight = np.sum([p.getWeight() for p in particles])
+
+                if (total_weight != 0):
+                    for p in particles:
+                        p.setWeight( p.getWeight() / total_weight )
+                else:
+                    print("ANGLE WEIGHT WAS 0")
+                    for p in particles:
+                        p.setWeight( 1 / num_particles )
+        
+
+                # Resampling
+                # XXX: You do this
+            #  print([p.getWeight() for p in particles])
+                indices = np.random.default_rng().choice(
+                    range(len(particles)),
+                    size=num_particles-100,
+                    replace=True,
+                    p=[p.getWeight() for p in particles]
+                )
+                particles = [particles[i].copy() for i in indices]
+
+
+                # Draw detected objects
+                cam.draw_aruco_objects(colour)
+            else:
+                # No observation - reset weights to uniform distribution
+                for p in particles:
+                    p.setWeight(1.0/num_particles)
+
+
+            est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
+
+            print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta()*180/np.pi)
+            particles = particles + initialize_particles(100)
 
         if showGUI:
             # Draw map
