@@ -1,4 +1,4 @@
-from . import numpy as np
+import numpy as np
 
 
 def randn(mu, sigma):
