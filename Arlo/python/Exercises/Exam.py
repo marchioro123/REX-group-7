@@ -1,5 +1,5 @@
 import cv2
-from . import camera
+from .. import camera
 import numpy as np
 import time
 import threading
