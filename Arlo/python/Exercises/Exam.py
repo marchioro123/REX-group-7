@@ -1,5 +1,5 @@
 import cv2
-import camera
+from . import camera
 import numpy as np
 import time
 import threading
@@ -7,7 +7,7 @@ import queue
 import math
 from timeit import default_timer as timer
 import sys
-from selflocalization import particle 
+from selflocalization import particle
 from scipy.stats import norm
 
 # Flags
