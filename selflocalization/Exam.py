@@ -1,5 +1,5 @@
 import cv2
-from ..Arlo.python import camera
+import camera
 import numpy as np
 import time
 import threading
