@@ -409,6 +409,7 @@ try:
                     angle = (angle + turn_angle) % 360
 
 
+            print("Checking if target is close enough")
             colour = cam.get_next_frame()
             objectIDs, dists, angles = cam.detect_aruco_objects(colour)
             if not isinstance(objectIDs, type(None)):
