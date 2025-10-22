@@ -418,6 +418,7 @@ try:
                             right_dist = arlo.read_right_ping_sensor()
                         if should_stop(front_dist, left_dist, right_dist):
                             motor.hard_stop()
+                            print("Emergency stop!!")
                             aborted = True
                             particle.add_uncertainty(particles, 100, 7*math.pi / 180)
                             break
