@@ -359,6 +359,7 @@ try:
                 path_resolution=path_res,
                 ) 
 
+            print("Calculating path")
             path = rrt.planning(animation=False)
             if path is None:
                 print("Cannot find path")
