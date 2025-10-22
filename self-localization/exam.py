@@ -353,8 +353,8 @@ try:
             print(target_x)
             print(target_y)
             rrt = RRT(
-                start=[0, 0],
-                goal = [ 
+                start=np.array([0, 0]),
+                goal = np.array([ 
                     target_x if target_x is not None else 0,
                     target_y if target_y is not None else (
                         best_distances[visit_order[0]]
@@ -365,7 +365,7 @@ try:
                             landmarks[visit_order[0]][1]
                         )
                     )
-                ],
+                ]),
                 robot_model=robot_model,
                 map=occ_map,
                 expand_dis=1,
