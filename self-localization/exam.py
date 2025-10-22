@@ -322,8 +322,9 @@ try:
                     z_es.append(z)
                     obstacle_center = (x-sin(z_dir/2)*DISTANCE_TO_CENTER, z+cos(z_dir/2)*DISTANCE_TO_CENTER)
                     obstacle_centers.append(obstacle_center)
-                maximum_absolute_value = max([1] + [abs(x) for x in x_es])
+                maximum_absolute_value = max([abs(x) for x in x_es])
 
+            print("Creating Occupancy Map")
             path_res = 0.05
             occ_map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, max(z_es)+1), res=path_res)
             for i in range(occ_map.n_grids[0]):
