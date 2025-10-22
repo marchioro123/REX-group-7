@@ -56,9 +56,9 @@ ROBOT_RADIUS = 0.2250
 landmarkIDs = [10, 6, 5, 8]
 landmarks = {
     10: (0.0, 0.0),  # Coordinates for landmark 1
-    6: (0.0, 300.0),  # Coordinates for landmark 2
-    5: (400.0, 0.0),  # Coordinates for landmark 3
-    8: (400.0, 300.0)  # Coordinates for landmark 4
+    6: (0.0, 200.0),  # Coordinates for landmark 2
+    5: (300.0, 0.0),  # Coordinates for landmark 3
+    8: (300.0, 200.0)  # Coordinates for landmark 4
 }
 visit_order = [10, 6, 5, 8, 10]
 
