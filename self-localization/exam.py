@@ -364,7 +364,7 @@ try:
                 expand_dis=1,
                 path_resolution=path_res,
                 ) 
-            show_animation = False
+            show_animation = True
             metadata = dict(title="RRT Test")
             writer = FFMpegWriter(fps=15, metadata=metadata)
             fig = plt.figure()
@@ -374,57 +374,57 @@ try:
             #    path = rrt.planning(animation=False)
                 path = rrt.planning(animation=show_animation, writer=writer)
 
-                if path is None:
-                    print("Cannot find path")
-                else:
-                    print("found path!!")
-                    print(path)
-                    simple_path = simplify_path(path, occ_map)
-                    print("simple path")
-                    print(simple_path)
-                    if show_animation:
-                        rrt.draw_graph()
-                        plt.plot([x for (x, y) in path], [y for (x, y) in path], '-b')
-                        plt.plot([x for (x, y) in simple_path], [y for (x, y) in simple_path], '-r')
-                        plt.grid(True)
-                        plt.pause(0.01)  # Need for Mac
-                        plt.show()
-                        writer.grab_frame()
+            if path is None:
+                print("Cannot find path")
+            else:
+                print("found path!!")
+                print(path)
+                simple_path = simplify_path(path, occ_map)
+                print("simple path")
+                print(simple_path)
+                if show_animation:
+                    rrt.draw_graph()
+                    plt.plot([x for (x, y) in path], [y for (x, y) in path], '-b')
+                    plt.plot([x for (x, y) in simple_path], [y for (x, y) in simple_path], '-r')
+                    plt.grid(True)
+                    plt.pause(0.01)  # Need for Mac
+                    plt.show()
+                    writer.grab_frame()
 
-                    pos_x, pos_y, angle = 0, 0, 0
-                    aborted = False
-                    for point in reversed(simple_path[:-1]):
-                        target_x, target_y = point
+                pos_x, pos_y, angle = 0, 0, 0
+                aborted = False
+                for point in reversed(simple_path[:-1]):
+                    target_x, target_y = point
 
-                        turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
-                        distance = calculate_distance(pos_x, pos_y, target_x, target_y) * 100 #rtt planning is in meters
-                        print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
-                        input()
+                    turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
+                    distance = calculate_distance(pos_x, pos_y, target_x, target_y) * 100 #rtt planning is in meters
+                    print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
+                    input()
 
-                        cmd_queue.put(("turn_n_degrees", turn_angle))
-                        cmd_queue.put(("drive_n_cm_forward", 0, distance))
-                        particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
+                    cmd_queue.put(("turn_n_degrees", turn_angle))
+                    cmd_queue.put(("drive_n_cm_forward", 0, distance))
+                    particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
 
-                        while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-                            with SERIAL_LOCK:
-                                front_dist = arlo.read_front_ping_sensor()
-                                left_dist = arlo.read_left_ping_sensor()
-                                right_dist = arlo.read_right_ping_sensor()
-                            if should_stop(front_dist, left_dist, right_dist):
-                                motor.hard_stop()
-                                aborted = True
-                                particle.add_uncertainty(particles, 100, 7*math.pi / 180)
-                                break
-                            time.sleep(0.1)
-
-                        motor.clear_has_started()
-
-                        if aborted:
+                    while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                        with SERIAL_LOCK:
+                            front_dist = arlo.read_front_ping_sensor()
+                            left_dist = arlo.read_left_ping_sensor()
+                            right_dist = arlo.read_right_ping_sensor()
+                        if should_stop(front_dist, left_dist, right_dist):
+                            motor.hard_stop()
+                            aborted = True
+                            particle.add_uncertainty(particles, 100, 7*math.pi / 180)
                             break
+                        time.sleep(0.1)
 
-                        particle.add_uncertainty(particles, 7, 7*math.pi / 180)
-                        pos_x, pos_y = target_x, target_y
-                        angle = (angle + turn_angle) % 360
+                    motor.clear_has_started()
+
+                    if aborted:
+                        break
+
+                    particle.add_uncertainty(particles, 7, 7*math.pi / 180)
+                    pos_x, pos_y = target_x, target_y
+                    angle = (angle + turn_angle) % 360
 
 
             # print("Checking if target is close enough")
