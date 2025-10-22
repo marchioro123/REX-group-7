@@ -371,7 +371,8 @@ try:
 
             print("Calculating path")
             with writer.saving(fig, "rrt_test.mp4", 100):
-                path = rrt.planning(animation=False)
+            #    path = rrt.planning(animation=False)
+                path = rrt.planning(animation=show_animation, writer=writer)
 
             if path is None:
                 print("Cannot find path")
