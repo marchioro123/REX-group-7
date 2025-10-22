@@ -267,8 +267,10 @@ try:
         # # XXX: Make the robot drive
         seen_next_target = objectIDs is not None and visit_order[0] in objectIDs
         seen_two_boxes = sum(seen.values()) >= 2
+        times_turned = 0
 
         if seen_next_target or seen_two_boxes:
+            times_turned = 0
             if seen_next_target:
                 turn_angle = -best_angles[visit_order[0]]*180/np.pi
                 print(f"Turn {turn_angle:.2f}°")
@@ -297,7 +299,6 @@ try:
             for k in seen:
                 seen[k] = False
             
-            input()
 
             colour = cam.get_next_frame()
             objectIDs, dists, angles = cam.detect_aruco_objects(colour)
@@ -313,15 +314,18 @@ try:
                     x, _, z = cam.tvecs[i][0]
                     x_dir, _, z_dir = cam.rvecs[i][0]
                     if objectIDs[i] == visit_order[0]:
-                        target_x = x_dir
-                        target_y = z_dir
+                        target_x = x
+                        target_y = z
+                        x_es.append(x)
+                        z_es.append(z)
                         continue
                     x_es.append(x)
                     z_es.append(z)
                     obstacle_center = (x-sin(z_dir/2)*DISTANCE_TO_CENTER, z+cos(z_dir/2)*DISTANCE_TO_CENTER)
                     obstacle_centers.append(obstacle_center)
-                maximum_absolute_value = max([1] + [abs(x) for x in x_es])
+            maximum_absolute_value = max([1] + [abs(x) for x in x_es])
 
+            print("Creating Occupancy Map")
             path_res = 0.05
             occ_map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, max(z_es)+1), res=path_res)
             for i in range(occ_map.n_grids[0]):
@@ -337,9 +341,10 @@ try:
             dist_y = best_distances.get(visit_order[0], 3)
             pos_x, pos_y = est_pose.getX(), est_pose.getY()
 
+
             rrt = RRT(
                 start=[0, 0],
-                goal = [
+                goal = [ 
                     target_x if target_x is not None else 0,
                     target_y if target_y is not None else (
                         best_distances[visit_order[0]]
@@ -357,6 +362,7 @@ try:
                 path_resolution=path_res,
                 ) 
 
+            print("Calculating path")
             path = rrt.planning(animation=False)
             if path is None:
                 print("Cannot find path")
@@ -367,10 +373,74 @@ try:
                 print("simple path")
                 print(simple_path)
 
-            pos_x, pos_y, angle = 0, 0, 0
-            aborted = False
-            for point in reversed(simple_path[:-1]):
-                target_x, target_y = point
+                pos_x, pos_y, angle = 0, 0, 0
+                aborted = False
+                for point in reversed(simple_path[:-1]):
+                    target_x, target_y = point
+
+                    turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
+                    distance = calculate_distance(pos_x, pos_y, target_x, target_y) * 100 #rtt planning is in meters
+                    print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
+                    input()
+
+                    cmd_queue.put(("turn_n_degrees", turn_angle))
+                    cmd_queue.put(("drive_n_cm_forward", 0, distance))
+                    particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
+
+                    while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                        with SERIAL_LOCK:
+                            front_dist = arlo.read_front_ping_sensor()
+                            left_dist = arlo.read_left_ping_sensor()
+                            right_dist = arlo.read_right_ping_sensor()
+                        if should_stop(front_dist, left_dist, right_dist):
+                            motor.hard_stop()
+                            aborted = True
+                            particle.add_uncertainty(particles, 100, 7*math.pi / 180)
+                            break
+                        time.sleep(0.1)
+
+                    motor.clear_has_started()
+
+                    if aborted:
+                        break
+
+                    particle.add_uncertainty(particles, 7, 7*math.pi / 180)
+                    pos_x, pos_y = target_x, target_y
+                    angle = (angle + turn_angle) % 360
+
+
+            print("Checking if target is close enough")
+            input()
+            colour = cam.get_next_frame()
+            objectIDs, dists, angles = cam.detect_aruco_objects(colour)
+            if not isinstance(objectIDs, type(None)):
+                if visit_order[0] in objectIDs:
+                    idx = list(objectIDs).index(visit_order[0])
+                    print(f"Reached target {visit_order[0]} (distance {dists[idx]:.1f} cm)")
+                    if dists[idx] < 40.0:
+                        print(f"Reached target {visit_order.pop(0)} (distance {dists[idx]:.1f} cm) — next target: {visit_order[0]}")
+                        visit_order.pop(0)
+
+            input()
+
+        else:
+            turn_angle = 35
+            print(f"Turn {turn_angle} degrees")
+            cmd_queue.put(("turn_n_degrees", turn_angle))
+            particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
+
+            while (not motor.has_started() or motor.is_turning()):
+                time.sleep(0.1)
+            motor.clear_has_started()
+            particle.add_uncertainty(particles, 0, 7*math.pi / 180)
+            print("Finished turning")
+            times_turned += times_turned
+
+            time.sleep(1)
+
+            if times_turned > 15:
+                times_turned = 0
+                target_x, target_y = (pos_x + 10), (pos_y + 10)
 
                 turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
                 distance = calculate_distance(pos_x, pos_y, target_x, target_y)
@@ -393,40 +463,7 @@ try:
                         break
                     time.sleep(0.1)
 
-                motor.clear_has_started()
 
-                if aborted:
-                    break
-
-                particle.add_uncertainty(particles, 7, 7*math.pi / 180)
-                pos_x, pos_y = target_x, target_y
-                angle = (angle + turn_angle) % 360
-
-
-            colour = cam.get_next_frame()
-            objectIDs, dists, angles = cam.detect_aruco_objects(colour)
-            if not isinstance(objectIDs, type(None)):
-                if visit_order[0] in objectIDs:
-                    idx = list(objectIDs).index(visit_order[0])
-                    if dists[idx] < 40.0:
-                        print(f"Reached target {visit_order.pop(0)} (distance {dists[idx]:.1f} cm) — next target: {visit_order[0]}")
-                        visit_order.pop(0)
-
-            input()
-
-        else:
-            turn_angle = 35
-            print(f"Turn {turn_angle} degrees")
-            cmd_queue.put(("turn_n_degrees", turn_angle))
-            particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
-
-            while (not motor.has_started() or motor.is_turning()):
-                time.sleep(0.1)
-            motor.clear_has_started()
-            particle.add_uncertainty(particles, 0, 7*math.pi / 180)
-            print("Finished turning")
-
-            time.sleep(1)
 
         if showGUI:
             # Draw map
