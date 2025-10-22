@@ -315,6 +315,8 @@ try:
                     if objectIDs[i] == visit_order[0]:
                         target_x = x_dir
                         target_y = z_dir
+                        x_es.append(x)
+                        z_es.append(z)
                         continue
                     x_es.append(x)
                     z_es.append(z)
