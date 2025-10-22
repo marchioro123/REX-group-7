@@ -11,7 +11,7 @@ import sys
 from scipy.stats import norm
 
 # Flags
-showGUI = False  # Whether or not to open GUI windows
+showGUI = True  # Whether or not to open GUI windows
 onRobot = True  # Whether or not we are running on the Arlo robot
 
 def isRunningOnArlo():
@@ -45,7 +45,7 @@ CBLACK = (0, 0, 0)
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
-landmarkIDs = [1, 6]
+landmarkIDs = [10, 6]
 landmarks = {
     1: (0.0, 0.0),  # Coordinates for landmark 1
     6: (200.0, 0.0)  # Coordinates for landmark 2
@@ -53,7 +53,7 @@ landmarks = {
 landmark_colors = [CRED, CGREEN] # Colors used when drawing the landmarks
 
 seen = {
-    1: False,
+    10: False,
     6: False
 }
 
@@ -149,8 +149,8 @@ try:
 
     print("Opening and initializing camera")
     if isRunningOnArlo():
-        #cam = camera.Camera(0, robottype='arlo', useCaptureThread=True)
-        cam = camera.Camera(0, robottype='arlo', useCaptureThread=False)
+        cam = camera.Camera(0, robottype='arlo', useCaptureThread=True)
+        #cam = camera.Camera(0, robottype='arlo', useCaptureThread=False)
     else:
         #cam = camera.Camera(0, robottype='macbookpro', useCaptureThread=True)
         cam = camera.Camera(1, robottype='macbookpro', useCaptureThread=False)
