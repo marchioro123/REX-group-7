@@ -410,6 +410,7 @@ try:
 
 
             print("Checking if target is close enough")
+            input()
             colour = cam.get_next_frame()
             objectIDs, dists, angles = cam.detect_aruco_objects(colour)
             if not isinstance(objectIDs, type(None)):
