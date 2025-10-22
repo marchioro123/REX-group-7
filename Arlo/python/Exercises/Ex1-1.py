@@ -15,6 +15,12 @@ motor.start()
 
 
 cmd_queue.put(("turn_n_degrees", 90))
+time.sleep(3)
+cmd_queue.put(("turn_n_degrees", 90))
+time.sleep(3)
+cmd_queue.put(("turn_n_degrees", 90))
+time.sleep(3)
+cmd_queue.put(("turn_n_degrees", 90))
 #cmd_queue.put(("drive_n_cm_forward", 0, 100))
 
 time.sleep(9999)
