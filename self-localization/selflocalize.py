@@ -153,7 +153,7 @@ try:
         #cam = camera.Camera(0, robottype='arlo', useCaptureThread=False)
     else:
         cam = camera.Camera(0, robottype='macbookpro', useCaptureThread=True)
-        cam = camera.Camera(1, robottype='macbookpro', useCaptureThread=False)
+        #cam = camera.Camera(1, robottype='macbookpro', useCaptureThread=False)
 
     arlo = robot.Robot()
     SERIAL_LOCK = threading.Lock()
