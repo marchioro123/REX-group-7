@@ -53,22 +53,22 @@ ROBOT_RADIUS = 0.2250
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
-landmarkIDs = [1, 2, 3, 4]
+landmarkIDs = [10, 6, 5, 8]
 landmarks = {
-    1: (0.0, 0.0),  # Coordinates for landmark 1
-    2: (0.0, 300.0),  # Coordinates for landmark 2
-    3: (400.0, 0.0),  # Coordinates for landmark 3
-    4: (400.0, 300.0)  # Coordinates for landmark 4
+    10: (0.0, 0.0),  # Coordinates for landmark 1
+    6: (0.0, 300.0),  # Coordinates for landmark 2
+    5: (400.0, 0.0),  # Coordinates for landmark 3
+    8: (400.0, 300.0)  # Coordinates for landmark 4
 }
-visit_order = [1, 2, 3, 4, 1]
+visit_order = [10, 6, 5, 8, 10]
 
 landmark_colors = [CRED, CGREEN, CBLUE, CMAGENTA] # Colors used when drawing the landmarks
 
 seen = {
-    1: False,
-    2: False,
-    3: False,
-    4: False
+    10: False,
+    6: False,
+    5: False,
+    8: False
 }
 
 
@@ -309,7 +309,7 @@ try:
             target_x = None
             target_y = None
             obstacle_centers = []
-            
+
             if not isinstance(objectIDs, type(None)):
                 for i in range(len(objectIDs)):
                     x, _, z = cam.tvecs[i][0]
