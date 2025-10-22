@@ -443,7 +443,16 @@ try:
             #         if dists[idx] < 40.0:
             #             print(f"Reached target {visit_order.pop(0)} (distance {dists[idx]:.1f} cm) — next target: {visit_order[0]}")
 
-                print(f"Reached target {visit_order.pop(0)}")
+            #  print(f"Reached target {visit_order.pop(0)}")
+                if visit_order:
+                    current = visit_order.pop(0)
+                    print(f"Reached target {current}")
+                    if visit_order:
+                        print(f"Next target: {visit_order[0]}")
+                    else:
+                        print("All targets visited — race complete!")
+                time.sleep(1.0)
+
                 input()
 
         else:
