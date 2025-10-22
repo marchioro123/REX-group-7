@@ -1,6 +1,3 @@
-import os
-os.environ["QT_QPA_PLATFORM"] = "offscreen"
-
 import cv2
 import particle
 import camera
