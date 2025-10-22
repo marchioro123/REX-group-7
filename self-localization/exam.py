@@ -10,6 +10,8 @@ from math import sin, cos
 from timeit import default_timer as timer
 import sys
 from scipy.stats import norm
+import matplotlib.pyplot as plt
+from matplotlib.animation import FFMpegWriter
 
 # Flags
 showGUI = False  # Whether or not to open GUI windows
@@ -362,9 +364,15 @@ try:
                 expand_dis=1,
                 path_resolution=path_res,
                 ) 
+            show_animation = False
+            metadata = dict(title="RRT Test")
+            writer = FFMpegWriter(fps=15, metadata=metadata)
+            fig = plt.figure()
 
             print("Calculating path")
-            path = rrt.planning(animation=False)
+            with writer.saving(fig, "rrt_test.mp4", 100):
+                path = rrt.planning(animation=False)
+
             if path is None:
                 print("Cannot find path")
             else:
@@ -373,6 +381,14 @@ try:
                 simple_path = simplify_path(path, occ_map)
                 print("simple path")
                 print(simple_path)
+                if show_animation:
+                    rrt.draw_graph()
+                    plt.plot([x for (x, y) in path], [y for (x, y) in path], '-b')
+                    plt.plot([x for (x, y) in simple_path], [y for (x, y) in simple_path], '-r')
+                    plt.grid(True)
+                    plt.pause(0.01)  # Need for Mac
+                    plt.show()
+                    writer.grab_frame()
 
                 pos_x, pos_y, angle = 0, 0, 0
                 aborted = False
