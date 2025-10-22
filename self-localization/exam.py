@@ -279,9 +279,6 @@ try:
                     time.sleep(0.1)
                 motor.clear_has_started()
                 particle.add_uncertainty(particles, 0, 10*math.pi / 180)
-                for k in seen:
-                    seen[k] = False
-
             elif seen_two_boxes:
                 target_x, target_y = landmarks[visit_order[0]]
                 pos_x, pos_y, est_theta = est_pose.getX(), est_pose.getY(), est_pose.getTheta()
@@ -296,8 +293,9 @@ try:
                     time.sleep(0.1)
                 motor.clear_has_started()
                 particle.add_uncertainty(particles, 0, 10*math.pi / 180)
-                for k in seen:
-                    seen[k] = False
+                
+            for k in seen:
+                seen[k] = False
             
             input()
 
