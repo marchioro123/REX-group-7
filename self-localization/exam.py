@@ -327,7 +327,7 @@ try:
 
             print("Creating Occupancy Map")
             path_res = 0.05
-            occ_map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, max(z_es)+1), res=path_res)
+            occ_map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, max([1] + z_es)), res=path_res)
             for i in range(occ_map.n_grids[0]):
                 for j in range(occ_map.n_grids[1]):
                     centroid = np.array([occ_map.map_area[0][0] + occ_map.resolution * (i+0.5), occ_map.map_area[0][1] + occ_map.resolution * (j+0.5)])
@@ -409,18 +409,18 @@ try:
                     angle = (angle + turn_angle) % 360
 
 
-            print("Checking if target is close enough")
-            input()
-            colour = cam.get_next_frame()
-            objectIDs, dists, angles = cam.detect_aruco_objects(colour)
-            if not isinstance(objectIDs, type(None)):
-                if visit_order[0] in objectIDs:
-                    idx = list(objectIDs).index(visit_order[0])
-                    print(f"Reached target {visit_order[0]} (distance {dists[idx]:.1f} cm)")
-                    if dists[idx] < 40.0:
-                        print(f"Reached target {visit_order.pop(0)} (distance {dists[idx]:.1f} cm) — next target: {visit_order[0]}")
-                        visit_order.pop(0)
+            # print("Checking if target is close enough")
+            # input()
+            # colour = cam.get_next_frame()
+            # objectIDs, dists, angles = cam.detect_aruco_objects(colour)
+            # if not isinstance(objectIDs, type(None)):
+            #     if visit_order[0] in objectIDs:
+            #         idx = list(objectIDs).index(visit_order[0])
+            #         print(f"Reached target {visit_order[0]} (distance {dists[idx]:.1f} cm)")
+            #         if dists[idx] < 40.0:
+            #             print(f"Reached target {visit_order.pop(0)} (distance {dists[idx]:.1f} cm) — next target: {visit_order[0]}")
 
+            print(f"Reached target {visit_order.pop(0)}")
             input()
 
         else:
