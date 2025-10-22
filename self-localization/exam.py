@@ -312,8 +312,6 @@ try:
                     x, _, z = cam.tvecs[i][0]
                     x_dir, _, z_dir = cam.rvecs[i][0]
                     if objectIDs[i] == visit_order[0]:
-                        print(x)
-                        print(z)
                         target_x = x
                         target_y = z
                         x_es.append(x)
@@ -341,23 +339,20 @@ try:
             dist_y = best_distances.get(visit_order[0], 3)
             pos_x, pos_y = est_pose.getX(), est_pose.getY()
 
-            print(target_x)
-            print(target_y)
-            input()
             rrt = RRT(
                 start=[0, 0],
-                goal = [0, 1],
-                #     target_x if target_x is not None else 0,
-                #     target_y if target_y is not None else (
-                #         best_distances[visit_order[0]]
-                #         if visit_order[0] in best_distances
-                #         else calculate_distance(
-                #             pos_x, pos_y,
-                #             landmarks[visit_order[0]][0],
-                #             landmarks[visit_order[0]][1]
-                #         )
-                #     )
-                # ],
+                goal = [ 
+                    target_x if target_x is not None else 0,
+                    target_y if target_y is not None else (
+                        best_distances[visit_order[0]]
+                        if visit_order[0] in best_distances
+                        else calculate_distance(
+                            pos_x, pos_y,
+                            landmarks[visit_order[0]][0],
+                            landmarks[visit_order[0]][1]
+                        )
+                    )
+                ],
                 robot_model=robot_model,
                 map=occ_map,
                 expand_dis=1,
