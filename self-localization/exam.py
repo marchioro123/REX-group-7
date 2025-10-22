@@ -344,18 +344,18 @@ try:
             input()
             rrt = RRT(
                 start=[0, 0],
-                goal = [
-                    target_x if target_x is not None else 0,
-                    target_y if target_y is not None else (
-                        best_distances[visit_order[0]]
-                        if visit_order[0] in best_distances
-                        else calculate_distance(
-                            pos_x, pos_y,
-                            landmarks[visit_order[0]][0],
-                            landmarks[visit_order[0]][1]
-                        )
-                    )
-                ],
+                goal = [0, 1],
+                #     target_x if target_x is not None else 0,
+                #     target_y if target_y is not None else (
+                #         best_distances[visit_order[0]]
+                #         if visit_order[0] in best_distances
+                #         else calculate_distance(
+                #             pos_x, pos_y,
+                #             landmarks[visit_order[0]][0],
+                #             landmarks[visit_order[0]][1]
+                #         )
+                #     )
+                # ],
                 robot_model=robot_model,
                 map=occ_map,
                 expand_dis=1,
