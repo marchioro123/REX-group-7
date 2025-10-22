@@ -313,6 +313,7 @@ try:
                 for i in range(len(objectIDs)):
                     x, _, z = cam.tvecs[i][0]
                     x_dir, _, z_dir = cam.rvecs[i][0]
+                    print(visit_order[0])
                     if objectIDs[i] == visit_order[0]:
                         target_x = x
                         target_y = z
