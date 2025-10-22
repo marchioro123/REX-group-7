@@ -67,7 +67,7 @@ class MotorThread(threading.Thread):
     def _turn_n_degrees(self, degrees: float):
         if (degrees < 0):
             LEFTSPEED, RIGHTSPEED = 55, 55
-            duration = 0.0132 * abs(degrees)
+            duration = 0.0098 * abs(degrees)
             with self.serial_lock:
                 self._is_turning = True
                 self._is_drivingForward = False
@@ -77,7 +77,7 @@ class MotorThread(threading.Thread):
 
         else:
             LEFTSPEED, RIGHTSPEED = 55, 55
-            duration = 0.0129 * degrees
+            duration = 0.0097 * degrees
             with self.serial_lock:
                 self._is_turning = True
                 self._is_drivingForward = False
@@ -87,7 +87,7 @@ class MotorThread(threading.Thread):
 
     def _drive_n_cm_forward(self, speed: int, cm: float):
         if speed == 0:
-            LEFTSPEED, RIGHTSPEED, k = 41, 40, 0.053
+            LEFTSPEED, RIGHTSPEED, k = 40, 40, 0.041
         elif speed == 1:
             LEFTSPEED, RIGHTSPEED, k = 86, 86, 0.0162
         else:
