@@ -10,6 +10,8 @@ from math import sin, cos
 from timeit import default_timer as timer
 import sys
 from scipy.stats import norm
+import matplotlib.pyplot as plt
+from matplotlib.animation import FFMpegWriter
 
 # Flags
 showGUI = False  # Whether or not to open GUI windows
@@ -263,8 +265,6 @@ try:
         print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta()*180/np.pi)
 
         particles = particles + initialize_particles(100)
-        for p in particles:
-            p.setWeight(1.0 / len(particles))
 
         # # XXX: Make the robot drive
         seen_next_target = objectIDs is not None and visit_order[0] in objectIDs
@@ -315,6 +315,7 @@ try:
                 for i in range(len(objectIDs)):
                     x, _, z = cam.tvecs[i][0]
                     x_dir, _, z_dir = cam.rvecs[i][0]
+                    print(visit_order[0])
                     if objectIDs[i] == visit_order[0]:
                         target_x = x
                         target_y = z
@@ -329,7 +330,7 @@ try:
 
             print("Creating Occupancy Map")
             path_res = 0.05
-            occ_map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, max(z_es)+1), res=path_res)
+            occ_map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, max([1] + z_es)), res=path_res)
             for i in range(occ_map.n_grids[0]):
                 for j in range(occ_map.n_grids[1]):
                     centroid = np.array([occ_map.map_area[0][0] + occ_map.resolution * (i+0.5), occ_map.map_area[0][1] + occ_map.resolution * (j+0.5)])
@@ -337,6 +338,9 @@ try:
                         if np.linalg.norm(centroid - o) <= BOX_RADIUS + ROBOT_RADIUS:
                             occ_map.grid[i, j] = 1
                             break
+
+            occ_map.draw_map()
+            plt.savefig("Occupancy_grid.png")
 
             robot_model = PointMassModel(ctrl_range=[-path_res, path_res])
 
@@ -363,9 +367,16 @@ try:
                 expand_dis=1,
                 path_resolution=path_res,
                 ) 
+            # show_animation = True
+            # metadata = dict(title="RRT Test")
+            # writer = FFMpegWriter(fps=15, metadata=metadata)
+            # fig = plt.figure()
 
             print("Calculating path")
+            # with writer.saving(fig, "rrt_test.mp4", 100):
             path = rrt.planning(animation=False)
+                #path = rrt.planning(animation=show_animation, writer=writer)
+
             if path is None:
                 print("Cannot find path")
             else:
@@ -374,6 +385,14 @@ try:
                 simple_path = simplify_path(path, occ_map)
                 print("simple path")
                 print(simple_path)
+                # if show_animation:
+                #     rrt.draw_graph()
+                #     plt.plot([x for (x, y) in path], [y for (x, y) in path], '-b')
+                #     plt.plot([x for (x, y) in simple_path], [y for (x, y) in simple_path], '-r')
+                #     plt.grid(True)
+                #     plt.pause(0.01)  # Need for Mac
+                #     plt.show()
+                #     writer.grab_frame()
 
                 pos_x, pos_y, angle = 0, 0, 0
                 aborted = False
@@ -411,24 +430,19 @@ try:
                     angle = (angle + turn_angle) % 360
 
 
-            print("Checking if target is close enough")
-            input()
-            colour = cam.get_next_frame()
-            objectIDs, dists, angles = cam.detect_aruco_objects(colour)
-            if not isinstance(objectIDs, type(None)):
-                if visit_order[0] in objectIDs:
-                    idx = list(objectIDs).index(visit_order[0])
-                    print(f"Reached target {visit_order[0]} (distance {dists[idx]:.1f} cm)")
+            # print("Checking if target is close enough")
+            # input()
+            # colour = cam.get_next_frame()
+            # objectIDs, dists, angles = cam.detect_aruco_objects(colour)
+            # if not isinstance(objectIDs, type(None)):
+            #     if visit_order[0] in objectIDs:
+            #         idx = list(objectIDs).index(visit_order[0])
+            #         print(f"Reached target {visit_order[0]} (distance {dists[idx]:.1f} cm)")
+            #         if dists[idx] < 40.0:
+            #             print(f"Reached target {visit_order.pop(0)} (distance {dists[idx]:.1f} cm) — next target: {visit_order[0]}")
 
-                if dists[idx] < 40.0:
-                    current = visit_order.pop(0)
-                    print(f"Reached target {current} — next: {visit_order[0] if visit_order else 'done'}")
-
-            '''      if dists[idx] < 40.0:
-                        print(f"Reached target {visit_order.pop(0)} (distance {dists[idx]:.1f} cm) — next target: {visit_order[0]}")
-                        visit_order.pop(0)'''
-
-            input()
+                print(f"Reached target {visit_order.pop(0)}")
+                input()
 
         else:
             turn_angle = 35
@@ -441,8 +455,7 @@ try:
             motor.clear_has_started()
             particle.add_uncertainty(particles, 0, 7*math.pi / 180)
             print("Finished turning")
-            # times_turned += times_turned
-            times_turned += 1
+            times_turned += times_turned
 
             time.sleep(1)
 
