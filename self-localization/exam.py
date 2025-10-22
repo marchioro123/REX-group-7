@@ -414,6 +414,7 @@ try:
             objectIDs, dists, angles = cam.detect_aruco_objects(colour)
             if not isinstance(objectIDs, type(None)):
                 if visit_order[0] in objectIDs:
+                    print(f"Reached target {visit_order[0]} (distance {dists[idx]:.1f} cm)")
                     idx = list(objectIDs).index(visit_order[0])
                     if dists[idx] < 40.0:
                         print(f"Reached target {visit_order.pop(0)} (distance {dists[idx]:.1f} cm) — next target: {visit_order[0]}")
