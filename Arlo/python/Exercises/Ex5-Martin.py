@@ -6,7 +6,8 @@ from math import atan2, degrees
 import robot
 from time import sleep
 
-LANDMARK_IDS = [1, 2, 3, 4]
+LANDMARK_IDS = [10, 6, 8, 5]
+LANDMARK_LABELS = {10: "L1", 6: "L2", 8: "L3", 5: "L4"}
 VISIT_DISTANCE_M = 0.40
 ARUCO_DICT = cv2.aruco.DICT_6X6_250
 MARKER_SIZE_M = 0.16
@@ -92,7 +93,8 @@ while idx < len(order):
     dist = distance_from_tvec(tvec)
     bearing = bearing_deg_from_tvec(tvec)
 
-    print(f"[VIS] L{order[idx]} dist={dist:.2f}m bearing={bearing:+.1f}°")
+    label = LANDMARK_LABELS.get(order[idx], order[idx])
+    print(f"[VIS] {label} dist={dist:.2f}m bearing={bearing:+.1f}°")
 
     if abs(bearing) > BEARING_OK_DEG:
         if bearing > 0:
