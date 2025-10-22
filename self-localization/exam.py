@@ -297,7 +297,6 @@ try:
             for k in seen:
                 seen[k] = False
             
-            input()
 
             colour = cam.get_next_frame()
             objectIDs, dists, angles = cam.detect_aruco_objects(colour)
