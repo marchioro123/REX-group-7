@@ -323,7 +323,7 @@ try:
                     z_es.append(z)
                     obstacle_center = (x-sin(z_dir/2)*DISTANCE_TO_CENTER, z+cos(z_dir/2)*DISTANCE_TO_CENTER)
                     obstacle_centers.append(obstacle_center)
-                maximum_absolute_value = max([abs(x) for x in x_es])
+                maximum_absolute_value = max([1] + [abs(x) for x in x_es])
 
             print("Creating Occupancy Map")
             path_res = 0.05
