@@ -339,6 +339,8 @@ try:
             dist_y = best_distances.get(visit_order[0], 3)
             pos_x, pos_y = est_pose.getX(), est_pose.getY()
 
+            print(target_x)
+            print(target_y)
             rrt = RRT(
                 start=[0, 0],
                 goal = [ 
