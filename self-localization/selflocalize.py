@@ -12,7 +12,7 @@ from scipy.stats import norm
 
 # Flags
 showGUI = True  # Whether or not to open GUI windows
-onRobot = False  # Whether or not we are running on the Arlo robot
+onRobot = True  # Whether or not we are running on the Arlo robot
 
 def isRunningOnArlo():
     """Return True if we are running on Arlo, otherwise False.
@@ -152,8 +152,8 @@ try:
         cam = camera.Camera(0, robottype='arlo', useCaptureThread=True)
         #cam = camera.Camera(0, robottype='arlo', useCaptureThread=False)
     else:
-        cam = camera.Camera(0, robottype='macbookpro', useCaptureThread=True)
-        #cam = camera.Camera(1, robottype='macbookpro', useCaptureThread=False)
+        #cam = camera.Camera(0, robottype='macbookpro', useCaptureThread=True)
+        cam = camera.Camera(1, robottype='macbookpro', useCaptureThread=False)
 
     arlo = robot.Robot()
     SERIAL_LOCK = threading.Lock()
@@ -326,6 +326,7 @@ try:
 
             print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta()*180/np.pi)
             particles = particles + initialize_particles(100)
+
 
         if showGUI:
             # Draw map
