@@ -341,6 +341,7 @@ try:
 
             print(target_x)
             print(target_y)
+            input()
             rrt = RRT(
                 start=[0, 0],
                 goal = [
