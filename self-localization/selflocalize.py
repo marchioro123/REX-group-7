@@ -12,7 +12,7 @@ from scipy.stats import norm
 
 # Flags
 showGUI = True  # Whether or not to open GUI windows
-onRobot = True  # Whether or not we are running on the Arlo robot
+onRobot = False  # Whether or not we are running on the Arlo robot
 
 def isRunningOnArlo():
     """Return True if we are running on Arlo, otherwise False.
@@ -47,7 +47,7 @@ CBLACK = (0, 0, 0)
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
 landmarkIDs = [10, 6]
 landmarks = {
-    1: (0.0, 0.0),  # Coordinates for landmark 1
+    10: (0.0, 0.0),  # Coordinates for landmark 1
     6: (200.0, 0.0)  # Coordinates for landmark 2
 }
 landmark_colors = [CRED, CGREEN] # Colors used when drawing the landmarks
