@@ -1,3 +1,6 @@
+import os
+os.environ["QT_QPA_PLATFORM"] = "offscreen"
+
 import cv2
 import particle
 import camera
@@ -47,7 +50,7 @@ CBLACK = (0, 0, 0)
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
 landmarkIDs = [10, 6]
 landmarks = {
-    1: (0.0, 0.0),  # Coordinates for landmark 1
+    10: (0.0, 0.0),  # Coordinates for landmark 1
     6: (200.0, 0.0)  # Coordinates for landmark 2
 }
 landmark_colors = [CRED, CGREEN] # Colors used when drawing the landmarks
@@ -152,8 +155,8 @@ try:
         cam = camera.Camera(0, robottype='arlo', useCaptureThread=True)
         #cam = camera.Camera(0, robottype='arlo', useCaptureThread=False)
     else:
-        #cam = camera.Camera(0, robottype='macbookpro', useCaptureThread=True)
-        cam = camera.Camera(1, robottype='macbookpro', useCaptureThread=False)
+        cam = camera.Camera(0, robottype='macbookpro', useCaptureThread=True)
+        #cam = camera.Camera(1, robottype='macbookpro', useCaptureThread=False)
 
     arlo = robot.Robot()
     SERIAL_LOCK = threading.Lock()
@@ -187,7 +190,7 @@ try:
         if all(seen.values()):
           # time.sleep(1000)
           
-            target_x, target_y = (landmarks[6][0] + landmarks[1][0]) / 2, (landmarks[6][1] + landmarks[1][1]) / 2
+            target_x, target_y = (landmarks[6][0] + landmarks[10][0]) / 2, (landmarks[6][1] + landmarks[10][1]) / 2
             pos_x, pos_y, est_theta = est_pose.getX(), est_pose.getY(), est_pose.getTheta()
            
             turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_theta)) % 360.0, target_x, target_y)

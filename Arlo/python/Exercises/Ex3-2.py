@@ -7,6 +7,7 @@ from camera import cam, find_corner_coordinates, detector
 
 arlo = robot.Robot()
 
+
 image = cam.capture_array("main")
 corners, ids, rejected = detector.detectMarkers(image)
 rvecs, tvecs, _ = find_corner_coordinates(corners)

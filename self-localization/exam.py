@@ -265,6 +265,8 @@ try:
         print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta()*180/np.pi)
 
         particles = particles + initialize_particles(100)
+        for p in particles:
+            p.setWeight(1.0 / len(particles))
 
         # # XXX: Make the robot drive
         seen_next_target = objectIDs is not None and visit_order[0] in objectIDs
@@ -456,7 +458,8 @@ try:
             motor.clear_has_started()
             particle.add_uncertainty(particles, 0, 7*math.pi / 180)
             print("Finished turning")
-            times_turned += times_turned
+            # times_turned += times_turned
+            times_turned += 1
 
             time.sleep(1)
 
