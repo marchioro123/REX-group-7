@@ -263,6 +263,8 @@ try:
         print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta()*180/np.pi)
 
         particles = particles + initialize_particles(100)
+        for p in particles:
+            p.setWeight(1.0 / len(particles))
 
         # # XXX: Make the robot drive
         seen_next_target = objectIDs is not None and visit_order[0] in objectIDs
@@ -417,9 +419,14 @@ try:
                 if visit_order[0] in objectIDs:
                     idx = list(objectIDs).index(visit_order[0])
                     print(f"Reached target {visit_order[0]} (distance {dists[idx]:.1f} cm)")
-                    if dists[idx] < 40.0:
+
+                if dists[idx] < 40.0:
+                    current = visit_order.pop(0)
+                    print(f"Reached target {current} — next: {visit_order[0] if visit_order else 'done'}")
+
+            '''      if dists[idx] < 40.0:
                         print(f"Reached target {visit_order.pop(0)} (distance {dists[idx]:.1f} cm) — next target: {visit_order[0]}")
-                        visit_order.pop(0)
+                        visit_order.pop(0)'''
 
             input()
 
@@ -434,7 +441,8 @@ try:
             motor.clear_has_started()
             particle.add_uncertainty(particles, 0, 7*math.pi / 180)
             print("Finished turning")
-            times_turned += times_turned
+            # times_turned += times_turned
+            times_turned += 1
 
             time.sleep(1)
 
