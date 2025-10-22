@@ -347,7 +347,6 @@ try:
 
             robot_model = PointMassModel(ctrl_range=[-path_res, path_res])
 
-            dist_y = best_distances.get(visit_order[0], 3)
             pos_x, pos_y = est_pose.getX(), est_pose.getY()
 
             print(target_x)
@@ -357,12 +356,12 @@ try:
                 goal = np.array([ 
                     target_x if target_x is not None else 0,
                     target_y if target_y is not None else (
-                        best_distances[visit_order[0]]
+                        best_distances[visit_order[0]] / 100
                         if visit_order[0] in best_distances
                         else calculate_distance(
-                            pos_x, pos_y,
-                            landmarks[visit_order[0]][0],
-                            landmarks[visit_order[0]][1]
+                            pos_x / 100, pos_y / 100,
+                            landmarks[visit_order[0]][0] / 100,
+                            landmarks[visit_order[0]][1] / 100
                         )
                     )
                 ]),
