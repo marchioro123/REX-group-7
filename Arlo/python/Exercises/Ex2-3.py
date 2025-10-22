@@ -35,6 +35,7 @@ for k in ks:
     resampled_uniform = sir_uniform(k)
     resampled_normal = sir_normal(k)
 
+
     # ---- Plot for uniform proposal ----
     plt.figure(figsize=(7, 4))
     plt.hist(resampled_uniform, bins=50, density=True, alpha=0.6, label=f"SIR resampled uniform (k={k})")
