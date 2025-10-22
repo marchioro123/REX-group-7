@@ -380,7 +380,7 @@ try:
                     target_x, target_y = point
 
                     turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
-                    distance = calculate_distance(pos_x, pos_y, target_x, target_y)
+                    distance = calculate_distance(pos_x, pos_y, target_x, target_y) * 100 #rtt planning is in meters
                     print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
                     input()
 
