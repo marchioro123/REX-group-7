@@ -333,7 +333,7 @@ try:
             z_max = max(z_es, default=4)
             print("Creating Occupancy Map")
             path_res = 0.05
-            occ_map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, z_max), res=path_res)
+            occ_map = GridOccupancyMap(low=(-maximum_absolute_value-0.5, -0.3), high=(maximum_absolute_value+0.5, z_max+0.5), res=path_res)
             for i in range(occ_map.n_grids[0]):
                 for j in range(occ_map.n_grids[1]):
                     centroid = np.array([occ_map.map_area[0][0] + occ_map.resolution * (i+0.5), occ_map.map_area[0][1] + occ_map.resolution * (j+0.5)])
