@@ -78,7 +78,7 @@ class MotorThread(threading.Thread):
 
         else:
             LEFTSPEED, RIGHTSPEED = 55, 55
-            duration = 0.0097 * degrees # calibration
+            duration = 0.01 * degrees # calibration
             #duration = 0.0148 * abs(degrees)
             with self.serial_lock:
                 self._is_turning = True
