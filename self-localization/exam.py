@@ -175,7 +175,7 @@ try:
     motor.start()
 
     times_turned = 0
-    
+
     while visit_order:        
         # Fetch next frame
         colour = cam.get_next_frame()
@@ -432,7 +432,7 @@ try:
                             cmd_queue.put(("drive_n_cm_forward", 0, 10))
                             cmd_queue.put(("turn_n_degrees", -45))
                         else:
-                            print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
+                            print(f"right sensor")
                             input()
                             cmd_queue.put(("turn_n_degrees", -45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 10))
