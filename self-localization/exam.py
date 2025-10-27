@@ -412,16 +412,17 @@ try:
                             right_dist = arlo.read_right_ping_sensor()
                         if should_stop(front_dist, left_dist, right_dist):
                            # with SERIAL_LOCK:
+                            print("Emergency stop!!")
                             t = motor._wait_until
                             aborted = True
                             if t - time.monotonic() < 1 and motor._is_turning is False:
                                 aborted = False
                             motor.hard_stop()
-                            print("Emergency stop!!")
+                            #print("Emergency stop!!")
                             # particle.move_particles(particles, (target_x-pos_x)/2, (target_y-pos_y)/2, -(math.radians(turn_angle)/2))
                             # particle.add_uncertainty(particles, distance/2, (turn_angle/2)*math.pi / 180)
                             break
-                        time.sleep(0.01)
+                        time.sleep(0.05)
 
                     motor.clear_has_started()
                     input()
@@ -494,7 +495,7 @@ try:
                         motor.hard_stop()
                         aborted = True
                         break
-                    time.sleep(0.1)
+                    time.sleep(0.05)
                 motor.clear_has_started()
 
                 particles = initialize_particles(num_particles)
