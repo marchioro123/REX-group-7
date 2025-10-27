@@ -358,7 +358,7 @@ try:
                                 landmarks[visit_order[0]][1] / 100
                             )
                         )
-                    ) - 0.3
+                    ) - 0.35
                 ]),
                 robot_model=robot_model,
                 map=occ_map,
@@ -432,12 +432,13 @@ try:
                             cmd_queue.put(("turn_n_degrees", 45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 10))
                             cmd_queue.put(("turn_n_degrees", -45))
-                        else:
+                        elif right_dist != -1 and right_dist < 100:
                             print(f"right sensor")
                             input()
                             cmd_queue.put(("turn_n_degrees", -45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 10))
                             cmd_queue.put(("turn_n_degrees", 45))
+
                         while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
                             time.sleep(0.01)
                         motor.clear_has_started()
