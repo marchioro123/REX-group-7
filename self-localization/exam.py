@@ -174,6 +174,8 @@ try:
     motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
     motor.start()
 
+    times_turned = 0
+    
     while visit_order:        
         # Fetch next frame
         colour = cam.get_next_frame()
