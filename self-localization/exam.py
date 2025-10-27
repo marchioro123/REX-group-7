@@ -411,6 +411,7 @@ try:
                             left_dist = arlo.read_left_ping_sensor()
                             right_dist = arlo.read_right_ping_sensor()
                         if should_stop(front_dist, left_dist, right_dist):
+                           # with SERIAL_LOCK:
                             t = motor._wait_until
                             aborted = True
                             if t - time.monotonic() < 1 and motor._is_turning is False:
@@ -429,13 +430,15 @@ try:
                         with SERIAL_LOCK:
                             left_dist = arlo.read_left_ping_sensor()
                             right_dist = arlo.read_right_ping_sensor()
-                        if left_dist != -1 and left_dist < 100:
+                        object_left = left_dist != -1 and left_dist < 100
+                        object_right = right_dist != -1 and right_dist < 100
+                        if object_left and not object_right:
                             print(f"left sensor")
                             input()
                             cmd_queue.put(("turn_n_degrees", 45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 10))
                             cmd_queue.put(("turn_n_degrees", -45))
-                        elif right_dist != -1 and right_dist < 100:
+                        elif object_right and not object_left:
                             print(f"right sensor")
                             input()
                             cmd_queue.put(("turn_n_degrees", -45))

@@ -28,10 +28,10 @@ class MotorThread(threading.Thread):
             except queue.Empty:
                 if self._wait_until != 0:
                     with self.serial_lock:
+                        self.arlo.stop()
                         self._wait_until = 0
                         self._is_turning = False
                         self._is_drivingForward = False
-                        self.arlo.stop()
 
             time.sleep(0.01)
 
