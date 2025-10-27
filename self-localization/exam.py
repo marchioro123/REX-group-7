@@ -355,7 +355,7 @@ try:
                                 landmarks[visit_order[0]][1] / 100
                             )
                         )
-                    ) - 0.2
+                    ) - 0.3
                 ]),
                 robot_model=robot_model,
                 map=occ_map,
