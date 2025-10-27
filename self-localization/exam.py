@@ -277,10 +277,10 @@ try:
                 input()
                 if (abs(turn_angle) > 5):
                     cmd_queue.put(("turn_n_degrees", turn_angle))
-                particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
-                while (not motor.has_started() or motor.is_turning()):
-                    time.sleep(0.1)
-                motor.clear_has_started()
+                    particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
+                    while (not motor.has_started() or motor.is_turning()):
+                        time.sleep(0.1)
+                    motor.clear_has_started()
             elif seen_two_boxes:
                 target_x, target_y = landmarks[visit_order[0]]
                 pos_x, pos_y, est_theta = est_pose.getX(), est_pose.getY(), est_pose.getTheta()
@@ -290,10 +290,10 @@ try:
                 input()
                 if (abs(turn_angle) > 5):
                     cmd_queue.put(("turn_n_degrees", turn_angle))
-                particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
-                while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-                    time.sleep(0.1)
-                motor.clear_has_started()
+                    particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
+                    while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                        time.sleep(0.1)
+                    motor.clear_has_started()
 
             #particle.add_uncertainty(particles, 0, 7*math.pi / 180)
             for k in seen:
