@@ -415,9 +415,9 @@ try:
                         if should_stop(front_dist, left_dist, right_dist):
                            # with SERIAL_LOCK:
                             print("Emergency stop!!")
-                            t = motor._wait_until
+                            t = motor.get_wait_until()
                             aborted = True
-                            if t - time.monotonic() < 1 and motor._is_turning is False:
+                            if t - time.monotonic() < 1 and motor.is_turning() is False:
                                 aborted = False
                             motor.hard_stop()
                             #print("Emergency stop!!")

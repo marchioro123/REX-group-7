@@ -46,6 +46,10 @@ class MotorThread(threading.Thread):
     def is_driving_forward(self):
         with self.serial_lock:
             return self._is_drivingForward
+    
+    def get_wait_until(self):
+        with self.serial_lock:
+            return self._wait_until
         
     def clear_has_started(self):
         with self.serial_lock:
