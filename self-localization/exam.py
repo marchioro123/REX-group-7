@@ -302,7 +302,7 @@ try:
 
             colour = cam.get_next_frame()
             objectIDs, dists, angles = cam.detect_aruco_objects(colour)
-
+            print(f"Saw IDs: {objectIDs}")
             x_es = []
             z_es = []
             target_x = None
@@ -311,6 +311,8 @@ try:
 
             if not isinstance(objectIDs, type(None)):
                 for i in range(len(objectIDs)):
+                    print("inside the loop")
+                    print(i)
                     x, _, z = cam.tvecs[i][0]
                     x_dir, _, z_dir = cam.rvecs[i][0]
                     print(visit_order[0])
