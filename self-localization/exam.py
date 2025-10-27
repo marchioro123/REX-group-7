@@ -6,6 +6,7 @@ import time
 import threading
 import queue
 import math
+import random
 from math import sin, cos
 from timeit import default_timer as timer
 import sys
@@ -178,7 +179,7 @@ try:
     motor = MotorThread(arlo, cmd_queue, serial_lock=SERIAL_LOCK)
     motor.start()
 
-    while True:        
+    while visit_order:        
         # Fetch next frame
         colour = cam.get_next_frame()
         
@@ -189,7 +190,7 @@ try:
         best_angles = dict()
 
         if not isinstance(objectIDs, type(None)):
-            particle.add_uncertainty(particles, 2, 2*math.pi / 180)
+            #particle.add_uncertainty(particles, 2, 2*math.pi / 180)
             
             # List detected objects
             for i in range(len(objectIDs)):
@@ -247,7 +248,7 @@ try:
             # print([p.getWeight() for p in particles])
             indices = np.random.default_rng().choice(
                 range(len(particles)),
-                size=num_particles-100,
+                size=num_particles,
                 replace=True,
                 p=[p.getWeight() for p in particles]
             )
@@ -264,17 +265,15 @@ try:
         est_pose = particle.estimate_pose(particles) # The estimate of the robots current pose
         print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta()*180/np.pi)
 
-        particles = particles + initialize_particles(100)
+        particles = particles[:-100] + initialize_particles(100)
         for p in particles:
             p.setWeight(1.0 / len(particles))
 
         # # XXX: Make the robot drive
         seen_next_target = objectIDs is not None and visit_order[0] in objectIDs
         seen_two_boxes = sum(seen.values()) >= 2
-        times_turned = 0
 
         if seen_next_target or seen_two_boxes:
-            times_turned = 0
             if seen_next_target:
                 turn_angle = -best_angles[visit_order[0]]*180/np.pi
                 print(f"Turn {turn_angle:.2f}°")
@@ -284,7 +283,6 @@ try:
                 while (not motor.has_started() or motor.is_turning()):
                     time.sleep(0.1)
                 motor.clear_has_started()
-                particle.add_uncertainty(particles, 0, 10*math.pi / 180)
             elif seen_two_boxes:
                 target_x, target_y = landmarks[visit_order[0]]
                 pos_x, pos_y, est_theta = est_pose.getX(), est_pose.getY(), est_pose.getTheta()
@@ -298,8 +296,8 @@ try:
                 while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
                     time.sleep(0.1)
                 motor.clear_has_started()
-                particle.add_uncertainty(particles, 0, 10*math.pi / 180)
-                
+
+            #particle.add_uncertainty(particles, 0, 7*math.pi / 180)
             for k in seen:
                 seen[k] = False
             
@@ -342,15 +340,12 @@ try:
                             occ_map.grid[i, j] = 1
                             break
 
-            occ_map.draw_map()
-            plt.savefig("Occupancy_grid.png")
+            # occ_map.draw_map()
+            # plt.savefig("Occupancy_grid.png")
 
             robot_model = PointMassModel(ctrl_range=[-path_res, path_res])
-
             pos_x, pos_y = est_pose.getX(), est_pose.getY()
 
-            print(target_x)
-            print(target_y)
             rrt = RRT(
                 start=np.array([0, 0]),
                 goal = np.array([ 
@@ -409,7 +404,6 @@ try:
 
                     cmd_queue.put(("turn_n_degrees", turn_angle))
                     cmd_queue.put(("drive_n_cm_forward", 0, distance))
-                    particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
 
                     while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
                         with SERIAL_LOCK:
@@ -420,16 +414,31 @@ try:
                             motor.hard_stop()
                             print("Emergency stop!!")
                             aborted = True
-                            particle.add_uncertainty(particles, 100, 7*math.pi / 180)
+                            # particle.move_particles(particles, (target_x-pos_x)/2, (target_y-pos_y)/2, -(math.radians(turn_angle)/2))
+                            # particle.add_uncertainty(particles, distance/2, (turn_angle/2)*math.pi / 180)
                             break
-                        time.sleep(0.1)
+                        time.sleep(0.05)
 
                     motor.clear_has_started()
-
+                    # particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
                     if aborted:
+                        with SERIAL_LOCK:
+                            left_dist = arlo.read_left_ping_sensor()
+                            right_dist = arlo.read_right_ping_sensor()
+                        if left_dist != -1 and left_dist < 100:
+                            cmd_queue.put(("turn_n_degrees", 45))
+                            cmd_queue.put(("drive_n_cm_forward", 0, 10))
+                            cmd_queue.put(("turn_n_degrees", -45))
+                        else:
+                            cmd_queue.put(("turn_n_degrees", -45))
+                            cmd_queue.put(("drive_n_cm_forward", 0, 10))
+                            cmd_queue.put(("turn_n_degrees", 45))
+                        while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                            time.sleep(0.1)
+                        motor.clear_has_started()
                         break
 
-                    particle.add_uncertainty(particles, 7, 7*math.pi / 180)
+                    # particle.add_uncertainty(particles, 7, 7*math.pi / 180)
                     pos_x, pos_y = target_x, target_y
                     angle = (angle + turn_angle) % 360
 
@@ -444,50 +453,25 @@ try:
             #         print(f"Reached target {visit_order[0]} (distance {dists[idx]:.1f} cm)")
             #         if dists[idx] < 40.0:
             #             print(f"Reached target {visit_order.pop(0)} (distance {dists[idx]:.1f} cm) — next target: {visit_order[0]}")
+                particles = initialize_particles(num_particles)
 
-                if (not aborted):
-                    print(f"Reached target {visit_order.pop(0)}")
-                    print(f"Next target: {visit_order[0]}")
-                    
-                # if visit_order:
-                #     current = visit_order.pop(0)
-                #     print(f"Reached target {current}")
-                #     if visit_order:
-                #         print(f"Next target: {visit_order[0]}")
-                #     else:
-                #         print("All targets visited — race complete!")
-
+                if not aborted:
+                    reached = visit_order.pop(0)
+                    print(f"Reached target {reached}")
+                    if visit_order:  # check if there's a next target
+                        print(f"Next target: {visit_order[0]}")
+                    else:
+                        print("No more targets!")
                 input()
 
         else:
-            turn_angle = 35
-            print(f"Turn {turn_angle} degrees")
-            cmd_queue.put(("turn_n_degrees", turn_angle))
-            particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
-
-            while (not motor.has_started() or motor.is_turning()):
-                time.sleep(0.1)
-            motor.clear_has_started()
-            particle.add_uncertainty(particles, 0, 7*math.pi / 180)
-            print("Finished turning")
-            # times_turned += times_turned
-            times_turned += 1
-
-            time.sleep(1)
-
-            if times_turned > 15:
-                times_turned = 0
-                target_x, target_y = (pos_x + 10), (pos_y + 10)
-
-                turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
-                distance = calculate_distance(pos_x, pos_y, target_x, target_y)
-                print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
+            if times_turned > 10:
+                turn_angle = random.uniform(-180, 180)
+                print(f"Random turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
                 input()
-
                 cmd_queue.put(("turn_n_degrees", turn_angle))
-                cmd_queue.put(("drive_n_cm_forward", 0, distance))
-                particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
-
+                cmd_queue.put(("drive_n_cm_forward", 0, 50))
+                aborted = False
                 while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
                     with SERIAL_LOCK:
                         front_dist = arlo.read_front_ping_sensor()
@@ -496,11 +480,30 @@ try:
                     if should_stop(front_dist, left_dist, right_dist):
                         motor.hard_stop()
                         aborted = True
-                        particle.add_uncertainty(particles, 100, 7*math.pi / 180)
                         break
+                    time.sleep(0.05)
+                motor.clear_has_started()
+
+                particles = initialize_particles(num_particles)
+                for k in seen:
+                    seen[k] = False
+
+                if not aborted:
+                    times_turned = 0
+
+            else:
+                turn_angle = 35
+                print(f"Turn {turn_angle} degrees")
+                cmd_queue.put(("turn_n_degrees", turn_angle))
+                particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
+
+                while (not motor.has_started() or motor.is_turning()):
                     time.sleep(0.1)
-
-
+                motor.clear_has_started()
+                particle.add_uncertainty(particles, 0, 5*math.pi / 180)
+                print("Finished turning")
+                times_turned += 1
+                time.sleep(1)
 
         if showGUI:
             # Draw map

@@ -33,7 +33,7 @@ class MotorThread(threading.Thread):
                         self._is_drivingForward = False
                         self.arlo.stop()
 
-            time.sleep(0.005)
+            time.sleep(0.01)
 
     def has_started(self):
         with self.serial_lock:
