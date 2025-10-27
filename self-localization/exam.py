@@ -345,15 +345,17 @@ try:
                 start=np.array([0, 0]),
                 goal = np.array([ 
                     target_x if target_x is not None else 0,
-                    target_y if target_y is not None else (
-                        best_distances[visit_order[0]] / 100
-                        if visit_order[0] in best_distances
-                        else calculate_distance(
-                            pos_x / 100, pos_y / 100,
-                            landmarks[visit_order[0]][0] / 100,
-                            landmarks[visit_order[0]][1] / 100
+                    (
+                        target_y if target_y is not None else (
+                            best_distances[visit_order[0]] / 100
+                            if visit_order[0] in best_distances
+                            else calculate_distance(
+                                pos_x / 100, pos_y / 100,
+                                landmarks[visit_order[0]][0] / 100,
+                                landmarks[visit_order[0]][1] / 100
+                            )
                         )
-                    )
+                    ) - 0.2
                 ]),
                 robot_model=robot_model,
                 map=occ_map,
@@ -422,11 +424,13 @@ try:
                             left_dist = arlo.read_left_ping_sensor()
                             right_dist = arlo.read_right_ping_sensor()
                         if left_dist != -1 and left_dist < 100:
+                            print(f"left sensor")
                             input()
                             cmd_queue.put(("turn_n_degrees", 45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 10))
                             cmd_queue.put(("turn_n_degrees", -45))
                         else:
+                            print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
                             input()
                             cmd_queue.put(("turn_n_degrees", -45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 10))
