@@ -412,7 +412,7 @@ try:
                             # particle.move_particles(particles, (target_x-pos_x)/2, (target_y-pos_y)/2, -(math.radians(turn_angle)/2))
                             # particle.add_uncertainty(particles, distance/2, (turn_angle/2)*math.pi / 180)
                             break
-                        time.sleep(0.05)
+                        time.sleep(0.01)
 
                     motor.clear_has_started()
                     # particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
@@ -476,7 +476,7 @@ try:
                         motor.hard_stop()
                         aborted = True
                         break
-                    time.sleep(0.05)
+                    time.sleep(0.01)
                 motor.clear_has_started()
 
                 particles = initialize_particles(num_particles)
