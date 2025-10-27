@@ -2,7 +2,7 @@ import math
 
 def should_stop(front_dist, left_dist, right_dist):        
     return (
-        (front_dist != -1 and front_dist < 300) or 
+        (front_dist != -1 and front_dist < 200) or 
         (left_dist != -1 and left_dist < 100) or 
         (right_dist != -1 and right_dist < 100)
     )
