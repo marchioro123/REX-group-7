@@ -103,10 +103,10 @@ class MotorThread(threading.Thread):
         duration = k * cm
 
         with self.serial_lock:
+            self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
             self._is_drivingForward = True 
             self._is_turning = False
             self._wait_until = time.monotonic() + duration
-            self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
             self._has_started = True
 
 

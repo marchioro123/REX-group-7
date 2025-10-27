@@ -291,7 +291,7 @@ try:
                 if (abs(turn_angle) > 5):
                     cmd_queue.put(("turn_n_degrees", turn_angle))
                     particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
-                    while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                    while (not motor.has_started() or motor.is_turning()):
                         time.sleep(0.1)
                     motor.clear_has_started()
 
@@ -405,9 +405,14 @@ try:
                     input()
                     if (abs(turn_angle) > 5):
                         cmd_queue.put(("turn_n_degrees", turn_angle))
+                        while (not motor.has_started() or motor.is_turning()):
+                            time.sleep(0.1)
+                        motor.clear_has_started()
+
+
                     cmd_queue.put(("drive_n_cm_forward", 0, distance))
 
-                    while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                    while (not motor.has_started() or motor.is_driving_forward()):
                         with SERIAL_LOCK:
                             front_dist = arlo.read_front_ping_sensor()
                             left_dist = arlo.read_left_ping_sensor()
@@ -417,7 +422,7 @@ try:
                             print("Emergency stop!!")
                             t = motor.get_wait_until()
                             aborted = True
-                            if t - time.monotonic() < 1 and motor.is_turning() is False:
+                            if t - time.monotonic() < 1:
                                 aborted = False
                             motor.hard_stop()
                             #print("Emergency stop!!")
