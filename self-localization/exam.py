@@ -56,23 +56,18 @@ ROBOT_RADIUS = 0.2250
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
-landmarkIDs = [10, 6, 5, 8]
+landmarkIDs = [8, 7, 6, 3]
 landmarks = {
-    10: (0.0, 0.0),  # Coordinates for landmark 1
-    6: (0.0, 200.0),  # Coordinates for landmark 2
-    5: (300.0, 0.0),  # Coordinates for landmark 3
-    8: (300.0, 200.0)  # Coordinates for landmark 4
+    8: (0.0, 0.0),  # Coordinates for landmark 1
+    7: (0.0, 300.0),  # Coordinates for landmark 2
+    6: (400.0, 0.0),  # Coordinates for landmark 3
+    3: (400.0, 300.0)  # Coordinates for landmark 4
 }
-visit_order = [10, 6, 5, 8, 10]
+visit_order = [8, 7, 6, 3, 8]
 
 landmark_colors = [CRED, CGREEN, CBLUE, CMAGENTA] # Colors used when drawing the landmarks
 
-seen = {
-    10: False,
-    6: False,
-    5: False,
-    8: False
-}
+seen = {i: False for i in landmarkIDs}
 
 
 def jet(x):
