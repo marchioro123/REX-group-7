@@ -18,6 +18,7 @@ class MotorThread(threading.Thread):
         while True:
             try:
                 if self._wait_until <= time.monotonic():
+                    self.arlo.stop()
                     name, *args = self.cmd_queue.get(block=False)
 
                     if name == "turn_n_degrees":
@@ -101,9 +102,9 @@ class MotorThread(threading.Thread):
             LEFTSPEED, RIGHTSPEED, k = 127, 115, 0.0105
 
         duration = k * cm
-
+        direction = 0 if cm < 0 else 1
         with self.serial_lock:
-            self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, 1, 1)
+            self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, direction, direction)
             self._is_drivingForward = True 
             self._is_turning = False
             self._wait_until = time.monotonic() + duration
