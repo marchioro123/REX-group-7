@@ -338,8 +338,8 @@ try:
                             occ_map.grid[i, j] = 1
                             break
 
-            # occ_map.draw_map()
-            # plt.savefig("Occupancy_grid.png")
+            occ_map.draw_map()
+            plt.savefig("Occupancy_grid.png")
 
             robot_model = PointMassModel(ctrl_range=[-path_res, path_res])
             pos_x, pos_y = est_pose.getX(), est_pose.getY()
