@@ -415,16 +415,19 @@ try:
                         time.sleep(0.01)
 
                     motor.clear_has_started()
+                    input()
                     # particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
                     if aborted:
                         with SERIAL_LOCK:
                             left_dist = arlo.read_left_ping_sensor()
                             right_dist = arlo.read_right_ping_sensor()
                         if left_dist != -1 and left_dist < 100:
+                            input()
                             cmd_queue.put(("turn_n_degrees", 45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 10))
                             cmd_queue.put(("turn_n_degrees", -45))
                         else:
+                            input()
                             cmd_queue.put(("turn_n_degrees", -45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 10))
                             cmd_queue.put(("turn_n_degrees", 45))
