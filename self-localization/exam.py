@@ -416,7 +416,7 @@ try:
                             # particle.move_particles(particles, (target_x-pos_x)/2, (target_y-pos_y)/2, -(math.radians(turn_angle)/2))
                             # particle.add_uncertainty(particles, distance/2, (turn_angle/2)*math.pi / 180)
                             break
-                        time.sleep(0.1)
+                        time.sleep(0.01)
 
                     motor.clear_has_started()
                     input()
@@ -438,7 +438,7 @@ try:
                             cmd_queue.put(("drive_n_cm_forward", 0, 10))
                             cmd_queue.put(("turn_n_degrees", 45))
                         while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-                            time.sleep(0.1)
+                            time.sleep(0.01)
                         motor.clear_has_started()
                         break
 
