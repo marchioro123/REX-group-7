@@ -2,12 +2,12 @@ import math
 
 def should_stop(front_dist, left_dist, right_dist):        
     return (
-        (front_dist != -1 and front_dist < 200) or 
-        (left_dist != -1 and left_dist < 50) or 
-        (right_dist != -1 and right_dist < 50)
+        (front_dist != -1 and front_dist < 300) or 
+        (left_dist != -1 and left_dist < 100) or 
+        (right_dist != -1 and right_dist < 100)
     )
 
-def calculate_distance(x1, y1, x2, y2):
+def calculate_distance(x1, y1, x2, y2): 
     dx = x2 - x1
     dy = y2 - y1
     return math.sqrt(dx**2 + dy**2)
