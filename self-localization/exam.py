@@ -418,6 +418,9 @@ try:
                             front_dist = arlo.read_front_ping_sensor()
                             left_dist = arlo.read_left_ping_sensor()
                             right_dist = arlo.read_right_ping_sensor()
+                        print(left_dist)
+                        print(right_dist)
+                        print(front_dist)
                         if should_stop(front_dist, left_dist, right_dist):
                            # with SERIAL_LOCK:
                             t = motor.get_wait_until()
@@ -442,8 +445,6 @@ try:
                         #     right_dist = arlo.read_right_ping_sensor()
                         object_left = left_dist != -1 and left_dist < 300
                         object_right = right_dist != -1 and right_dist < 300
-                        print(left_dist)
-                        print(right_dist)
                         if object_left and not object_right:
                             print(f"left sensor")
                           #  input()
