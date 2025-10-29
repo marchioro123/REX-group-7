@@ -453,14 +453,14 @@ try:
                             cmd_queue.put(("turn_n_degrees", 45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 30))
                             cmd_queue.put(("turn_n_degrees", -45))
-                        elif not object_left:
+                        elif object_right and not object_left:
                             print(f"right sensor")
                          #   input()
                             cmd_queue.put(("turn_n_degrees", -45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 30))
                             cmd_queue.put(("turn_n_degrees", 45))
                         else:
-                            print(f"backwards sensor")
+                            print(f"front sensor")
                             cmd_queue.put(("drive_n_cm_forward", 0, -20))
 
                         while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
