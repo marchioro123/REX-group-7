@@ -421,7 +421,7 @@ try:
                             motor.hard_stop()
                             aborted = True
                             timenow = time.monotonic()
-                            if i==last_index and t - timenow < 2 and t > 0:
+                            if i==last_index and t - timenow < 1.5 and t > 0:
                                 print("Target..")
                                 aborted = False
                             print("Emergency stop!!")
@@ -445,13 +445,13 @@ try:
                             print(f"left sensor")
                           #  input()
                             cmd_queue.put(("turn_n_degrees", 45))
-                            cmd_queue.put(("drive_n_cm_forward", 0, 20))
+                            cmd_queue.put(("drive_n_cm_forward", 0, 30))
                             cmd_queue.put(("turn_n_degrees", -45))
                         elif not object_left:
                             print(f"right sensor")
                          #   input()
                             cmd_queue.put(("turn_n_degrees", -45))
-                            cmd_queue.put(("drive_n_cm_forward", 0, 20))
+                            cmd_queue.put(("drive_n_cm_forward", 0, 30))
                             cmd_queue.put(("turn_n_degrees", 45))
                         else:
                             print(f"backwards sensor")
