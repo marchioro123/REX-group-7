@@ -420,7 +420,7 @@ try:
                             t = motor.get_wait_until()
                             motor.hard_stop()
                             aborted = True
-                            if i==last_index and t - time.monotonic() < 1.5:
+                            if i==last_index and t - time.monotonic() < 2:
                                 print("Target..")
                                 aborted = False
                             print("Emergency stop!!")
@@ -492,6 +492,9 @@ try:
              #   input()
                 # if (abs(turn_angle) > 5):
                 cmd_queue.put(("turn_n_degrees", turn_angle))
+                while (not motor.has_started() or motor.is_turning()):
+                    time.sleep(0.02)
+                motor.clear_has_started()
                 cmd_queue.put(("drive_n_cm_forward", 0, 50))
                 aborted = False
                 while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
