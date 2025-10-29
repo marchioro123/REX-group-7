@@ -420,11 +420,12 @@ try:
                             t = motor.get_wait_until()
                             motor.hard_stop()
                             aborted = True
-                            if i==last_index and t - time.monotonic() < 2:
+                            timenow = time.monotonic()
+                            if i==last_index and t - timenow < 2 and t > 0:
                                 print("Target..")
                                 aborted = False
                             print("Emergency stop!!")
-                            print(t - time.monotonic())
+                            print(t - timenow)
                             # particle.move_particles(particles, (target_x-pos_x)/2, (target_y-pos_y)/2, -(math.radians(turn_angle)/2))
                             # particle.add_uncertainty(particles, distance/2, (turn_angle/2)*math.pi / 180)
                             break
