@@ -423,12 +423,14 @@ try:
                            # with SERIAL_LOCK:
                            
                             t = motor.get_wait_until()
+                            timenow = time.monotonic()
                             motor.hard_stop()
                             print(left_dist)
                             print(right_dist)
                             print(front_dist)
+                            print(t)
+                            print(timenow)
                             aborted = True
-                            timenow = time.monotonic()
                             if i==last_index and t - timenow < 1.5 and t > 0:
                                 print("Target..")
                                 aborted = False
