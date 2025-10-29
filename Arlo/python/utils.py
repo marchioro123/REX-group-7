@@ -1,9 +1,9 @@
 import math
 
 def should_stop(front_dist, left_dist, right_dist, last_path):     
-    side_length = 300
+    side_length = 200
     if last_path:
-        side_length = 200   
+        side_length = 300   
     return (
         (front_dist != -1 and front_dist < 300) or 
         (left_dist != -1 and left_dist < side_length) or 

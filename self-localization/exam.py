@@ -423,7 +423,7 @@ try:
                             front_dist = arlo.read_front_ping_sensor()
                             left_dist = arlo.read_left_ping_sensor()
                             right_dist = arlo.read_right_ping_sensor()
-                        if should_stop(front_dist, left_dist, right_dist):
+                        if should_stop(front_dist, left_dist, right_dist, i==last_index):
                            # with SERIAL_LOCK:
                            
                             t = motor.get_wait_until()
@@ -522,7 +522,7 @@ try:
                         front_dist = arlo.read_front_ping_sensor()
                         left_dist = arlo.read_left_ping_sensor()
                         right_dist = arlo.read_right_ping_sensor()
-                    if should_stop(front_dist, left_dist, right_dist):
+                    if should_stop(front_dist, left_dist, right_dist, False):
                         motor.hard_stop()
                         aborted = True
                         break
