@@ -80,6 +80,11 @@ def move_particle(particle, delta_x, delta_y, delta_theta):
     particle.setY(particle.getY() + delta_y)
     particle.setTheta(particle.getTheta() + delta_theta)
 
+def move_particles_forward(particle_list, distance):
+    for particle in particle_list:
+        cur_theta = particle.theta
+        move_particle(particle, np.cos(cur_theta)*distance, np.sin(cur_theta)*distance, 0)
+
 
 def add_uncertainty(particles_list, sigma, sigma_theta):
     """Add some noise to each particle in the list. Sigma and sigma_theta is the noise
