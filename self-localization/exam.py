@@ -52,7 +52,7 @@ CBLACK = (0, 0, 0)
 
 DISTANCE_TO_CENTER = 0.1
 BOX_RADIUS = 0.18
-ROBOT_RADIUS = 0.3
+ROBOT_RADIUS = 0.2
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
