@@ -208,7 +208,11 @@ try:
             # Compute particle weights
             # XXX: You do this
             for p in particles:
-                p.setWeight(1.0)
+                x, y = p.getX(), p.getY()
+                if (x < -60) or (x > 460) or (y < -60) or (y > 360):
+                    p.setWeight(0.0)
+                else:
+                    p.setWeight(1.0)
 
             for box_id in best_distances.keys():
                 if (box_id not in landmarkIDs):
@@ -501,15 +505,17 @@ try:
 
         else:
             if times_turned > 10:
-                turn_angle = random.uniform(-180, 180)
-                print(f"Random turn {turn_angle:.2f}°, then go {50:.3f} cm forward")
-             #   input()
+                pos_x, pos_y, est_theta = est_pose.getX(), est_pose.getY(), est_pose.getTheta()
+                print("predX = ", est_pose.getX(), ", predY = ", est_pose.getY(), ", predTheta = ", est_pose.getTheta()*180/np.pi)
+                turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_theta)) % 360.0, 2, 1.5)
+                print(f"Turn towards middle: {turn_angle:.2f}°, then go {100:.3f} cm forward")
+                input()
                 # if (abs(turn_angle) > 5):
                 cmd_queue.put(("turn_n_degrees", turn_angle))
                 while (not motor.has_started() or motor.is_turning()):
                     time.sleep(0.02)
                 motor.clear_has_started()
-                cmd_queue.put(("drive_n_cm_forward", 0, 50))
+                cmd_queue.put(("drive_n_cm_forward", 0, 100))
                 aborted = False
                 while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
                     with SERIAL_LOCK:
