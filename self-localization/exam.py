@@ -410,6 +410,9 @@ try:
 
                     cmd_queue.put(("drive_n_cm_forward", 0, distance))
 
+                    front_dist = 0
+                    left_dist = 0
+                    right_dist = 0
                     while (not motor.has_started() or motor.is_driving_forward()):
                         with SERIAL_LOCK:
                             front_dist = arlo.read_front_ping_sensor()
@@ -434,11 +437,11 @@ try:
 
                     # particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
                     if aborted:
-                        with SERIAL_LOCK:
-                            left_dist = arlo.read_left_ping_sensor()
-                            right_dist = arlo.read_right_ping_sensor()
-                        object_left = left_dist != -1 and left_dist < 400
-                        object_right = right_dist != -1 and right_dist < 400
+                        # with SERIAL_LOCK:
+                        #     left_dist = arlo.read_left_ping_sensor()
+                        #     right_dist = arlo.read_right_ping_sensor()
+                        object_left = left_dist != -1 and left_dist < 300
+                        object_right = right_dist != -1 and right_dist < 300
                         print(left_dist)
                         print(right_dist)
                         if object_left and not object_right:
