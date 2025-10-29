@@ -418,13 +418,14 @@ try:
                             front_dist = arlo.read_front_ping_sensor()
                             left_dist = arlo.read_left_ping_sensor()
                             right_dist = arlo.read_right_ping_sensor()
-                        print(left_dist)
-                        print(right_dist)
-                        print(front_dist)
                         if should_stop(front_dist, left_dist, right_dist):
                            # with SERIAL_LOCK:
+                           
                             t = motor.get_wait_until()
                             motor.hard_stop()
+                            print(left_dist)
+                            print(right_dist)
+                            print(front_dist)
                             aborted = True
                             timenow = time.monotonic()
                             if i==last_index and t - timenow < 1.5 and t > 0:
