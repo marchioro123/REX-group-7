@@ -274,7 +274,7 @@ try:
             if seen_next_target:
                 turn_angle = -best_angles[visit_order[0]]*180/np.pi
                 print(f"Turn {turn_angle:.2f}°")
-                input()
+             #   input()
                 # if (abs(turn_angle) > 5):
                 cmd_queue.put(("turn_n_degrees", turn_angle))
                 particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
@@ -287,7 +287,7 @@ try:
             
                 turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_theta)) % 360.0, target_x, target_y)
                 print(f"Turn {turn_angle:.2f}°")
-                input()
+             #   input()
                 # if (abs(turn_angle) > 5):
                 cmd_queue.put(("turn_n_degrees", turn_angle))
                 particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
@@ -401,7 +401,7 @@ try:
                     turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
                     distance = calculate_distance(pos_x, pos_y, target_x, target_y) * 100 #rtt planning is in meters
                     print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
-                    input()
+                  #  input()
                     # if (abs(turn_angle) > 5):
                     cmd_queue.put(("turn_n_degrees", turn_angle))
                     while (not motor.has_started() or motor.is_turning()):
@@ -441,13 +441,13 @@ try:
                         print(right_dist)
                         if object_left and not object_right:
                             print(f"left sensor")
-                            input()
+                          #  input()
                             cmd_queue.put(("turn_n_degrees", 45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 20))
                             cmd_queue.put(("turn_n_degrees", -45))
                         elif object_right and not object_left:
                             print(f"right sensor")
-                            input()
+                         #   input()
                             cmd_queue.put(("turn_n_degrees", -45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 20))
                             cmd_queue.put(("turn_n_degrees", 45))
@@ -483,13 +483,13 @@ try:
                         print(f"Next target: {visit_order[0]}")
                     else:
                         print("No more targets!")
-                input()
+              #  input()
 
         else:
             if times_turned > 10:
                 turn_angle = random.uniform(-180, 180)
                 print(f"Random turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
-                input()
+             #   input()
                 # if (abs(turn_angle) > 5):
                 cmd_queue.put(("turn_n_degrees", turn_angle))
                 cmd_queue.put(("drive_n_cm_forward", 0, 50))
