@@ -51,7 +51,7 @@ CWHITE = (255, 255, 255)
 CBLACK = (0, 0, 0)
 
 DISTANCE_TO_CENTER = 0.1
-BOX_RADIUS = 0.18
+BOX_RADIUS = 0.25
 ROBOT_RADIUS = 0.2250
 
 # Landmarks.
@@ -445,13 +445,14 @@ try:
                             cmd_queue.put(("turn_n_degrees", 45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 20))
                             cmd_queue.put(("turn_n_degrees", -45))
-                        elif object_right and not object_left:
+                        elif not object_left:
                             print(f"right sensor")
                          #   input()
                             cmd_queue.put(("turn_n_degrees", -45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 20))
                             cmd_queue.put(("turn_n_degrees", 45))
                         else:
+                            print(f"backwards sensor")
                             cmd_queue.put(("drive_n_cm_forward", 0, -20))
 
                         while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
