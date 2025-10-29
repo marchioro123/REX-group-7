@@ -56,14 +56,14 @@ ROBOT_RADIUS = 0.3
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
-landmarkIDs = [1, 7, 4, 5]
+landmarkIDs = [1, 8, 4, 5]
 landmarks = {
     1: (0.0, 0.0),  # Coordinates for landmark 1
-    7: (0.0, 300.0),  # Coordinates for landmark 2
+    8: (0.0, 300.0),  # Coordinates for landmark 2
     4: (400.0, 0.0),  # Coordinates for landmark 3
     5: (400.0, 300.0)  # Coordinates for landmark 4
 }
-visit_order = [1, 7, 4, 5, 1]
+visit_order = [1, 8, 4, 5, 1]
 
 landmark_colors = [CRED, CGREEN, CBLUE, CMAGENTA] # Colors used when drawing the landmarks
 
