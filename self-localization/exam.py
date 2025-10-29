@@ -52,7 +52,7 @@ CBLACK = (0, 0, 0)
 
 DISTANCE_TO_CENTER = 0.1
 BOX_RADIUS = 0.18
-ROBOT_RADIUS = 0.7
+ROBOT_RADIUS = 0.4
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
@@ -175,6 +175,7 @@ try:
     motor.start()
 
     times_turned = 0
+    # reached_target = False
 
     while visit_order:        
         # Fetch next frame
@@ -397,8 +398,8 @@ try:
                 pos_x, pos_y, angle = 0, 0, 0
                 aborted = False
                 last_index = len(simple_path) - 2
-                for i, (target_x, target_y) in enumerate(simple_path[:-1]):
-                    turn_angle = calculate_turn_angle(pos_x, pos_y, angle, target_x, target_y)
+                for i, (target_x, target_y) in enumerate(reversed(simple_path[:-1])):
+                    turn_angle = calculate_turn_angle(pos_x, pos_y, angle % 360.0, target_x, target_y)
                     distance = calculate_distance(pos_x, pos_y, target_x, target_y) * 100 #rtt planning is in meters
                     print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
                   #  input()
