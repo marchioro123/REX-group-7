@@ -494,6 +494,7 @@ try:
                         print(f"Next target: {visit_order[0]}")
                     else:
                         print("No more targets!")
+                time.sleep(1)
               #  input()
 
         else:
