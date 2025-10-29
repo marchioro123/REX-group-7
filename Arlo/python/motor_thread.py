@@ -94,7 +94,7 @@ class MotorThread(threading.Thread):
 
     def _drive_n_cm_forward(self, speed: int, cm: float):
         if speed == 0:
-            LEFTSPEED, RIGHTSPEED, k = 40, 40, 0.042 # calibration k (last value)
+            LEFTSPEED, RIGHTSPEED, k = 40, 40, 0.043 # calibration k (last value)
             #LEFTSPEED, RIGHTSPEED, k = 40, 40, 0.057
         elif speed == 1:
             LEFTSPEED, RIGHTSPEED, k = 86, 86, 0.0162

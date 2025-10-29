@@ -56,12 +56,12 @@ ROBOT_RADIUS = 0.2250
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
-landmarkIDs = [8, 7, 10, 3]
+landmarkIDs = [1, 7, 4, 5]
 landmarks = {
-    8: (0.0, 0.0),  # Coordinates for landmark 1
+    1: (0.0, 0.0),  # Coordinates for landmark 1
     7: (0.0, 300.0),  # Coordinates for landmark 2
-    10: (400.0, 0.0),  # Coordinates for landmark 3
-    3: (400.0, 300.0)  # Coordinates for landmark 4
+    4: (400.0, 0.0),  # Coordinates for landmark 3
+    5: (400.0, 300.0)  # Coordinates for landmark 4
 }
 visit_order = [8, 7, 10, 3, 8]
 
