@@ -275,12 +275,12 @@ try:
                 turn_angle = -best_angles[visit_order[0]]*180/np.pi
                 print(f"Turn {turn_angle:.2f}°")
                 input()
-                if (abs(turn_angle) > 5):
-                    cmd_queue.put(("turn_n_degrees", turn_angle))
-                    particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
-                    while (not motor.has_started() or motor.is_turning()):
-                        time.sleep(0.02)
-                    motor.clear_has_started()
+                # if (abs(turn_angle) > 5):
+                cmd_queue.put(("turn_n_degrees", turn_angle))
+                particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
+                while (not motor.has_started() or motor.is_turning()):
+                    time.sleep(0.02)
+                motor.clear_has_started()
             elif seen_two_boxes:
                 target_x, target_y = landmarks[visit_order[0]]
                 pos_x, pos_y, est_theta = est_pose.getX(), est_pose.getY(), est_pose.getTheta()
@@ -288,12 +288,12 @@ try:
                 turn_angle = calculate_turn_angle(pos_x, pos_y, (90.0 - math.degrees(est_theta)) % 360.0, target_x, target_y)
                 print(f"Turn {turn_angle:.2f}°")
                 input()
-                if (abs(turn_angle) > 5):
-                    cmd_queue.put(("turn_n_degrees", turn_angle))
-                    particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
-                    while (not motor.has_started() or motor.is_turning()):
-                        time.sleep(0.02)
-                    motor.clear_has_started()
+                # if (abs(turn_angle) > 5):
+                cmd_queue.put(("turn_n_degrees", turn_angle))
+                particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
+                while (not motor.has_started() or motor.is_turning()):
+                    time.sleep(0.02)
+                motor.clear_has_started()
 
             #particle.add_uncertainty(particles, 0, 7*math.pi / 180)
             for k in seen:
@@ -402,11 +402,11 @@ try:
                     distance = calculate_distance(pos_x, pos_y, target_x, target_y) * 100 #rtt planning is in meters
                     print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
                     input()
-                    if (abs(turn_angle) > 5):
-                        cmd_queue.put(("turn_n_degrees", turn_angle))
-                        while (not motor.has_started() or motor.is_turning()):
-                            time.sleep(0.02)
-                        motor.clear_has_started()
+                    # if (abs(turn_angle) > 5):
+                    cmd_queue.put(("turn_n_degrees", turn_angle))
+                    while (not motor.has_started() or motor.is_turning()):
+                        time.sleep(0.02)
+                    motor.clear_has_started()
 
                     cmd_queue.put(("drive_n_cm_forward", 0, distance))
 
@@ -421,6 +421,7 @@ try:
                             motor.hard_stop()
                             aborted = True
                             if i==last_index and t - time.monotonic() < 1.5:
+                                print("Target..")
                                 aborted = False
                             print("Emergency stop!!")
                             # particle.move_particles(particles, (target_x-pos_x)/2, (target_y-pos_y)/2, -(math.radians(turn_angle)/2))
@@ -437,6 +438,8 @@ try:
                             right_dist = arlo.read_right_ping_sensor()
                         object_left = left_dist != -1 and left_dist < 100
                         object_right = right_dist != -1 and right_dist < 100
+                        print(object_left)
+                        print(object_right)
                         if object_left and not object_right:
                             print(f"left sensor")
                             input()
@@ -488,8 +491,8 @@ try:
                 turn_angle = random.uniform(-180, 180)
                 print(f"Random turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
                 input()
-                if (abs(turn_angle) > 5):
-                    cmd_queue.put(("turn_n_degrees", turn_angle))
+                # if (abs(turn_angle) > 5):
+                cmd_queue.put(("turn_n_degrees", turn_angle))
                 cmd_queue.put(("drive_n_cm_forward", 0, 50))
                 aborted = False
                 while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
