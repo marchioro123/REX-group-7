@@ -1,10 +1,13 @@
 import math
 
-def should_stop(front_dist, left_dist, right_dist):        
+def should_stop(front_dist, left_dist, right_dist, last_path):     
+    side_length = 300
+    if last_path:
+        side_length = 200   
     return (
         (front_dist != -1 and front_dist < 300) or 
-        (left_dist != -1 and left_dist < 300) or 
-        (right_dist != -1 and right_dist < 300)
+        (left_dist != -1 and left_dist < side_length) or 
+        (right_dist != -1 and right_dist < side_length)
     )
 
 def calculate_distance(x1, y1, x2, y2): 
