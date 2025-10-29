@@ -3,8 +3,8 @@ import math
 def should_stop(front_dist, left_dist, right_dist):        
     return (
         (front_dist != -1 and front_dist < 300) or 
-        (left_dist != -1 and left_dist < 100) or 
-        (right_dist != -1 and right_dist < 100)
+        (left_dist != -1 and left_dist < 150) or 
+        (right_dist != -1 and right_dist < 150)
     )
 
 def calculate_distance(x1, y1, x2, y2): 
