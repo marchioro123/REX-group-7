@@ -435,10 +435,10 @@ try:
                         with SERIAL_LOCK:
                             left_dist = arlo.read_left_ping_sensor()
                             right_dist = arlo.read_right_ping_sensor()
-                        object_left = left_dist != -1 and left_dist < 100
-                        object_right = right_dist != -1 and right_dist < 100
-                        print(object_left)
-                        print(object_right)
+                        object_left = left_dist != -1 and left_dist < 250
+                        object_right = right_dist != -1 and right_dist < 250
+                        print(left_dist)
+                        print(right_dist)
                         if object_left and not object_right:
                             print(f"left sensor")
                             input()
