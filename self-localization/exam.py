@@ -175,7 +175,7 @@ try:
     motor.start()
 
     times_turned = 0
-    # reached_target = False
+    reached_target = False
 
     while visit_order:        
         # Fetch next frame
@@ -486,7 +486,9 @@ try:
                 particles = initialize_particles(num_particles)
                 times_turned = 0
                 if not aborted:
-                    reached = visit_order.pop(0)
+                    reached = visit_order[0]
+                    #if not reached_target:
+                    visit_order.pop(0)
                     print(f"Reached target {reached}")
                     if visit_order:  # check if there's a next target
                         print(f"Next target: {visit_order[0]}")
