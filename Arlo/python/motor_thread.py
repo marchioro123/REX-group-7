@@ -18,7 +18,7 @@ class MotorThread(threading.Thread):
         while True:
             try:
                 if self._wait_until <= time.monotonic():
-                    self.arlo.stop()
+                    # self.arlo.stop()
                     name, *args = self.cmd_queue.get(block=False)
 
                     if name == "turn_n_degrees":
