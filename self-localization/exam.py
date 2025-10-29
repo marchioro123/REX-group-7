@@ -489,7 +489,7 @@ try:
         else:
             if times_turned > 10:
                 turn_angle = random.uniform(-180, 180)
-                print(f"Random turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
+                print(f"Random turn {turn_angle:.2f}°, then go {50:.3f} cm forward")
              #   input()
                 # if (abs(turn_angle) > 5):
                 cmd_queue.put(("turn_n_degrees", turn_angle))
