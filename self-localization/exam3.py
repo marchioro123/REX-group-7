@@ -52,7 +52,7 @@ CBLACK = (0, 0, 0)
 
 DISTANCE_TO_CENTER = 0.1
 BOX_RADIUS = 0.18
-ROBOT_RADIUS = 0.3
+ROBOT_RADIUS = 0.2
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
@@ -208,7 +208,11 @@ try:
             # Compute particle weights
             # XXX: You do this
             for p in particles:
-                p.setWeight(1.0)
+                x, y = p.getX(), p.getY()
+                if (x < -60) or (x > 460) or (y < -60) or (y > 360):
+                    p.setWeight(0.0)
+                else:
+                    p.setWeight(1.0)
 
             for box_id in best_distances.keys():
                 if (box_id not in landmarkIDs):
@@ -280,7 +284,7 @@ try:
                 cmd_queue.put(("turn_n_degrees", turn_angle))
                 particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
                 while (not motor.has_started() or motor.is_turning()):
-                    time.sleep(0.02)
+                    time.sleep(0.05)
                 motor.clear_has_started()
             elif seen_two_boxes:
                 target_x, target_y = landmarks[visit_order[0]]
@@ -293,7 +297,7 @@ try:
                 cmd_queue.put(("turn_n_degrees", turn_angle))
                 particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
                 while (not motor.has_started() or motor.is_turning()):
-                    time.sleep(0.02)
+                    time.sleep(0.05)
                 motor.clear_has_started()
 
             #particle.add_uncertainty(particles, 0, 7*math.pi / 180)
@@ -407,11 +411,11 @@ try:
                     cmd_queue.put(("turn_n_degrees", turn_angle))
                     particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
                     while (not motor.has_started() or motor.is_turning()):
-                        time.sleep(0.02)
+                        time.sleep(0.05)
                     motor.clear_has_started()
 
                     cmd_queue.put(("drive_n_cm_forward", 0, distance))
-                    particle.move_particles_forward(particles, distance)
+                    particle.move_particles_forward(particles,distance)
 
                     front_dist = 0
                     left_dist = 0
@@ -427,24 +431,21 @@ try:
                             t = motor.get_wait_until()
                             timenow = time.monotonic()
                             motor.hard_stop()
-                            print(left_dist)
-                            print(right_dist)
-                            print(front_dist)
-                            print(t)
-                            print(timenow)
+                            # print(left_dist)
+                            # print(right_dist)
+                            # print(front_dist)
+                            # print(t)
+                            # print(timenow)
                             aborted = True
                             if i==last_index and t - timenow < 1.5 and t > 0:
                                 print("Target..")
                                 aborted = False
                             print("Emergency stop!!")
-                            print(t - timenow)
-                            if t != 0:
-                                not_completed_dist = (t - timenow) / 0.041
-                                particle.move_particles_forward(particles, -not_completed_dist)
-                                # particle.move_particles(particles, (target_x-pos_x)/2, (target_y-pos_y)/2, -(math.radians(turn_angle)/2))
-                                # particle.add_uncertainty(particles, distance/2, (turn_angle/2)*math.pi / 180)
+                            # print(t - timenow)
+                            # particle.move_particles(particles, (target_x-pos_x)/2, (target_y-pos_y)/2, -(math.radians(turn_angle)/2))
+                            # particle.add_uncertainty(particles, distance/2, (turn_angle/2)*math.pi / 180)
                             break
-                        time.sleep(0.02)
+                        time.sleep(0.05)
                     motor.clear_has_started()
 
                     # particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
@@ -460,7 +461,7 @@ try:
                             cmd_queue.put(("turn_n_degrees", 45))
                             particle.move_particles(particles, 0, 0, -math.radians(45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 30))
-                            particle.move_particles_forward(particles, 30)
+                            particle.move_particles_forward(particles,30)
                             cmd_queue.put(("turn_n_degrees", -45))
                             particle.move_particles(particles, 0, 0, math.radians(45))
                         elif object_right and not object_left:
@@ -469,17 +470,16 @@ try:
                             cmd_queue.put(("turn_n_degrees", -45))
                             particle.move_particles(particles, 0, 0, math.radians(45))
                             cmd_queue.put(("drive_n_cm_forward", 0, 30))
-                            particle.move_particles_forward(particles, 30)
+                            particle.move_particles_forward(particles,30)
                             cmd_queue.put(("turn_n_degrees", 45))
-                            particle.move_particles(particles, 0, 0, math.radians(45))
+                            particle.move_particles(particles, 0, 0, -math.radians(45))
                         else:
                             print(f"front sensor")
                             cmd_queue.put(("drive_n_cm_forward", 0, -20))
-                            particle.move_particles_forward(particles, -20)
-
+                            particle.move_particles_forward(particles,-20)
 
                         while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-                            time.sleep(0.02)
+                            time.sleep(0.05)
                         motor.clear_has_started()
                         break
 
@@ -553,7 +553,7 @@ try:
                 particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
 
                 while (not motor.has_started() or motor.is_turning()):
-                    time.sleep(0.02)
+                    time.sleep(0.05)
                 motor.clear_has_started()
                 particle.add_uncertainty(particles, 0, 5*math.pi / 180)
                 print("Finished turning")
