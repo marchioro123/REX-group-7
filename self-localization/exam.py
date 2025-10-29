@@ -420,7 +420,7 @@ try:
                             t = motor.get_wait_until()
                             motor.hard_stop()
                             aborted = True
-                            if i==last_index and t - time.monotonic() < 2:
+                            if i==last_index and t - time.monotonic() < 2.5:
                                 print("Target..")
                                 aborted = False
                             print("Emergency stop!!")
