@@ -428,9 +428,8 @@ try:
                             # particle.add_uncertainty(particles, distance/2, (turn_angle/2)*math.pi / 180)
                             break
                         time.sleep(0.02)
-
                     motor.clear_has_started()
-                    input()
+
                     # particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
                     if aborted:
                         with SERIAL_LOCK:
@@ -444,13 +443,13 @@ try:
                             print(f"left sensor")
                             input()
                             cmd_queue.put(("turn_n_degrees", 45))
-                            cmd_queue.put(("drive_n_cm_forward", 0, 10))
+                            cmd_queue.put(("drive_n_cm_forward", 0, 20))
                             cmd_queue.put(("turn_n_degrees", -45))
                         elif object_right and not object_left:
                             print(f"right sensor")
                             input()
                             cmd_queue.put(("turn_n_degrees", -45))
-                            cmd_queue.put(("drive_n_cm_forward", 0, 10))
+                            cmd_queue.put(("drive_n_cm_forward", 0, 20))
                             cmd_queue.put(("turn_n_degrees", 45))
                         else:
                             cmd_queue.put(("drive_n_cm_forward", 0, -20))
