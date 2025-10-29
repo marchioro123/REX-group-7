@@ -101,7 +101,7 @@ class MotorThread(threading.Thread):
         else:
             LEFTSPEED, RIGHTSPEED, k = 127, 115, 0.0105
 
-        duration = k * cm
+        duration = k * abs(cm)
         direction = 0 if cm < 0 else 1
         with self.serial_lock:
             self.arlo.go_diff(LEFTSPEED, RIGHTSPEED, direction, direction)
