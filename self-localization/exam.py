@@ -63,7 +63,7 @@ landmarks = {
     4: (400.0, 0.0),  # Coordinates for landmark 3
     5: (400.0, 300.0)  # Coordinates for landmark 4
 }
-visit_order = [8, 7, 10, 3, 8]
+visit_order = [1, 7, 4, 5, 1]
 
 landmark_colors = [CRED, CGREEN, CBLUE, CMAGENTA] # Colors used when drawing the landmarks
 
