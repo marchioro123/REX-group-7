@@ -52,7 +52,7 @@ CBLACK = (0, 0, 0)
 
 DISTANCE_TO_CENTER = 0.1
 BOX_RADIUS = 0.18
-ROBOT_RADIUS = 0.4
+ROBOT_RADIUS = 0.3
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
@@ -332,7 +332,7 @@ try:
             # z_max = max(z_es, default=4)
             print("Creating Occupancy Map")
             path_res = 0.05
-            occ_map = GridOccupancyMap(low=(-3.5, -0.3), high=(3.5, 5.3), res=path_res)
+            occ_map = GridOccupancyMap(low=(-2, -0.3), high=(2, 5.3), res=path_res)
             for i in range(occ_map.n_grids[0]):
                 for j in range(occ_map.n_grids[1]):
                     centroid = np.array([occ_map.map_area[0][0] + occ_map.resolution * (i+0.5), occ_map.map_area[0][1] + occ_map.resolution * (j+0.5)])
