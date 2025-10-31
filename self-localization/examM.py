@@ -429,8 +429,6 @@ try:
                             full_wiggle = True
                             particle.move_particles_forward(particles, 30)
                             particle.add_uncertainty(particles, 5, 0)
-                            print("drive forward 30 cm")
-                            input()
                             cmd_queue.put(("drive_n_cm_forward", 0, 30))
                             while (not motor.has_started() or motor.is_driving_forward()):
                                 with SERIAL_LOCK:
@@ -439,22 +437,19 @@ try:
                                     right_dist = arlo.read_right_ping_sensor()
                                 if should_stop(front_dist, left_dist, right_dist, i==last_index):
                                     motor.hard_stop()
-                                    input()
                                     full_wiggle = False
                                     particle.add_uncertainty(particles, 10, 0)
                                     print("Emergency wiggle stop!!")
                                     break
                                 time.sleep(0.02)
-                            input()
                             motor.clear_has_started()
-                            print("Next turn")
-                            particle.move_particles(particles, 0, 0, -math.radians(-wiggle_angle))
-                            particle.add_uncertainty(particles, 0, 5*math.pi / 180)
-                            cmd_queue.put(("turn_n_degrees", -wiggle_angle))
-                            while (not motor.has_started() or motor.is_turning()):
-                                time.sleep(0.02)
-                            motor.clear_has_started()
-                            full_wiggle = True
+                            if full_wiggle:
+                                particle.move_particles(particles, 0, 0, -math.radians(-wiggle_angle))
+                                particle.add_uncertainty(particles, 0, 5*math.pi / 180)
+                                cmd_queue.put(("turn_n_degrees", -wiggle_angle))
+                                while (not motor.has_started() or motor.is_turning()):
+                                    time.sleep(0.02)
+                                motor.clear_has_started()
                         break
 
                     pos_x, pos_y = target_x, target_y
