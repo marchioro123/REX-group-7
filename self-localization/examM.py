@@ -176,6 +176,7 @@ try:
 
     times_turned = 0
     reached_target_once = False
+    second_try_path = False
 
     while visit_order:        
         # Fetch next frame
@@ -337,11 +338,8 @@ try:
             robot_model = PointMassModel(ctrl_range=[-path_res, path_res])
             pos_x, pos_y = est_pose.getX(), est_pose.getY()
 
-            rrt = RRT(
-                start=np.array([0, 0]),
-                goal = np.array([ 
-                    target_x if target_x is not None else 0, #add small const? DISTANCE_TO_CENTER?
-                    (
+            goal_x = target_x if target_x is not None else 0
+            goal_y = (
                         target_y if target_y is not None else (
                             best_distances[visit_order[0]] / 100
                             if visit_order[0] in best_distances
@@ -352,6 +350,12 @@ try:
                             )
                         )
                     ) - 0.35
+            
+            rrt = RRT(
+                start=np.array([0, 0]),
+                goal = np.array([ 
+                    goal_x,
+                    goal_y
                 ]),
                 robot_model=robot_model,
                 map=occ_map,
@@ -361,8 +365,13 @@ try:
             print("Calculating path")
             path = rrt.planning(animation=False)
             if path is None:
+                if second_try_path:
+                    path = [np.array([goal_x, goal_y]), np.array([0,0])]
+                else:
+                    second_try_path = True
                 print("Cannot find path")
-            else:
+            if path is not None:
+                second_try_path = False
                 print("found path!!")
                 print(path)
                 simple_path = simplify_path(path, occ_map)
