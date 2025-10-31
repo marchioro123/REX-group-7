@@ -324,7 +324,7 @@ try:
 
             print("Creating Occupancy Map")
             path_res = 0.05
-            occ_map = GridOccupancyMap(low=(-1.5, -0.3), high=(1.5, 5.3), res=path_res)
+            occ_map = GridOccupancyMap(low=(-1, -0.3), high=(1, 5.3), res=path_res)
             for i in range(occ_map.n_grids[0]):
                 for j in range(occ_map.n_grids[1]):
                     centroid = np.array([occ_map.map_area[0][0] + occ_map.resolution * (i+0.5), occ_map.map_area[0][1] + occ_map.resolution * (j+0.5)])
