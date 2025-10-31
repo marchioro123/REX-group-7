@@ -408,7 +408,7 @@ try:
                                 particle.add_uncertainty(particles, (distance-leftover_dist)/10, 0)
                             print("Emergency stop!!")
                             break
-                        time.sleep(0.05)
+                        time.sleep(0.02)
                     motor.clear_has_started()
 
                     if aborted:
@@ -439,7 +439,7 @@ try:
                                     particle.add_uncertainty(particles, 10, 0)
                                     print("Emergency wiggle stop!!")
                                     break
-                                time.sleep(0.05)
+                                time.sleep(0.02)
                             motor.clear_has_started()
 
                             particle.move_particles(particles, 0, 0, -math.radians(-wiggle_angle))
