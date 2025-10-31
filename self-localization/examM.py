@@ -329,8 +329,8 @@ try:
                         if np.linalg.norm(centroid - o) <= BOX_RADIUS + ROBOT_RADIUS:
                             occ_map.grid[i, j] = 1
                             break
-            # occ_map.draw_map()
-            # plt.savefig("Occupancy_grid.png")
+            occ_map.draw_map()
+            plt.savefig("Occupancy_grid.png")
 
             robot_model = PointMassModel(ctrl_range=[-path_res, path_res])
             pos_x, pos_y = est_pose.getX(), est_pose.getY()
@@ -415,7 +415,7 @@ try:
                     if aborted:
                         object_left = left_dist != -1 and left_dist < 300
                         object_right = right_dist != -1 and right_dist < 300
-                        wiggle_angle = 60 if object_left else -60
+                        wiggle_angle = 45 if object_left else -45
                         full_wiggle = False
                         while not full_wiggle:
                             print("try wiggle")
