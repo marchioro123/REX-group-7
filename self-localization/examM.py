@@ -459,6 +459,7 @@ try:
                     if seen_next_target or reached_target_once:              #not reached_target:
                         visit_order.pop(0)
                         print(f"Reached target {reached}")
+                        reached_target_once = False
                     else:
                         reached_target_once = True
 
