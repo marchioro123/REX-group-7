@@ -407,6 +407,7 @@ try:
                                 particle.move_particles_forward(particles, -leftover_dist)
                                 particle.add_uncertainty(particles, (distance-leftover_dist)/10, 0)
                             print("Emergency stop!!")
+                            motor.clear_has_started()
                             break
                         time.sleep(0.02)
                     motor.clear_has_started()
@@ -428,6 +429,7 @@ try:
                             full_wiggle = True
                             particle.move_particles_forward(particles, 30)
                             particle.add_uncertainty(particles, 5, 0)
+                            input()
                             cmd_queue.put(("drive_n_cm_forward", 0, 30))
                             while (not motor.has_started() or motor.is_driving_forward()):
                                 with SERIAL_LOCK:
@@ -436,9 +438,11 @@ try:
                                     right_dist = arlo.read_right_ping_sensor()
                                 if should_stop(front_dist, left_dist, right_dist, i==last_index):
                                     motor.hard_stop()
+                                    input()
                                     full_wiggle = False
                                     particle.add_uncertainty(particles, 10, 0)
                                     print("Emergency wiggle stop!!")
+                                    motor.clear_has_started()
                                     break
                                 time.sleep(0.02)
                             motor.clear_has_started()
