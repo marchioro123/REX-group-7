@@ -417,6 +417,7 @@ try:
                         wiggle_angle = 45 if object_left else -45
                         full_wiggle = False
                         while not full_wiggle:
+                            print("try wiggle")
                             particle.move_particles(particles, 0, 0, -math.radians(wiggle_angle))
                             particle.add_uncertainty(particles, 0, 5*math.pi / 180)
                             cmd_queue.put(("turn_n_degrees", wiggle_angle))
