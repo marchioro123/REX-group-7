@@ -24,9 +24,9 @@ while True:
         if not motor.is_turning():
             motor.hard_stop()
             if left_dist != -1 and left_dist < 500:
-                cmd_queue.put(("turn", 1, 999))
+                cmd_queue.put(("turn_n_degrees", 999))
             else:
-                cmd_queue.put(("turn", 0, 999))
+                cmd_queue.put(("turn_n_degrees", -999))
     elif not motor.is_driving_forward():
         motor.hard_stop()
         cmd_queue.put(("drive_n_cm_forward", 0, 10000))
