@@ -394,7 +394,7 @@ try:
                             front_dist = arlo.read_front_ping_sensor()
                             left_dist = arlo.read_left_ping_sensor()
                             right_dist = arlo.read_right_ping_sensor()
-                        if should_stop(front_dist, left_dist, right_dist, i==last_index):
+                        if should_stop(front_dist, left_dist, right_dist):
                             t = motor.get_wait_until()
                             timenow = time.monotonic()
                             motor.hard_stop()
@@ -435,7 +435,7 @@ try:
                                     front_dist = arlo.read_front_ping_sensor()
                                     left_dist = arlo.read_left_ping_sensor()
                                     right_dist = arlo.read_right_ping_sensor()
-                                if should_stop(front_dist, left_dist, right_dist, i==last_index):
+                                if should_stop(front_dist, left_dist, right_dist, True):
                                     motor.hard_stop()
                                     full_wiggle = False
                                     particle.add_uncertainty(particles, 10, 0)

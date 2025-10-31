@@ -1,9 +1,9 @@
 import math
 
-def should_stop(front_dist, left_dist, right_dist, last_path = True):     
-    ping_length = 200
-    if last_path:
-        ping_length = 300   
+def should_stop(front_dist, left_dist, right_dist, emergency_stop = False):     
+    ping_length = 300
+    if emergency_stop:
+        ping_length = 200   
     return (
         (front_dist != -1 and front_dist < ping_length) or 
         (left_dist != -1 and left_dist < ping_length) or 
