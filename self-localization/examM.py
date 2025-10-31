@@ -460,11 +460,29 @@ try:
 
                 if not aborted:
                     reached = visit_order[0]
-                    if seen_next_target or reached_target_once:              #not reached_target:
-
-
+                    if seen_next_target:              #not reached_target:
                         visit_order.pop(0)
                         print(f"Reached target {reached}")
+                        reached_target_once = False
+                    elif reached_target_once:
+                        saw_target = False
+                        for _ in range(10):
+                            colour = cam.get_next_frame()
+                            objectIDs, dists, angles = cam.detect_aruco_objects(colour)
+                            if visit_order[0] in objectIDs:
+                                saw_target = True
+                                break
+                            turn_angle = 35
+                            print(f"Turn {turn_angle} degrees")
+                            particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
+                            particle.add_uncertainty(particles, 0, 5*math.pi / 180)
+                            while (not motor.has_started() or motor.is_turning()):
+                                time.sleep(0.02)
+                            motor.clear_has_started()
+                            time.sleep(1)
+                        if not saw_target:
+                            visit_order.pop(0)
+                            print(f"Reached target {reached}")
                         reached_target_once = False
                     else:
                         reached_target_once = True
