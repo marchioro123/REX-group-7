@@ -54,8 +54,9 @@ def simplify_path(path, occupancy_map):
                 simplified.append(path[j])
                 i = j
                 break
-        simplified.append(path[i+1])
-        i=i+1
+        else:
+            simplified.append(path[i+1])
+            i=i+1
     return simplified
 
 def is_collision_free(p1, p2, occupancy_map):
