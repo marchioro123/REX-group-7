@@ -420,7 +420,7 @@ try:
                         wiggle_angle = 50 if object_left else -50
                         half_wiggle = wiggle_angle/2
                         successful_full_wiggle = False
-                        num_wiggles = 0
+                        num_wiggles = 1
                         while not successful_full_wiggle:
                             num_wiggles = num_wiggles+1
                             print("try wiggle")
@@ -437,6 +437,13 @@ try:
                                     if front_dist == -1 or front_dist > 500:
                                         free_ahead = True
                                 time.sleep(1)
+
+                            particle.move_particles(particles, 0, 0, -math.radians(half_wiggle))
+                            particle.add_uncertainty(particles, 0, (half_wiggle/20)*math.pi / 180)
+                            cmd_queue.put(("turn_n_degrees", half_wiggle))
+                            while (not motor.has_started() or motor.is_turning()):
+                                time.sleep(0.02)
+                            motor.clear_has_started()
 
                             successful_full_wiggle = True
                             particle.move_particles_forward(particles, 45)
@@ -457,9 +464,9 @@ try:
                                 time.sleep(0.02)
                             motor.clear_has_started()
                             if successful_full_wiggle:
-                                particle.move_particles(particles, 0, 0, -math.radians(-(num_wiggles*wiggle_angle)))
-                                particle.add_uncertainty(particles, 0, (num_wiggles*wiggle_angle/20)*math.pi / 180)
-                                cmd_queue.put(("turn_n_degrees", -(num_wiggles*wiggle_angle)))
+                                particle.move_particles(particles, 0, 0, -math.radians(-(num_wiggles*half_wiggle)))
+                                particle.add_uncertainty(particles, 0, (num_wiggles*half_wiggle/20)*math.pi / 180)
+                                cmd_queue.put(("turn_n_degrees", -(num_wiggles*half_wiggle)))
                                 while (not motor.has_started() or motor.is_turning()):
                                     time.sleep(0.02)
                                 motor.clear_has_started()
