@@ -315,6 +315,7 @@ try:
                     if objectIDs[i] == visit_order[0]:
                         target_x = x #add small const? DISTANCE_TO_CENTER?
                         target_y = z
+                        seen_next_target = True
                         continue
                     obstacle_center = (x-sin(z_dir/2)*DISTANCE_TO_CENTER, z+cos(z_dir/2)*DISTANCE_TO_CENTER) #x_dir?
                     obstacle_centers.append(obstacle_center)
