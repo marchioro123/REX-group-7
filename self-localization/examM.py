@@ -419,9 +419,9 @@ try:
                         object_right = right_dist != -1 and right_dist < 300
                         wiggle_angle = 50 if object_left else -50
                         half_wiggle = wiggle_angle/2
-                        full_wiggle = False
+                        successful_full_wiggle = False
                         num_wiggles = 0
-                        while not full_wiggle:
+                        while not successful_full_wiggle:
                             num_wiggles = num_wiggles+1
                             print("try wiggle")
                             free_ahead = False
@@ -446,7 +446,7 @@ try:
                             motor.clear_has_started()
 
                             
-                            full_wiggle = True
+                            successful_full_wiggle = True
                             particle.move_particles_forward(particles, 45)
                             particle.add_uncertainty(particles, 3, 0)
                             cmd_queue.put(("drive_n_cm_forward", 0, 45))
@@ -457,14 +457,14 @@ try:
                                     right_dist = arlo.read_right_ping_sensor()
                                 if should_stop(front_dist, left_dist, right_dist, True):
                                     motor.hard_stop()
-                                    full_wiggle = False
+                                    successful_full_wiggle = False
                                     particle.move_particles_forward(particles, -45)
                                     particle.move_particles_forward_uniform(particles, 45)
                                     print("Emergency wiggle stop!!")
                                     break
                                 time.sleep(0.02)
                             motor.clear_has_started()
-                            if full_wiggle:
+                            if successful_full_wiggle:
                                 particle.move_particles(particles, 0, 0, -math.radians(-(num_wiggles*wiggle_angle)))
                                 particle.add_uncertainty(particles, 0, (num_wiggles*wiggle_angle/20)*math.pi / 180)
                                 cmd_queue.put(("turn_n_degrees", -(num_wiggles*wiggle_angle)))
