@@ -175,7 +175,7 @@ try:
     motor.start()
 
     times_turned = 0
-    reached_target = False
+    reached_target_once = False
 
     while visit_order:        
         # Fetch next frame
@@ -382,6 +382,8 @@ try:
                         time.sleep(0.02)
                     motor.clear_has_started()
 
+
+                    particle.move_particles_forward(particles, distance)
                     cmd_queue.put(("drive_n_cm_forward", 0, distance))
                     front_dist = 0
                     left_dist = 0
@@ -399,6 +401,10 @@ try:
                             if i==last_index and t - timenow < 1.5 and t > 0:
                                 print("Target..")
                                 aborted = False
+                            if t > 0:
+                                leftover_dist = (t- timenow) /0.042
+                                particle.move_particles_forward(particles, -leftover_dist)
+                                particle.add_uncertainty(particles, (distance-leftover_dist)/20, 0)
                             print("Emergency stop!!")
                             break
                         time.sleep(0.05)
@@ -407,39 +413,53 @@ try:
                     if aborted:
                         object_left = left_dist != -1 and left_dist < 300
                         object_right = right_dist != -1 and right_dist < 300
-                        if object_left and not object_right:
-                            print(f"left sensor")
-                            #input()
-                            cmd_queue.put(("turn_n_degrees", 45))
-                            cmd_queue.put(("drive_n_cm_forward", 0, 30))
-                            cmd_queue.put(("turn_n_degrees", -45))
-                        elif object_right and not object_left:
-                            print(f"right sensor")
-                            #input()
-                            cmd_queue.put(("turn_n_degrees", -45))
-                            cmd_queue.put(("drive_n_cm_forward", 0, 30))
-                            cmd_queue.put(("turn_n_degrees", 45))
-                        else:
-                            print(f"front sensor")
-                            #input()
-                            cmd_queue.put(("drive_n_cm_forward", 0, -20))
+                        wiggle_angle = 45 if object_left else -45
+                        full_wiggle = False
+                        while not full_wiggle:
+                            particle.move_particles(particles, 0, 0, -math.radians(wiggle_angle))
+                            particle.add_uncertainty(particles, 0, 1.5*math.pi / 180)
+                            cmd_queue.put(("turn_n_degrees", wiggle_angle))
+                            while (not motor.has_started() or motor.is_turning()):
+                                time.sleep(0.02)
+                            motor.clear_has_started()
 
-                        while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-                            time.sleep(0.02)
-                        motor.clear_has_started()
-                        particle.move_particles_forward_uniform(particles, distance)
+                            full_wiggle = True
+                            particle.move_particles_forward(particles, 30)
+                            particle.add_uncertainty(particles, 1.5, 0)
+                            cmd_queue.put(("drive_n_cm_forward", 0, 30))
+                            while (not motor.has_started() or motor.is_driving_forward()):
+                                with SERIAL_LOCK:
+                                    front_dist = arlo.read_front_ping_sensor()
+                                    left_dist = arlo.read_left_ping_sensor()
+                                    right_dist = arlo.read_right_ping_sensor()
+                                if should_stop(front_dist, left_dist, right_dist, i==last_index):
+                                    motor.hard_stop()
+                                    full_wiggle = False
+                                    print("Emergency wiggle stop!!")
+                                    break
+                                time.sleep(0.05)
+                            motor.clear_has_started()
+
+                            particle.move_particles(particles, 0, 0, -math.radians(-wiggle_angle))
+                            particle.add_uncertainty(particles, 0, 1.5*math.pi / 180)
+                            cmd_queue.put(("turn_n_degrees", -wiggle_angle))
+                            while (not motor.has_started() or motor.is_turning()):
+                                time.sleep(0.02)
+                            motor.clear_has_started()
+                            full_wiggle = True
                         break
 
-                    particle.move_particles_forward(particles, distance)
-                    particle.add_uncertainty(particles, distance/20, 0)
                     pos_x, pos_y = target_x, target_y
                     angle = (angle + turn_angle) % 360
 
                 if not aborted:
                     reached = visit_order[0]
-                    if not done_full_rotation:              #not reached_target:
+                    if seen_next_target or reached_target_once:              #not reached_target:
                         visit_order.pop(0)
                         print(f"Reached target {reached}")
+                    else:
+                        reached_target_once = True
+
                     if visit_order:
                         print(f"Next target: {visit_order[0]}")
                     else:
