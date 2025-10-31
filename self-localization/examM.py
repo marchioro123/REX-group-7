@@ -476,6 +476,7 @@ try:
                             print(f"Turn {turn_angle} degrees")
                             particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
                             particle.add_uncertainty(particles, 0, 5*math.pi / 180)
+                            cmd_queue.put(("turn_n_degrees", turn_angle))
                             while (not motor.has_started() or motor.is_turning()):
                                 time.sleep(0.02)
                             motor.clear_has_started()
