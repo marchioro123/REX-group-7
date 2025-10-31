@@ -399,13 +399,14 @@ try:
                             timenow = time.monotonic()
                             motor.hard_stop()
                             aborted = True
-                            if i==last_index and t - timenow < 1.5 and t > 0:
+                            if i==last_index and t - timenow < 1 and t > 0:
                                 print("Target..")
                                 aborted = False
                             if t > 0:
                                 leftover_dist = (t- timenow) /0.042
                                 particle.move_particles_forward(particles, -leftover_dist)
                                 particle.add_uncertainty(particles, (distance-leftover_dist)/10, 0)
+                            print(t - timenow)
                             print("Emergency stop!!")
                             motor.clear_has_started()
                             break
