@@ -56,14 +56,15 @@ ROBOT_RADIUS = 0.2
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
-landmarkIDs = [1, 8, 4, 5]
+landmarkIDs = [8, 7, 3, 10]
 landmarks = {
-    1: (0.0, 0.0),  # Coordinates for landmark 1
-    8: (0.0, 300.0),  # Coordinates for landmark 2
-    4: (400.0, 0.0),  # Coordinates for landmark 3
-    5: (400.0, 300.0)  # Coordinates for landmark 4
+    8: (0.0, 0.0),  # Coordinates for landmark 1
+    7: (0.0, 300.0),  # Coordinates for landmark 2
+    3: (400.0, 0.0),  # Coordinates for landmark 3
+    10: (400.0, 300.0)  # Coordinates for landmark 4
 }
-visit_order = [1, 8, 4, 5, 1]
+visit_order = [8, 7, 3, 10, 8]
+
 
 landmark_colors = [CRED, CGREEN, CBLUE, CMAGENTA] # Colors used when drawing the landmarks
 
@@ -425,7 +426,7 @@ try:
                             front_dist = arlo.read_front_ping_sensor()
                             left_dist = arlo.read_left_ping_sensor()
                             right_dist = arlo.read_right_ping_sensor()
-                        if should_stop(front_dist, left_dist, right_dist):
+                        if should_stop(front_dist, left_dist, right_dist, True):
                            # with SERIAL_LOCK:
                            
                             t = motor.get_wait_until()
@@ -532,7 +533,7 @@ try:
                         front_dist = arlo.read_front_ping_sensor()
                         left_dist = arlo.read_left_ping_sensor()
                         right_dist = arlo.read_right_ping_sensor()
-                    if should_stop(front_dist, left_dist, right_dist):
+                    if should_stop(front_dist, left_dist, right_dist, True):
                         motor.hard_stop()
                         aborted = True
                         break
