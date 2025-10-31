@@ -52,7 +52,7 @@ CBLACK = (0, 0, 0)
 
 DISTANCE_TO_CENTER = 0.1
 BOX_RADIUS = 0.18
-ROBOT_RADIUS = 0.3
+ROBOT_RADIUS = 0.25
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
@@ -415,7 +415,7 @@ try:
                     if aborted:
                         object_left = left_dist != -1 and left_dist < 300
                         object_right = right_dist != -1 and right_dist < 300
-                        wiggle_angle = 45 if object_left else -45
+                        wiggle_angle = 60 if object_left else -60
                         full_wiggle = False
                         while not full_wiggle:
                             print("try wiggle")
