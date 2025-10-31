@@ -416,7 +416,7 @@ try:
                     if aborted:
                         object_left = left_dist != -1 and left_dist < 300
                         object_right = right_dist != -1 and right_dist < 300
-                        wiggle_angle = 45 if object_left else -45
+                        wiggle_angle = 20 if object_left else -20
                         full_wiggle = False
                         num_wiggles = 0
                         while not full_wiggle:
