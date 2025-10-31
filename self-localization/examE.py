@@ -65,10 +65,26 @@ landmarks = {
 }
 visit_order = [8, 7, 3, 10, 8]
 
+# NEW
+visited_landmarks = set()
+
 
 landmark_colors = [CRED, CGREEN, CBLUE, CMAGENTA] # Colors used when drawing the landmarks
 
 seen = {i: False for i in landmarkIDs}
+
+# NEW
+def add_visited_landmark_to_occ(occ_map, landmark_pos_local):
+    Lx_m, Ly_m = landmark_pos_local
+    for i in range(occ_map.n_grids[0]):
+        for j in range(occ_map.n_grids[1]):
+            centroid = np.array([
+                occ_map.map_area[0][0] + occ_map.resolution * (i + 0.5),
+                occ_map.map_area[0][1] + occ_map.resolution * (j + 0.5)
+            ])
+            if np.linalg.norm(centroid - np.array([Lx_m, Ly_m])) <= (BOX_RADIUS + ROBOT_RADIUS + 0.4):
+                occ_map.grid[i, j] = 1
+# END NEW
 
 
 def jet(x):
@@ -346,6 +362,22 @@ try:
                             occ_map.grid[i, j] = 1
                             break
 
+            # NEW: Add visited landmarks as occupied areas
+            for i in visited_landmarks:
+                Lx, Ly = landmarks[i]  # global landmark position (cm)
+                dx = (Lx - est_pose.getX()) / 100.0
+                dy = (Ly - est_pose.getY()) / 100.0
+                theta = est_pose.getTheta()
+
+                # Convert global landmark position → local (robot-centric) coordinates
+                x_local = dx * math.cos(-theta) - dy * math.sin(-theta)
+                y_local = dx * math.sin(-theta) + dy * math.cos(-theta)
+
+                # Mark it on the occupancy map
+                add_visited_landmark_to_occ(occ_map, (x_local, y_local))
+                print(f"Added visited landmark {i} to occ map at local ({x_local:.2f}, {y_local:.2f})")
+            # END NEW
+
             occ_map.draw_map()
             plt.savefig("Occupancy_grid.png")
 
@@ -373,10 +405,6 @@ try:
                 expand_dis=1,
                 path_resolution=path_res,
                 ) 
-            # show_animation = True
-            # metadata = dict(title="RRT Test")
-            # writer = FFMpegWriter(fps=15, metadata=metadata)
-            # fig = plt.figure()
 
             print("Calculating path")
             # with writer.saving(fig, "rrt_test.mp4", 100):
@@ -391,14 +419,6 @@ try:
                 simple_path = simplify_path(path, occ_map)
                 print("simple path")
                 print(simple_path)
-                # if show_animation:
-                #     rrt.draw_graph()
-                #     plt.plot([x for (x, y) in path], [y for (x, y) in path], '-b')
-                #     plt.plot([x for (x, y) in simple_path], [y for (x, y) in simple_path], '-r')
-                #     plt.grid(True)
-                #     plt.pause(0.01)  # Need for Mac
-                #     plt.show()
-                #     writer.grab_frame()
 
                 pos_x, pos_y, angle = 0, 0, 0
                 aborted = False
@@ -488,17 +508,6 @@ try:
                     pos_x, pos_y = target_x, target_y
                     angle = (angle + turn_angle) % 360
 
-
-            # print("Checking if target is close enough")
-            # input()
-            # colour = cam.get_next_frame()
-            # objectIDs, dists, angles = cam.detect_aruco_objects(colour)
-            # if not isinstance(objectIDs, type(None)):
-            #     if visit_order[0] in objectIDs:
-            #         idx = list(objectIDs).index(visit_order[0])
-            #         print(f"Reached target {visit_order[0]} (distance {dists[idx]:.1f} cm)")
-            #         if dists[idx] < 40.0:
-            #             print(f"Reached target {visit_order.pop(0)} (distance {dists[idx]:.1f} cm) — next target: {visit_order[0]}")
                 particles = particles[:-100] + initialize_particles(100)
                 times_turned = 0
                 if not aborted:
@@ -506,6 +515,12 @@ try:
                     #if not reached_target:
                     visit_order.pop(0)
                     print(f"Reached target {reached}")
+
+                    # NEW: Record that this landmark was visited 
+                    visited_landmarks.add(reached)
+                    print(f"Marked landmark {reached} as visited")
+                    # END NEW
+
                     if visit_order:  # check if there's a next target
                         print(f"Next target: {visit_order[0]}")
                     else:
@@ -580,4 +595,3 @@ finally:
 
     # Clean-up capture thread
     cam.terminateCaptureThread()
-
