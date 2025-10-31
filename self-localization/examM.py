@@ -418,7 +418,9 @@ try:
                         object_right = right_dist != -1 and right_dist < 300
                         wiggle_angle = 45 if object_left else -45
                         full_wiggle = False
+                        num_wiggles = 0
                         while not full_wiggle:
+                            num_wiggles = num_wiggles+1
                             print("try wiggle")
                             particle.move_particles(particles, 0, 0, -math.radians(wiggle_angle))
                             particle.add_uncertainty(particles, 0, 5*math.pi / 180)
@@ -445,9 +447,9 @@ try:
                                 time.sleep(0.02)
                             motor.clear_has_started()
                             if full_wiggle:
-                                particle.move_particles(particles, 0, 0, -math.radians(-wiggle_angle))
+                                particle.move_particles(particles, 0, 0, -math.radians(-(num_wiggles*wiggle_angle)))
                                 particle.add_uncertainty(particles, 0, 5*math.pi / 180)
-                                cmd_queue.put(("turn_n_degrees", -wiggle_angle))
+                                cmd_queue.put(("turn_n_degrees", -(num_wiggles*wiggle_angle)))
                                 while (not motor.has_started() or motor.is_turning()):
                                     time.sleep(0.02)
                                 motor.clear_has_started()
