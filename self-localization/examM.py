@@ -436,7 +436,7 @@ try:
                                     front_dist = arlo.read_front_ping_sensor()
                                     if front_dist == -1 or front_dist > 500:
                                         free_ahead = True
-                                time.sleep(1)
+                                time.sleep(0.2)
 
                             particle.move_particles(particles, 0, 0, -math.radians(half_wiggle))
                             particle.add_uncertainty(particles, 0, (half_wiggle/20)*math.pi / 180)
