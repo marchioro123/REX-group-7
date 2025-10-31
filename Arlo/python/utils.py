@@ -1,7 +1,7 @@
 import math
 
 def should_stop(front_dist, left_dist, right_dist, emergency_stop = False):     
-    ping_length = 300
+    ping_length = 200
     if emergency_stop:
         ping_length = 200  
     return (
