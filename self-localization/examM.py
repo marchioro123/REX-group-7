@@ -427,9 +427,9 @@ try:
                             motor.clear_has_started()
 
                             full_wiggle = True
-                            particle.move_particles_forward(particles, 30)
+                            particle.move_particles_forward(particles, 60)
                             particle.add_uncertainty(particles, 5, 0)
-                            cmd_queue.put(("drive_n_cm_forward", 0, 30))
+                            cmd_queue.put(("drive_n_cm_forward", 0, 60))
                             while (not motor.has_started() or motor.is_driving_forward()):
                                 with SERIAL_LOCK:
                                     front_dist = arlo.read_front_ping_sensor()
