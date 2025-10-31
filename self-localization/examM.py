@@ -442,8 +442,8 @@ try:
                                 if should_stop(front_dist, left_dist, right_dist, True):
                                     motor.hard_stop()
                                     full_wiggle = False
-                                    particle.move_particles_forward(particles, -25)
-                                    particle.add_uncertainty(particles, 10, 0)
+                                    particle.move_particles_forward(particles, -45)
+                                    particle.move_particles_forward_uniform(particles, 45)
                                     print("Emergency wiggle stop!!")
                                     break
                                 time.sleep(0.02)
