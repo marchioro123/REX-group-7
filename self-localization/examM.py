@@ -278,7 +278,7 @@ try:
                 print(f"Turn {turn_angle:.2f}°")
                 #input()
                 particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
-                particle.add_uncertainty(particles, 0, 5*math.pi / 180)
+                particle.add_uncertainty(particles, 0, (turn_angle/20)*math.pi / 180)
                 cmd_queue.put(("turn_n_degrees", turn_angle))
                 while (not motor.has_started() or motor.is_turning()):
                     time.sleep(0.02)
@@ -290,7 +290,7 @@ try:
                 print(f"Turn {turn_angle:.2f}°")
                 #input()
                 particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
-                particle.add_uncertainty(particles, 0, 5*math.pi / 180)
+                particle.add_uncertainty(particles, 0, (turn_angle/20)*math.pi / 180)
                 cmd_queue.put(("turn_n_degrees", turn_angle))
                 while (not motor.has_started() or motor.is_turning()):
                     time.sleep(0.02)
@@ -317,8 +317,9 @@ try:
                         target_y = z
                         seen_next_target = True
                         continue
-                    obstacle_center = (x-sin(z_dir/2)*DISTANCE_TO_CENTER, z+cos(z_dir/2)*DISTANCE_TO_CENTER) #x_dir?
-                    obstacle_centers.append(obstacle_center)
+                    elif not done_full_rotation:
+                        obstacle_center = (x-sin(z_dir/2)*DISTANCE_TO_CENTER, z+cos(z_dir/2)*DISTANCE_TO_CENTER) #x_dir?
+                        obstacle_centers.append(obstacle_center)
 
             print("Creating Occupancy Map")
             path_res = 0.05
@@ -377,7 +378,7 @@ try:
                     print(f"Turn {turn_angle:.2f}°, then go {distance:.3f} cm forward")
                     #input()
                     particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
-                    particle.add_uncertainty(particles, 0, 5*math.pi / 180)
+                    particle.add_uncertainty(particles, 0, (turn_angle/20)*math.pi / 180)
                     cmd_queue.put(("turn_n_degrees", turn_angle))
                     while (not motor.has_started() or motor.is_turning()):
                         time.sleep(0.02)
@@ -385,7 +386,7 @@ try:
 
 
                     particle.move_particles_forward(particles, distance)
-                    particle.add_uncertainty(particles, distance/10, 0)
+                    particle.add_uncertainty(particles, distance/100, 0)
                     cmd_queue.put(("drive_n_cm_forward", 0, distance))
                     front_dist = 0
                     left_dist = 0
@@ -405,7 +406,7 @@ try:
                             if t > 0:
                                 leftover_dist = (t- timenow) /0.042
                                 particle.move_particles_forward(particles, -leftover_dist)
-                                particle.add_uncertainty(particles, (distance-leftover_dist)/10, 0)
+                                particle.add_uncertainty(particles, (distance-leftover_dist)/100, 0)
                             print(t - timenow)
                             print("Emergency stop!!")
                             motor.clear_has_started()
@@ -423,7 +424,7 @@ try:
                             num_wiggles = num_wiggles+1
                             print("try wiggle")
                             particle.move_particles(particles, 0, 0, -math.radians(wiggle_angle))
-                            particle.add_uncertainty(particles, 0, 5*math.pi / 180)
+                            particle.add_uncertainty(particles, 0, (wiggle_angle/20)*math.pi / 180)
                             cmd_queue.put(("turn_n_degrees", wiggle_angle))
                             while (not motor.has_started() or motor.is_turning()):
                                 time.sleep(0.02)
@@ -431,7 +432,7 @@ try:
 
                             full_wiggle = True
                             particle.move_particles_forward(particles, 45)
-                            particle.add_uncertainty(particles, 5, 0)
+                            particle.add_uncertainty(particles, 3, 0)
                             cmd_queue.put(("drive_n_cm_forward", 0, 45))
                             while (not motor.has_started() or motor.is_driving_forward()):
                                 with SERIAL_LOCK:
@@ -441,6 +442,7 @@ try:
                                 if should_stop(front_dist, left_dist, right_dist, True):
                                     motor.hard_stop()
                                     full_wiggle = False
+                                    particle.move_particles_forward(particles, -25)
                                     particle.add_uncertainty(particles, 10, 0)
                                     print("Emergency wiggle stop!!")
                                     break
@@ -448,7 +450,7 @@ try:
                             motor.clear_has_started()
                             if full_wiggle:
                                 particle.move_particles(particles, 0, 0, -math.radians(-(num_wiggles*wiggle_angle)))
-                                particle.add_uncertainty(particles, 0, 5*math.pi / 180)
+                                particle.add_uncertainty(particles, 0, (num_wiggles*wiggle_angle/20)*math.pi / 180)
                                 cmd_queue.put(("turn_n_degrees", -(num_wiggles*wiggle_angle)))
                                 while (not motor.has_started() or motor.is_turning()):
                                     time.sleep(0.02)
@@ -475,7 +477,7 @@ try:
                             turn_angle = 35
                             print(f"Turn {turn_angle} degrees")
                             particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
-                            particle.add_uncertainty(particles, 0, 5*math.pi / 180)
+                            particle.add_uncertainty(particles, 0, (turn_angle/20)*math.pi / 180)
                             cmd_queue.put(("turn_n_degrees", turn_angle))
                             while (not motor.has_started() or motor.is_turning()):
                                 time.sleep(0.02)
@@ -497,7 +499,7 @@ try:
             turn_angle = 35
             print(f"Turn {turn_angle} degrees")
             particle.move_particles(particles, 0, 0, -math.radians(turn_angle))
-            particle.add_uncertainty(particles, 0, 5*math.pi / 180)
+            particle.add_uncertainty(particles, 0, (turn_angle/20)*math.pi / 180)
             cmd_queue.put(("turn_n_degrees", turn_angle))
             while (not motor.has_started() or motor.is_turning()):
                 time.sleep(0.02)
