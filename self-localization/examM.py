@@ -417,12 +417,26 @@ try:
                     if aborted:
                         object_left = left_dist != -1 and left_dist < 300
                         object_right = right_dist != -1 and right_dist < 300
-                        wiggle_angle = 20 if object_left else -20
+                        wiggle_angle = 50 if object_left else -50
+                        half_wiggle = wiggle_angle/2
                         full_wiggle = False
                         num_wiggles = 0
                         while not full_wiggle:
                             num_wiggles = num_wiggles+1
                             print("try wiggle")
+                            free_ahead = False
+                            while not free_ahead:
+                                particle.move_particles(particles, 0, 0, -math.radians(half_wiggle))
+                                particle.add_uncertainty(particles, 0, (half_wiggle/20)*math.pi / 180)
+                                cmd_queue.put(("turn_n_degrees", half_wiggle))
+                                while (not motor.has_started() or motor.is_turning()):
+                                    time.sleep(0.02)
+                                motor.clear_has_started()
+                                with SERIAL_LOCK:
+                                    front_dist = arlo.read_front_ping_sensor()
+                                    if front_dist == -1 or front_dist > 500:
+                                        free_ahead = True
+                                    
                             particle.move_particles(particles, 0, 0, -math.radians(wiggle_angle))
                             particle.add_uncertainty(particles, 0, (wiggle_angle/20)*math.pi / 180)
                             cmd_queue.put(("turn_n_degrees", wiggle_angle))
@@ -430,6 +444,7 @@ try:
                                 time.sleep(0.02)
                             motor.clear_has_started()
 
+                            
                             full_wiggle = True
                             particle.move_particles_forward(particles, 45)
                             particle.add_uncertainty(particles, 3, 0)
