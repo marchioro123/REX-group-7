@@ -65,26 +65,10 @@ landmarks = {
 }
 visit_order = [8, 7, 3, 10, 8]
 
-# NEW
-visited_landmarks = set()
-
 
 landmark_colors = [CRED, CGREEN, CBLUE, CMAGENTA] # Colors used when drawing the landmarks
 
 seen = {i: False for i in landmarkIDs}
-
-# NEW
-def add_visited_landmark_to_occ(occ_map, landmark_pos_local):
-    Lx_m, Ly_m = landmark_pos_local
-    for i in range(occ_map.n_grids[0]):
-        for j in range(occ_map.n_grids[1]):
-            centroid = np.array([
-                occ_map.map_area[0][0] + occ_map.resolution * (i + 0.5),
-                occ_map.map_area[0][1] + occ_map.resolution * (j + 0.5)
-            ])
-            if np.linalg.norm(centroid - np.array([Lx_m, Ly_m])) <= (BOX_RADIUS + ROBOT_RADIUS + 0.4):
-                occ_map.grid[i, j] = 1
-# END NEW
 
 
 def jet(x):
@@ -145,6 +129,102 @@ def initialize_particles(num_particles):
         particles.append(p)
 
     return particles
+
+def recalibrate_particles_after_emergency(cam, particles):
+    """Immediately calibration after emergency stop"""
+    try:
+        best_distances = {}
+        best_angles = {}
+        for _ in range(5):
+            colour = cam.get_next_frame()
+            objIDs, dists, angs = cam.detect_aruco_objects(colour)
+            if isinstance(objIDs, type(None)):
+                continue
+            for i, obj_id in enumerate(objIDs):
+                if obj_id not in landmarkIDs:
+                    continue
+                d = dists[i] + 22.5
+                a = angs[i]
+                if obj_id in best_distances:
+                    best_distances[obj_id] = (best_distances[obj_id] + d) / 2
+                    best_angles[obj_id] = (best_angles[obj_id] + a) / 2
+                else:
+                    best_distances[obj_id] = d
+                    best_angles[obj_id] = a
+
+        if not best_distances:
+            particle.add_uncertainty(particles, 10, 10 * math.pi / 180)
+            return particles
+
+        for p in particles:
+            x, y = p.getX(), p.getY()
+            if (x < -60) or (x > 460) or (y < -60) or (y > 360):
+                p.setWeight(0.0)
+            else:
+                p.setWeight(1.0)
+
+        for box_id, dist in best_distances.items():
+            if box_id not in landmarks:
+                continue
+            Lx, Ly = landmarks[box_id]
+            for p in particles:
+                w = p.getWeight()
+                p.setWeight(norm.pdf(p.distFrom(Lx, Ly), loc=dist, scale=10) * w)
+
+        for box_id, ang in best_angles.items():
+            if box_id not in landmarks:
+                continue
+            Lx, Ly = landmarks[box_id]
+            for p in particles:
+                w = p.getWeight()
+
+                # --- robust bearing computation (epsilon + clip) ---
+                dx = Lx - p.getX()
+                dy = Ly - p.getY()
+                dist_from = math.hypot(dx, dy)
+                if dist_from < 1e-6:
+                    # bearing undefined when sitting "on" the landmark; skip update
+                    continue
+
+                # unit vector from particle to landmark
+                ux, uy = dx / dist_from, dy / dist_from
+
+                # particle heading and its left-orthogonal
+                ct, st = math.cos(p.getTheta()), math.sin(p.getTheta())
+                dir_particle = np.array([ct, st])
+                dir_orth = np.array([-st, ct])
+
+                # cos of angle between landmark direction and heading, clipped to [-1,1]
+                cosang = float(np.clip(ux * dir_particle[0] + uy * dir_particle[1], -1.0, 1.0))
+                # signed angle using the orthogonal to get the sign
+                sign = np.sign(ux * dir_orth[0] + uy * dir_orth[1])
+                theta = sign * np.arccos(cosang)
+                # ---------------------------------------------------
+
+                p.setWeight(norm.pdf(ang - theta, loc=0, scale=5 * math.pi / 180) * w)
+
+        total_w = sum(p.getWeight() for p in particles)
+        if total_w > 0:
+            for p in particles:
+                p.setWeight(p.getWeight() / total_w)
+        else:
+            for p in particles:
+                p.setWeight(1.0 / len(particles))
+
+        idx = np.random.default_rng().choice(
+            range(len(particles)),
+            size=len(particles),
+            replace=True,
+            p=[p.getWeight() for p in particles]
+        )
+        particles = [particles[i].copy() for i in idx]
+        particle.add_uncertainty(particles, 5, 5 * math.pi / 180)
+        return particles
+
+    except Exception as e:
+        print("Recalibration error:", e)
+        return particles
+
 
 # Main program #
 try:
@@ -362,24 +442,9 @@ try:
                             occ_map.grid[i, j] = 1
                             break
 
-            # NEW: Add visited landmarks as occupied areas
-            for i in visited_landmarks:
-                Lx, Ly = landmarks[i]  # global landmark position (cm)
-                dx = (Lx - est_pose.getX()) / 100.0
-                dy = (Ly - est_pose.getY()) / 100.0
-                theta = est_pose.getTheta()
-
-                # Convert global landmark position → local (robot-centric) coordinates
-                x_local = dx * math.cos(-theta) - dy * math.sin(-theta)
-                y_local = dx * math.sin(-theta) + dy * math.cos(-theta)
-
-                # Mark it on the occupancy map
-                add_visited_landmark_to_occ(occ_map, (x_local, y_local))
-                print(f"Added visited landmark {i} to occ map at local ({x_local:.2f}, {y_local:.2f})")
-            # END NEW
-
             occ_map.draw_map()
             plt.savefig("Occupancy_grid.png")
+            plt.close()  # close the figure created by occ_map.draw_map()
 
             robot_model = PointMassModel(ctrl_range=[-path_res, path_res])
             pos_x, pos_y = est_pose.getX(), est_pose.getY()
@@ -405,6 +470,10 @@ try:
                 expand_dis=1,
                 path_resolution=path_res,
                 ) 
+            # show_animation = True
+            # metadata = dict(title="RRT Test")
+            # writer = FFMpegWriter(fps=15, metadata=metadata)
+            # fig = plt.figure()
 
             print("Calculating path")
             # with writer.saving(fig, "rrt_test.mp4", 100):
@@ -419,6 +488,14 @@ try:
                 simple_path = simplify_path(path, occ_map)
                 print("simple path")
                 print(simple_path)
+                # if show_animation:
+                #     rrt.draw_graph()
+                #     plt.plot([x for (x, y) in path], [y for (x, y) in path], '-b')
+                #     plt.plot([x for (x, y) in simple_path], [y for (x, y) in simple_path], '-r')
+                #     plt.grid(True)
+                #     plt.pause(0.01)  # Need for Mac
+                #     plt.show()
+                #     writer.grab_frame()
 
                 pos_x, pos_y, angle = 0, 0, 0
                 aborted = False
@@ -471,43 +548,88 @@ try:
 
                     # particle.move_particles(particles, target_x-pos_x, target_y-pos_y, -math.radians(turn_angle))
                     if aborted:
-                        # with SERIAL_LOCK:
-                        #     left_dist = arlo.read_left_ping_sensor()
-                        #     right_dist = arlo.read_right_ping_sensor()
-                        object_left = left_dist != -1 and left_dist < 300
-                        object_right = right_dist != -1 and right_dist < 300
-                        if object_left and not object_right:
-                            print(f"left sensor")
-                          #  input()
-                            cmd_queue.put(("turn_n_degrees", 45))
-                            particle.move_particles(particles, 0, 0, -math.radians(45))
-                            cmd_queue.put(("drive_n_cm_forward", 0, 30))
-                            particle.move_particles_forward(particles,30)
-                            cmd_queue.put(("turn_n_degrees", -45))
-                            particle.move_particles(particles, 0, 0, math.radians(45))
-                        elif object_right and not object_left:
-                            print(f"right sensor")
-                         #   input()
-                            cmd_queue.put(("turn_n_degrees", -45))
-                            particle.move_particles(particles, 0, 0, math.radians(45))
-                            cmd_queue.put(("drive_n_cm_forward", 0, 30))
-                            particle.move_particles_forward(particles,30)
-                            cmd_queue.put(("turn_n_degrees", 45))
-                            particle.move_particles(particles, 0, 0, -math.radians(45))
-                        else:
-                            print(f"front sensor")
-                            cmd_queue.put(("drive_n_cm_forward", 0, -20))
-                            particle.move_particles_forward(particles,-20)
+                        # Свіжі виміри сенсорів (під замком)
+                        with SERIAL_LOCK:
+                            front_dist = arlo.read_front_ping_sensor()
+                            left_dist = arlo.read_left_ping_sensor()
+                            right_dist = arlo.read_right_ping_sensor()
 
-                        while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
-                            time.sleep(0.05)
-                        motor.clear_has_started()
+                        TH_NEAR = 300  # мм — небезпечна зона
+                        STEP_BACK = 25  # см — крок назад, якщо фронт/невизначено
+                        SIDE_STEP = 30  # см — боковий об’їзд
+                        SIDE_ANGLE = 45  # град — кут обходу
+
+
+                        def wait_idle():
+                            while (not motor.has_started() or motor.is_turning() or motor.is_driving_forward()):
+                                time.sleep(0.05)
+                            motor.clear_has_started()
+
+
+                        object_left = (left_dist != -1 and left_dist < TH_NEAR)
+                        object_right = (right_dist != -1 and right_dist < TH_NEAR)
+                        object_front = (front_dist != -1 and front_dist < TH_NEAR)
+
+                        if object_left and not object_right:
+                            print("Obstacle: LEFT -> sidestep right")
+                            cmd_queue.put(("turn_n_degrees", SIDE_ANGLE))
+                            particle.move_particles(particles, 0, 0, -math.radians(SIDE_ANGLE))
+                            wait_idle()
+
+                            cmd_queue.put(("drive_n_cm_forward", 0, SIDE_STEP))
+                            particle.move_particles_forward(particles, SIDE_STEP)
+                            wait_idle()
+
+                            cmd_queue.put(("turn_n_degrees", -SIDE_ANGLE))
+                            particle.move_particles(particles, 0, 0, math.radians(SIDE_ANGLE))
+                            wait_idle()
+
+                        elif object_right and not object_left:
+                            print("Obstacle: RIGHT -> sidestep left")
+                            cmd_queue.put(("turn_n_degrees", -SIDE_ANGLE))
+                            particle.move_particles(particles, 0, 0, math.radians(SIDE_ANGLE))
+                            wait_idle()
+
+                            cmd_queue.put(("drive_n_cm_forward", 0, SIDE_STEP))
+                            particle.move_particles_forward(particles, SIDE_STEP)
+                            wait_idle()
+
+                            cmd_queue.put(("turn_n_degrees", SIDE_ANGLE))
+                            particle.move_particles(particles, 0, 0, -math.radians(SIDE_ANGLE))
+                            wait_idle()
+
+                        else:
+                            print("Obstacle: FRONT/UNKNOWN -> step back + sway")
+                            cmd_queue.put(("drive_n_cm_forward", 0, -STEP_BACK))
+                            particle.move_particles_forward(particles, -STEP_BACK)
+                            wait_idle()
+
+                            sway = random.choice([-30, 30])
+                            cmd_queue.put(("turn_n_degrees", sway))
+                            particle.move_particles(particles, 0, 0, -math.radians(sway))
+                            wait_idle()
+
+                        particles = recalibrate_particles_after_emergency(cam, particles)
+                        est_pose = particle.estimate_pose(particles)
+                        print(
+                            f"[Calib] pose -> x={est_pose.getX():.1f}, y={est_pose.getY():.1f}, th={np.degrees(est_pose.getTheta()):.1f}°")
+
                         break
 
                     # particle.add_uncertainty(particles, 7, 7*math.pi / 180)
                     pos_x, pos_y = target_x, target_y
                     angle = (angle + turn_angle) % 360
 
+                # print("Checking if target is close enough")
+            # input()
+            # colour = cam.get_next_frame()
+            # objectIDs, dists, angles = cam.detect_aruco_objects(colour)
+            # if not isinstance(objectIDs, type(None)):
+            #     if visit_order[0] in objectIDs:
+            #         idx = list(objectIDs).index(visit_order[0])
+            #         print(f"Reached target {visit_order[0]} (distance {dists[idx]:.1f} cm)")
+            #         if dists[idx] < 40.0:
+            #             print(f"Reached target {visit_order.pop(0)} (distance {dists[idx]:.1f} cm) — next target: {visit_order[0]}")
                 particles = particles[:-100] + initialize_particles(100)
                 times_turned = 0
                 if not aborted:
@@ -515,12 +637,6 @@ try:
                     #if not reached_target:
                     visit_order.pop(0)
                     print(f"Reached target {reached}")
-
-                    # NEW: Record that this landmark was visited 
-                    visited_landmarks.add(reached)
-                    print(f"Marked landmark {reached} as visited")
-                    # END NEW
-
                     if visit_order:  # check if there's a next target
                         print(f"Next target: {visit_order[0]}")
                     else:
@@ -587,11 +703,19 @@ try:
             cv2.imshow(WIN_World, world)
     
   
-finally: 
-    # Make sure to clean up even if an exception occurred
-    
-    # Close all windows
+finally:
     cv2.destroyAllWindows()
 
-    # Clean-up capture thread
-    cam.terminateCaptureThread()
+    if 'cam' in locals() and hasattr(cam, 'terminateCaptureThread'):
+        try:
+            cam.terminateCaptureThread()
+        except Exception as e:
+            print("Camera cleanup error:", e)
+
+    if 'motor' in locals() and hasattr(motor, 'stop'):
+        try:
+            motor.stop()  # if your MotorThread supports a graceful stop
+        except Exception as e:
+            print("Motor cleanup error:", e)
+
+
