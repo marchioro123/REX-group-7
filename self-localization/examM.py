@@ -56,14 +56,14 @@ ROBOT_RADIUS = 0.25
 
 # Landmarks.
 # The robot knows the position of 2 landmarks. Their coordinates are in the unit centimeters [cm].
-landmarkIDs = [8, 7, 3, 10]
+landmarkIDs = [1, 2, 3, 4]
 landmarks = {
-    8: (0.0, 0.0),  # Coordinates for landmark 1
-    7: (0.0, 300.0),  # Coordinates for landmark 2
+    1: (0.0, 0.0),  # Coordinates for landmark 1
+    2: (0.0, 300.0),  # Coordinates for landmark 2
     3: (400.0, 0.0),  # Coordinates for landmark 3
-    10: (400.0, 300.0)  # Coordinates for landmark 4
+    4: (400.0, 300.0)  # Coordinates for landmark 4
 }
-visit_order = [8, 7, 3, 10, 8]
+visit_order = [1, 2, 3, 4, 1]
 
 landmark_colors = [CRED, CGREEN, CBLUE, CMAGENTA] # Colors used when drawing the landmarks
 
@@ -413,7 +413,7 @@ try:
                             if i==last_index and t - timenow < 1.3 and t > 0:
                                 aborted = False
                             if t > 0:
-                                leftover_dist = (t- timenow) /0.042
+                                leftover_dist = (t- timenow) /0.041
                                 particle.move_particles_forward(particles, -leftover_dist)
                                 particle.add_uncertainty(particles, (distance-leftover_dist)/100, 0)
                             print(t - timenow)
